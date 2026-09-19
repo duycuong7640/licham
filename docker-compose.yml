@@ -1,0 +1,114 @@
+services:
+    web_app:
+        build:
+            context: .
+            dockerfile: ./docker/php8.1/Dockerfile
+        container_name: lichso_web
+        working_dir: /var/www/html
+        volumes:
+            - ./:/var/www/html
+            - sitemap_lichso_data:/var/www/html/public/xml
+        restart: always
+        mem_limit: 512m
+        cpus: 1.0
+        networks:
+            - web_network
+            - redis_network
+        environment:
+            - APP_NAME=lichso.net
+            - APP_ENV=production
+            - APP_KEY=base64:AJdZ5yZWPio/N1fjxJ5AilPoLAi3v+uthi3k95stJXg=
+            - APP_DEBUG=false
+            - APP_URL=https://lichso.net
+            - SITE_NAME=LICHSO
+            - FACE=1
+
+            - FIELD=
+            - DOMAIN_LOCAL=lichso
+            - DOMAIN_RUN=lichso.net
+            - THUMBNAIL_NAME=lichso
+
+            - LOG_CHANNEL=stack
+            - LOG_DEPRECATIONS_CHANNEL=null
+            - LOG_LEVEL=debug
+            - LOG_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/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
+
+            - API_URL=http://news_cms/api/v1/
+            - IMG_URL=https://thumb.lichso.net/images/
+
+            - API_URL2=http://news_sys_tool_crawler:3000/api/
+            - API_KEY2=jkkjkneqkjbewjqkbew
+
+            - DB_CONNECTION=mysql
+            - DB_HOST=127.0.0.1
+            - DB_PORT=3306
+            - DB_DATABASE=laravel
+            - DB_USERNAME=root
+            - DB_PASSWORD=
+
+            - BROADCAST_DRIVER=log
+            - CACHE_DRIVER=redis
+            - FILESYSTEM_DISK=local
+            - QUEUE_CONNECTION=sync
+
+            - SESSION_DRIVER=redis
+            - SESSION_LIFETIME=30
+            - SESSION_SECURE_COOKIE=false
+
+            - MEMCACHED_HOST=127.0.0.1
+
+            - REDIS_HOST=redis_app
+            - REDIS_PASSWORD=eYVX7EwVmmxDSaewq4124d99MtyKVge8oLd2t
+            - REDIS_PORT=6379
+            - REDIS_PREFIX=lichso_
+
+            - REDIS_EXPIRE_30D=2592000
+            - REDIS_EXPIRE_15D=1296000
+            - REDIS_EXPIRE_1D=86400
+            - REDIS_EXPIRE_3H=10800
+            - REDIS_EXPIRE_2H=7200
+            - REDIS_EXPIRE_1H=3600
+            - REDIS_EXPIRE_30M=1800
+            - REDIS_EXPIRE_20M=1200
+            - REDIS_EXPIRE_10M=600
+            - REDIS_EXPIRE_5M=300
+            - REDIS_EXPIRE_1M=120
+            - REDIS_EXPIRE_10S=8
+            - REDIS_EXPIRE_50S=50
+            - COMPRESSED_HTML_EXPIRE=900
+
+            - VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+            - VITE_PUSHER_HOST="${PUSHER_HOST}"
+            - VITE_PUSHER_PORT="${PUSHER_PORT}"
+            - VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
+            - VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+        labels:
+            - "traefik.enable=true"
+
+            - "traefik.http.routers.lichso_web.rule=Host(`lichso.net`)"
+            - "traefik.http.routers.lichso_web.priority=10"
+            - "traefik.http.routers.lichso_web.entrypoints=web,websecure"
+            - "traefik.http.routers.lichso_web.service=lichso_web"
+
+            - "traefik.http.routers.lichso_www.rule=Host(`www.lichso.net`)"
+            - "traefik.http.routers.lichso_www.priority=100"
+            - "traefik.http.routers.lichso_www.entrypoints=web,websecure"
+            - "traefik.http.routers.lichso_www.middlewares=lichso_www_redirect"
+            - "traefik.http.routers.lichso_www.service=lichso_web"
+
+            - "traefik.http.middlewares.lichso_www_redirect.redirectregex.regex=^https?://www\\.lichso\\.net/(.*)"
+            - "traefik.http.middlewares.lichso_www_redirect.redirectregex.replacement=https://lichso.net/$${1}"
+            - "traefik.http.middlewares.lichso_www_redirect.redirectregex.permanent=true"
+
+            - "traefik.http.services.lichso_web.loadbalancer.server.port=80"
+            - "traefik.docker.network=web_network"
+
+networks:
+    web_network:
+        external: true
+    redis_network:
+        external: true
+
+volumes:
+    sitemap_lichso_data:
+        external: true
