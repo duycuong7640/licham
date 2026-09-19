@@ -31,7 +31,6 @@ services:
             - LOG_CHANNEL=stack
             - LOG_DEPRECATIONS_CHANNEL=null
             - LOG_LEVEL=debug
-            - LOG_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/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
 
             - API_URL=http://news_cms/api/v1/
             - IMG_URL=https://thumb.lichso.net/images/
