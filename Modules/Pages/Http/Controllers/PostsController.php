@@ -63,64 +63,58 @@ class PostsController extends Controller
     public function show($slug, Request $request)
     {
         try {
-            $cacheKey = 'post_detail_html_' . md5($slug);
-            $ttl = now()->addMinutes(5);
+//            $cacheKey = 'post_detail_html_' . md5($slug);
+//            $ttl = now()->addMinutes(5);
+//
+//            if (Cache::has($cacheKey)) {
+//                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
+//                    ->header('Content-Type', 'text/html')
+//                    ->header('Cache-Control', 'public, max-age=1800');
+//            }
 
-            if (Cache::has($cacheKey)) {
-                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
-                    ->header('Content-Type', 'text/html')
-                    ->header('Cache-Control', 'public, max-age=300');
-            }
-
-            $data['cache'] = 1;
             $data['detail'] = RequestHelpers::request($request, \dataApiRoutes::POST_DETAIL, str_replace(':slug', $slug, \dataApiRoutes::POST_DETAIL), ['DOMAIN_RUN' => env('DOMAIN_RUN')], 'get');
             if (empty($data['detail']['id'])) {
                 return response()->view('errors.404', [], 404);
             }
-            if (!strpos($data['detail']['id'] . '-' . $data['detail']['type'], 'CALENDARGOOD_')) return response()->view('errors.404', [], 404);
-            $data['category'] = Helpers::findByType(str_replace('CALENDARGOOD_', '', $data['detail']['type']));
-            if (empty($data['category']['title'])) return response()->view('errors.404', [], 404);
-            $data['categoryParent'] = Helpers::findByParentKey($data['category']['parent']);
+            if ($data['detail']['type'] != 'CALENDARLUNAR_NEWS') return response()->view('errors.404', [], 404);
+
+            $data['category'] = ["title" => 'Bài viết', 'slug' => 'bai-viet', 'isLast' => true];
             $dataMerge['showFoods'] = [];
             $dataMerge['showReviews'] = [];
-            $data['detail']['tableOfContent'] = \App\Helpers\Helpers::buildTocContent(\App\Helpers\Helpers::renderContent($data['detail']), $dataMerge, ['title' => $data['category']['title'], 'key_seo' => $data['category']['meta_key']]);
+            $data['detail']['tableOfContent'] = \App\Helpers\Helpers::buildTocContent(\App\Helpers\Helpers::renderContent($data['detail']), $dataMerge, ['title' => '', 'key_seo' => '']);
 
-            $canonical = route('page.post.show', ['slug' => $data['detail']['slug'],]);
-            $articleImage = !empty($data['detail']['thumbnail']) ? Helpers::renderThumb($data['detail']['thumbnail']) : (!empty($config['setting']['thumbnailShare']) ? Helpers::renderThumb($config['setting']['thumbnailShare']) : '');
-            $plainDescription = trim(preg_replace('/\s+/u', ' ', strip_tags($data['detail']['description'] ?? '')));
-            $metaDescription = !empty($data['detail']['metaDes']) ? $data['detail']['metaDes'] : Str::limit($plainDescription, 155, '');
-
-            $config = $request->get('configData');
-            $siteName = env('SITE_NAME');
+            $config = $request->get('configData', []);
+            $setting = $config['setting'] ?? [];
+            $siteName = !empty($setting['title']) ? $setting['title'] : env('SITE_NAME');
             $SEO = [
                 'name' => $siteName,
                 'slug' => !empty($data['detail']['slug']) ? $data['detail']['slug'] : '',
-                'logo' => !empty($config['setting']['thumbnail']) ? Helpers::renderThumb($config['setting']['thumbnail']) : '',
-                'logo_share' => !empty($config['setting']['thumbnailShare']) ? Helpers::renderThumb($config['setting']['thumbnailShare']) : '',
+                'logo' => !empty($setting['thumbnail']) ? Helpers::renderThumb($setting['thumbnail']) : asset('static/web/images/logo.png'),
+                'logo_share' => !empty($data['detail']['thumbnail']) ? Helpers::renderThumb($data['detail']['thumbnail']) : (!empty($setting['thumbnailShare']) ? Helpers::renderThumb($setting['thumbnailShare']) : asset('static/web/images/share.png')),
                 'fav' => asset('static/web/images/favicon/favicon.ico'),
                 'title_seo' => !empty($data['detail']['titleSeo']) ? $data['detail']['titleSeo'] : $data['detail']['title'],
-                'meta_des' => $metaDescription,
-                'meta_key' => '',
-                'canonical' => $canonical,
-                'robots' => 'index, follow',
+                'meta_des' => !empty($data['detail']['metaDes']) ? $data['detail']['metaDes'] : Helpers::shortDesc(trim(strip_tags($data['detail']['description'] ?? '')), 160),
+                'meta_key' => !empty($data['detail']['metaKey']) ? $data['detail']['metaKey'] : '',
+                'canonical' => route('page.post.show', ['slug' => $data['detail']['slug']]),
             ];
 
             $data['seo'] = $SEO;
-            $data['common'] = $SEO;
-            $data['shareMXH'] = Helpers::renderShareMXH('pro_show', $SEO);
+            $data['common'] = Helpers::metaHead($SEO);
+            $data['shareMXH'] = Helpers::renderShareMXH('pro_show', $SEO, $config);
             $data['show'] = 1;
 
-            // return view('pages::posts.show')->with('data', $data);
-            $html = view('pages::posts.show')->with('data', $data)->render();
-            $html = Helpers::genCsrfToken($html, '1');
-            $response = response($html)
-                ->header('Content-Type', 'text/html; charset=UTF-8');
-            $response = Helpers::optimize_html($response);
-            Cache::put($cacheKey, $response->getContent(), $ttl);
+             return view('pages::posts.show')->with('data', $data);
 
-            return $response->header('Content-Type', 'text/html')
-                ->header('Cache-Control', 'public, max-age=300');
-        } catch (\Exception $e) {
+//            $html = view('pages::posts.show')->with('data', $data)->render();
+//            $html = Helpers::genCsrfToken($html, '1');
+//            $response = response($html)
+//                ->header('Content-Type', 'text/html; charset=UTF-8');
+//            $response = Helpers::optimize_html($response);
+//            Cache::put($cacheKey, $response->getContent(), $ttl);
+//
+//            return $response->header('Content-Type', 'text/html')
+//                ->header('Cache-Control', 'public, max-age=1800');
+        } catch (\Exception $e) {Helpers::pre($e->getMessage());
             return response()->view('errors.500', [], 500);
         }
     }

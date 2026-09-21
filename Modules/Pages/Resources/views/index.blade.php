@@ -16,7 +16,7 @@
         $viecnenlam = explode('. ', \App\Helpers\Helpers::getContentInBrackets($dayOffices));
     @endphp
     <section
-        id="daily-calendar"
+        id="pre_daily-calendar"
         class="reading-summary"
         aria-label="Tóm tắt lịch âm hôm nay"
     >
@@ -26,27 +26,27 @@
         </div>
         <div class="summary-grid">
             <p class="summary-line">
-                Ngày <b>Dương Lịch</b>: <strong id="summarySolar">{{ $day }}-{{ $month }}-{{ $year }}</strong>
+                Ngày <b>Dương Lịch</b>: <strong id="pre_summarySolar">{{ $day }}-{{ $month }}-{{ $year }}</strong>
             </p>
             <p class="summary-line">
-                Ngày <b>Âm Lịch</b>: <strong id="summaryLunar">{{ $lunarDay }}-{{ $lunarMonth }}
+                Ngày <b>Âm Lịch</b>: <strong id="pre_summaryLunar">{{ $lunarDay }}-{{ $lunarMonth }}
                     -{{ $lunarYear }}</strong>
             </p>
             <p class="summary-line">
-                Ngày trong tuần: <strong id="summaryWeekday">{{ $thu }}</strong>
+                Ngày trong tuần: <strong id="pre_summaryWeekday">{{ $thu }}</strong>
             </p>
             <p class="summary-line">
-                Ngày <strong id="summaryCanChi">{{ $row['strDay'] }}</strong>
+                Ngày <strong id="pre_summaryCanChi">{{ $row['strDay'] }}</strong>
                 tháng <strong>{{ $row['strMonth'] }}</strong>
                 năm <strong>{{ $row['strYear'] }}</strong>
             </p>
             <p class="summary-line summary-wide">
                 Ngày <strong>{{ !empty($dayKhongMinh[0]) ? $dayKhongMinh[0] : '' }}</strong>:
-                <span id="summaryTravel">{{ !empty($dayKhongMinh[1]) ? $dayKhongMinh[1] : '' }}</span>
+                <span id="pre_summaryTravel">{{ !empty($dayKhongMinh[1]) ? $dayKhongMinh[1] : '' }}</span>
             </p>
             <p class="summary-line summary-wide">
                 Giờ <b>Hoàng Đạo</b>:
-                <strong id="summaryHours">
+                <strong id="pre_summaryHours">
                     @if(!empty($row['options']['AUSPICIOUS_HOUR']))
                         @foreach($row['options']['AUSPICIOUS_HOUR'] as $k=>$value)
                             @php $time = \App\Helpers\Helpers::matchHour($value['value']); @endphp
@@ -77,24 +77,24 @@
             <div class="today-heading">
                 <div>
                     <span class="section-label">LỊCH ÂM HÔM NAY</span>
-                    <h1 id="pageDate">{{ $thu }}, {{ $day }} tháng {{ $month }}, {{ $year }}</h1>
+                    <h1 id="pre_pageDate">{{ $thu }}, {{ $day }} tháng {{ $month }}, {{ $year }}</h1>
                 </div>
                 <div class="arrow-group">
-                    <button id="prevDay" class="icon-btn">‹</button>
-                    <button id="nextDay" class="icon-btn">›</button>
+                    <button id="pre_prevDay" class="icon-btn">‹</button>
+                    <button id="pre_nextDay" class="icon-btn">›</button>
                 </div>
             </div>
             <div class="date-panels">
                 <div class="date-panel solar">
                     <small>DƯƠNG LỊCH</small>
-                    <strong id="solarDay">{{ $day }}</strong>
-                    <b id="solarMeta">Tháng {{ $month }} năm {{ $year }}</b>
-                    <span id="solarWeekday">{{ $thu }}</span>
+                    <strong id="pre_solarDay">{{ $day }}</strong>
+                    <b id="pre_solarMeta">Tháng {{ $month }} năm {{ $year }}</b>
+                    <span id="pre_solarWeekday">{{ $thu }}</span>
                 </div>
                 <div class="date-panel lunar">
                     <small>ÂM LỊCH</small>
-                    <strong id="lunarDay">{{ $lunarDay }}</strong>
-                    <b id="lunarMeta">Tháng {{ $lunarMonth }} năm {{ $lunarYear }}</b>
+                    <strong id="pre_lunarDay">{{ $lunarDay }}</strong>
+                    <b id="pre_lunarMeta">Tháng {{ $lunarMonth }} năm {{ $lunarYear }}</b>
                     <span>Ngày {{ $row['strDay'] }}</span>
                 </div>
             </div>
@@ -197,7 +197,7 @@
         <div class="section-head">
             <div>
                 <span class="section-label">LỊCH ÂM DƯƠNG</span>
-                <h2 id="monthTitle">Tháng {{ $data['month'] }} năm {{ $data['year'] }}</h2>
+                <h2 id="pre_monthTitle">Tháng {{ $data['month'] }} năm {{ $data['year'] }}</h2>
             </div>
             <div class="month-controls">
                 <a href="{{ route('page.cope.show.month', ['month' => $monthButton['prev']['month'], 'year' => $monthButton['prev']['year']]) }}"
@@ -220,7 +220,7 @@
             <div>Thứ 7</div>
             <div>CN</div>
         </div>
-        <div id="calendar" class="calendar-grid">
+        <div id="pre_calendar" class="calendar-grid">
             @foreach($months as $values)
                 @foreach($values as $month)
                     @if(empty($month['id']))
@@ -242,7 +242,7 @@
                             $month['lunarMonth'] = \App\Helpers\Helpers::checkNumber($month['lunarMonth']);
                         @endphp
                         <a href="{{ route('page.cope.show.day', ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']]) }}"
-                           class="calendar-day {{ $isDay }} {{ $isSaturday }} {{ $isSunday }} {{ $today }} {{ $today }}"
+                           class="calendar-day btn-loading {{ $isDay }} {{ $isSaturday }} {{ $isSunday }} {{ $today }} {{ $today }}"
                            data-date="{{ \Carbon\Carbon::parse($month['date'], 'Asia/Ho_Chi_Minh')->utc()->format('Y-m-d\TH:i:s.v\Z') }}"
                            aria-label="Ngày {{ $month['day'] }} tháng {{ $month['month'] }}, âm lịch {{ $month['lunarDay'] }} tháng {{ $month['lunarMonth'] }}">
                             <strong>{{ $month['day'] }}</strong>
@@ -280,7 +280,7 @@
             <span>Di chuột hoặc chạm để xem nhanh</span>
         </div>
     </section>
-    <section class="section-block" id="detail">
+    <section class="section-block" id="pre_detail">
         <div class="section-head">
             <div>
                 <span class="section-label">XEM NGÀY TỐT XẤU</span>
@@ -580,7 +580,7 @@
             @endif
         </div>
     </section>
-    <section class="section-block seo-grid" id="knowledge">
+    <section class="section-block seo-grid" id="pre_knowledge">
         <article class="card article-card">
             <span class="section-label">KIẾN THỨC LỊCH VIỆT</span>
             <h2>Lịch âm hôm nay có ý nghĩa gì?</h2>
@@ -657,9 +657,9 @@
 
             <p class="cms-links">
                 <b>Tra cứu tiếp:</b>
-                <a href="lich-thang.html">Lịch âm theo tháng</a> ·
-                <a href="ngay-tot.html">Chọn ngày tốt</a> ·
-                <a href="doi-ngay.html">Đổi ngày âm dương</a>
+                <a href="{{ route('page.cope.show.month', ['month' => date('m'), 'year' => date('Y')]) }}" title="Lịch âm tháng {{ date('m') }}">Lịch âm tháng {{ date('m') }}</a> ·
+                <a href="{{ route('page.cope.show.year', ['year' => date('Y')]) }}" title="Lịch âm năm {{ date('Y') }}">Lịch âm năm {{ date('Y') }}</a> ·
+                <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi ngày âm dương</a>
             </p>
         </div>
     </article>

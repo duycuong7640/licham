@@ -14,7 +14,7 @@
     <section class="card month-page-head">
         <div>
             <span class="section-label">LỊCH VẠN NIÊN THEO THÁNG</span>
-            <h1 id="monthPageTitle">Lịch âm tháng {{ $monthButton['month'] }} năm {{ $monthButton['year'] }}</h1>
+            <h1 id="pre_monthPageTitle">Lịch âm tháng {{ $monthButton['month'] }} năm {{ $monthButton['year'] }}</h1>
             <p>
                 Xem ngày âm, ngày tốt xấu, ngày lễ và thông tin cần biết trong tháng.
             </p>
@@ -22,8 +22,8 @@
         <div class="month-toolbar"
              data-url="{{ route('page.cope.show.month', ['month' => '__MONTH__', 'year' => '__YEAR__']) }}">
             <div class="field">
-                <label for="monthSelect">Tháng</label>
-                <select id="monthSelect">
+                <label for="pre_monthSelect">Tháng</label>
+                <select id="pre_monthSelect">
                     @for($m = 1; $m <= 12; $m++)
                         <option value="{{ $m }}" {{ $m == $monthButton['month'] ? 'selected' : '' }}>
                             Tháng {{ $m }}
@@ -32,8 +32,8 @@
                 </select>
             </div>
             <div class="field">
-                <label for="yearSelect">Năm</label>
-                <select id="yearSelect">
+                <label for="pre_yearSelect">Năm</label>
+                <select id="pre_yearSelect">
                     @for($y = 1900; $y <= 2050; $y++)
                         <option value="{{ $y }}" {{ $y == $monthButton['year'] ? 'selected' : '' }}>
                             {{ $y }}
@@ -47,7 +47,7 @@
         <div class="section-head">
             <div>
                 <span class="section-label">LỊCH ÂM DƯƠNG</span>
-                <h2 id="monthTitle">Tháng {{ $data['month'] }} năm {{ $data['year'] }}</h2>
+                <h2 id="pre_monthTitle">Tháng {{ $data['month'] }} năm {{ $data['year'] }}</h2>
             </div>
             <div class="month-controls">
                 <a href="{{ route('page.cope.show.month', ['month' => \App\Helpers\Helpers::checkNumber($monthButton['prev']['month']), 'year' => $monthButton['prev']['year']]) }}"
@@ -70,7 +70,7 @@
             <div>Thứ 7</div>
             <div>CN</div>
         </div>
-        <div id="calendar" class="calendar-grid">
+        <div id="pre_calendar" class="calendar-grid">
             @foreach($months as $values)
                 @foreach($values as $month)
                     @if(empty($month['id']))
@@ -92,9 +92,9 @@
                             $month['lunarMonth'] = \App\Helpers\Helpers::checkNumber($month['lunarMonth']);
                         @endphp
                         <a href="{{ route('page.cope.show.day', ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']]) }}"
-                            class="calendar-day {{ $isDay }} {{ $isSaturday }} {{ $isSunday }} {{ $today }} {{ $today }}"
-                            data-date="{{ \Carbon\Carbon::parse($month['date'], 'Asia/Ho_Chi_Minh')->utc()->format('Y-m-d\TH:i:s.v\Z') }}"
-                            aria-label="Ngày {{ $month['day'] }} tháng {{ $month['month'] }}, âm lịch {{ $month['lunarDay'] }} tháng {{ $month['lunarMonth'] }}">
+                           class="calendar-day {{ $isDay }} {{ $isSaturday }} {{ $isSunday }} {{ $today }} {{ $today }}"
+                           data-date="{{ \Carbon\Carbon::parse($month['date'], 'Asia/Ho_Chi_Minh')->utc()->format('Y-m-d\TH:i:s.v\Z') }}"
+                           aria-label="Ngày {{ $month['day'] }} tháng {{ $month['month'] }}, âm lịch {{ $month['lunarDay'] }} tháng {{ $month['lunarMonth'] }}">
                             <strong>{{ $month['day'] }}</strong>
                             <small>{{ $month['lunarDay'] }}</small>
                             @if(!empty($today))
@@ -134,11 +134,12 @@
         <article class="card month-day-list good-list">
             <span class="section-label">NGÀY HOÀNG ĐẠO</span>
             <h2>Ngày tốt trong tháng {{ $monthButton['month'] }} năm {{ $monthButton['year'] }}</h2>
-            <div id="goodDays" class="date-link-grid">
+            <div id="pre_goodDays" class="date-link-grid">
                 @foreach($months as $values)
                     @foreach($values as $month)
                         @if(!empty($month['id']) && $month['isDay'])
-                            <a href="{{ route('page.cope.show.day', ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']]) }}">Ngày {{ \App\Helpers\Helpers::checkNumber($month['day']) }}/{{ \App\Helpers\Helpers::checkNumber($month['month']) }}/{{ $month['year'] }}</a>
+                            <a href="{{ route('page.cope.show.day', ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']]) }}">Ngày {{ \App\Helpers\Helpers::checkNumber($month['day']) }}
+                                /{{ \App\Helpers\Helpers::checkNumber($month['month']) }}/{{ $month['year'] }}</a>
                         @endif
                     @endforeach
                 @endforeach
@@ -147,11 +148,12 @@
         <article class="card month-day-list bad-list">
             <span class="section-label">NGÀY HẮC ĐẠO</span>
             <h2>Ngày xấu trong tháng {{ $monthButton['month'] }} năm {{ $monthButton['year'] }}</h2>
-            <div id="badDays" class="date-link-grid">
+            <div id="pre_badDays" class="date-link-grid">
                 @foreach($months as $values)
                     @foreach($values as $month)
                         @if(!empty($month['id']) && !$month['isDay'])
-                            <a href="{{ route('page.cope.show.day', ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']]) }}">Ngày {{ \App\Helpers\Helpers::checkNumber($month['day']) }}/{{ \App\Helpers\Helpers::checkNumber($month['month']) }}/{{ $month['year'] }}</a>
+                            <a href="{{ route('page.cope.show.day', ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']]) }}">Ngày {{ \App\Helpers\Helpers::checkNumber($month['day']) }}
+                                /{{ \App\Helpers\Helpers::checkNumber($month['month']) }}/{{ $month['year'] }}</a>
                         @endif
                     @endforeach
                 @endforeach
@@ -174,7 +176,9 @@
                         @endphp
                         <div class="detail-row detail-row-custom">
                             <div class="detail-content">
-                                {{ \App\Helpers\Helpers::checkNumber($month['lunarDay']) }}/{{ \App\Helpers\Helpers::checkNumber($month['lunarMonth']) }} - Ngày <strong>{{ !empty($dayKhongMinh[0]) ? $dayKhongMinh[0] : '' }}</strong>: {{ !empty($dayKhongMinh[1]) ? $dayKhongMinh[1] : '' }}
+                                {{ \App\Helpers\Helpers::checkNumber($month['lunarDay']) }}
+                                /{{ \App\Helpers\Helpers::checkNumber($month['lunarMonth']) }} - Ngày
+                                <strong>{{ !empty($dayKhongMinh[0]) ? $dayKhongMinh[0] : '' }}</strong>: {{ !empty($dayKhongMinh[1]) ? $dayKhongMinh[1] : '' }}
                             </div>
                         </div>
                     @endif
@@ -193,7 +197,8 @@
             <div class="detail-table">
                 @foreach($data['historical_events'] as $event)
                     <div class="detail-row">
-                        <h3>{{ \App\Helpers\Helpers::checkNumber($event['day']) }}/{{ \App\Helpers\Helpers::checkNumber($event['month']) }}/{{ $event['year'] }}</h3>
+                        <h3>{{ \App\Helpers\Helpers::checkNumber($event['day']) }}
+                            /{{ \App\Helpers\Helpers::checkNumber($event['month']) }}/{{ $event['year'] }}</h3>
                         <div class="detail-content">
                             {!! $event['value'] !!}
                         </div>
@@ -205,7 +210,7 @@
     <section class="section-block month-information">
         <article class="card month-seo">
             <span class="section-label">THÔNG TIN TRONG THÁNG</span>
-            <h2 id="seoMonthTitle">Tổng quan lịch âm tháng 9 năm 2026</h2>
+            <h2 id="pre_seoMonthTitle">Tổng quan lịch âm tháng 9 năm 2026</h2>
             <p>
                 Lịch tháng giúp đối chiếu ngày dương với ngày âm, theo dõi Can Chi
                 và lựa chọn thời điểm phù hợp cho sinh hoạt gia đình. Khi xem ngày,
@@ -228,20 +233,49 @@
         <aside class="card month-events">
             <span class="section-label">NGÀY LỄ · SỰ KIỆN</span>
             <h2>Dấu mốc trong tháng</h2>
-            <ul id="monthEvents"></ul>
-            <a id="yearOverviewLink" href="lich-nam.html?year=2026"
-            >Xem toàn bộ lịch năm →</a
-            >
+            <ul id="pre_monthEvents">
+                @php
+                    $dem = 0;
+                    $histories_important = dataKey::HISTORIES_IMPORTANT[(int)$data['month']];
+                @endphp
+                @foreach($data['historical_events'] as $event)
+                    @php $evDay = \App\Helpers\Helpers::checkNumber($event['day']).'/'.\App\Helpers\Helpers::checkNumber($event['month']).'/'.\App\Helpers\Helpers::checkNumber($event['year']) @endphp
+                    @if(in_array($evDay, $histories_important))
+                        <li>
+                            <time>{{ \App\Helpers\Helpers::checkNumber($event['day']).'/'.\App\Helpers\Helpers::checkNumber($event['month']) }}</time>
+                            <span class="text-event"><b>{{ strip_tags($event['value']) }}</b></span>
+                        </li>
+                        @php $dem ++; @endphp
+                        @if($dem >= 3) @break @endif
+                    @endif
+                @endforeach
+            </ul>
+            <a id="pre_yearOverviewLink" href="{{ route('page.cope.show.year', ['year' => $data['year']]) }}"
+               title="Xem lịch năm {{ $data['year'] }}">
+                Xem toàn bộ lịch năm →
+            </a>
         </aside>
     </section>
+    <article class="card seo-analysis" aria-labelledby="convert-seo-title">
+        <div class="cms-content">
+            <span class="section-label">KIẾN THỨC</span>
+
+            <p class="cms-links">
+                <b>Tra cứu tiếp:</b>
+                <a href="{{ route('page.cope.show.day', ['day' => date('d'), 'month' => date('m'), 'year' => date('Y')]) }}" title="Âm lịch hôm nay">Âm lịch hôm nay</a> ·
+                <a href="{{ route('page.cope.show.year', ['year' => date('Y')]) }}" title="Lịch âm năm {{ date('Y') }}">Lịch âm năm {{ date('Y') }}</a> ·
+                <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi ngày âm dương</a>
+            </p>
+        </div>
+    </article>
 @endsection
 
 @section('scripts')
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
             const toolbar = document.querySelector('.month-toolbar');
-            const monthSelect = document.getElementById('monthSelect');
-            const yearSelect = document.getElementById('yearSelect');
+            const monthSelect = document.getElementById('pre_monthSelect');
+            const yearSelect = document.getElementById('pre_yearSelect');
 
             if (!toolbar || !monthSelect || !yearSelect) {
                 return;

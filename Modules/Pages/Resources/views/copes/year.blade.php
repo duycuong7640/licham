@@ -29,7 +29,7 @@
             @endif
             <label for="yearSelect">
                 Chọn năm
-                <select id="yearSelect">
+                <select id="pre_yearSelect">
                     @for($y = 1900; $y <= 2050; $y++)
                         <option value="{{ $y }}" {{ $y == $year ? 'selected' : '' }}>
                             {{ $y }}
@@ -59,7 +59,7 @@
         <div class="year-section-head">
             <div>
                 <span class="section-label">TỔNG QUAN 12 THÁNG</span>
-                <h2 id="year-calendar-title">Lịch cả năm</h2>
+                <h2 id="pre_year-calendar-title">Lịch cả năm</h2>
             </div>
             <div class="legend">
                 <span><i></i>Ngày tốt</span>
@@ -98,7 +98,7 @@
                                     $dayOffices = !empty($day['options']['DAY_OFFICER']) ? \App\Helpers\Helpers::getCopeValueByOption2($day['options']['DAY_OFFICER'], 'DAY_OFFICER') : '';
                                     $montViecnenlam = $dayOffices ? explode('. ', \App\Helpers\Helpers::getContentInBrackets($dayOffices)) : [];
                                 @endphp
-                                <a href="" class="{{ $isDay }} {{ $today }}"
+                                <a href="{{ route('page.cope.show.day', ['day' => $day['solar_day'], 'month' => $day['solar_month'], 'year' => $day['solar_year']]) }}" class="{{ $isDay }} {{ $today }}"
                                    aria-label="Ngày {{ $day['solar_day'] }} tháng {{ $day['solar_month'] }}, âm lịch {{ $day['lunar_day'] }} tháng {{ $day['lunar_month'] }}">
                                     <strong>{{ $day['solar_day'] }}</strong>
                                     <small>{{ $day['lunar_day'] }}</small>
@@ -134,7 +134,7 @@
         <article class="card month-day-list good-list">
             <span class="section-label">LỊCH ÂM NĂM KHÁC</span>
             <h2>Xem lịch âm các năm khác</h2>
-            <div id="goodDays" class="date-link-grid">
+            <div id="pre_goodDays" class="date-link-grid">
                 @php
                     $fpYear = $year - 9 < 1900 ? 1900 : $year - 9;
                     $fnYear = $year + 10 > 2050 ? 2050 : $year + 10;
@@ -183,33 +183,17 @@
             @endif
         </article>
     </section>
-    <section
-        class="card year-events section-block"
-        aria-labelledby="year-events-title"
-    >
-        <div class="year-section-head">
-            <div>
-                <span class="section-label">TRA CỨU THEO THÁNG</span>
-                <h2 id="year-events-title">Danh sách sự kiện theo tháng</h2>
-            </div>
-            <p>Phân biệt ngày âm và ngày dương để dễ đối chiếu.</p>
+    <article class="card seo-analysis" aria-labelledby="convert-seo-title">
+        <div class="cms-content">
+            <span class="section-label">TÌM HIỂU LỊCH NĂM</span>
+
+            <p class="cms-links">
+                <b>Tra cứu tiếp:</b>
+                <a href="{{ route('page.cope.show.day', ['day' => date('d'), 'month' => date('m'), 'year' => date('Y')]) }}" title="Âm lịch hôm nay">Âm lịch hôm nay</a> ·
+                <a href="{{ route('page.cope.show.month', ['month' => date('m'), 'year' => date('Y')]) }}" title="Lịch âm tháng {{ date('m') }}">Lịch âm tháng {{ date('m') }}</a> ·
+                <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi ngày âm dương</a>
+            </p>
         </div>
-        <div id="yearEvents" class="year-event-grid"></div>
-    </section>
-    <article class="card year-seo section-block">
-        <span class="section-label">TÌM HIỂU LỊCH NĂM</span>
-        <h2 id="yearSeoTitle">Lịch âm năm 2026 và cách tra cứu</h2>
-        <p>
-            Trang lịch năm giúp người dùng quan sát nhanh toàn bộ 12 tháng, so
-            sánh vị trí các ngày âm và đi sâu vào từng tháng khi cần. Mỗi ngày có
-            liên kết tới trang thông tin chi tiết để xem Can Chi, giờ hoàng đạo và
-            dữ liệu xuất hành.
-        </p>
-        <p>
-            Khi chọn một năm khác, toàn bộ 12 bảng tháng sẽ được cập nhật đồng
-            thời. Dữ liệu ngày lễ và Can Chi trong bản demo sẽ được thay thế bằng
-            nội dung do API và CMS cung cấp.
-        </p>
     </article>
 @endsection
 

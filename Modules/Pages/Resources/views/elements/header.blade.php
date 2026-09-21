@@ -1,7 +1,7 @@
 {!! !empty($configData) ? \App\Helpers\Helpers::renderCode($configData, settingKey::CODE_BODY) : '' !!}
 <header class="site-header">
     <div class="header-main">
-        <a class="logo" href="index.html">
+        <a class="logo" href="{{ route('page.home') }}" title="Logo">
           <span class="logo-mark" aria-hidden="true">
             <svg viewBox="0 0 24 24" focusable="false">
               <rect x="3" y="4.5" width="18" height="16" rx="2.5"></rect>

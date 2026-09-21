@@ -3,8 +3,6 @@
 namespace App\Helpers;
 
 use Carbon\Carbon;
-use DonatelloZa\RakePlus\RakePlus;
-use DonatelloZa\RakePlus\StopwordProviders\StopwordsArray;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 

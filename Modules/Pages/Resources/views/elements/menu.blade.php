@@ -31,6 +31,6 @@
             </div>
         </div>
     </div>
-    <a class="nav-link btn-loading" href="doi-ngay.html">Đổi ngày âm dương</a>
-    <a class="nav-link btn-loading" href="bai-viet.html">Bài viết</a>
+    <a class="nav-link btn-loading" href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}">Đổi ngày âm dương</a>
+    <a class="nav-link btn-loading" href="{{ route('page.cate.index', ['slug' => 'bai-viet']) }}">Bài viết</a>
 </nav>

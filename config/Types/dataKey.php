@@ -15,6 +15,124 @@ if (!class_exists('dataKey')) {
         public const COPE_LUNAR = 'COPE_LUNAR';
         public const CALENDARGOOD = 'CALENDARGOOD_';
 
+        public const HISTORIES_IMPORTANT = [
+            1 => [
+                '02/01/1963', // Chiến thắng Ấp Bắc
+                '06/01/1946', // Tổng tuyển cử đầu tiên
+                '07/01/1979', // Giải phóng Phnom Penh khỏi chế độ Khmer Đỏ
+                '19/01/1974', // Hải chiến Hoàng Sa
+                '27/01/1973', // Ký Hiệp định Paris
+                '30/01/1968', // Bắt đầu Tổng tiến công Tết Mậu Thân
+            ],
+
+            2 => [
+                '01/02/1961', // Thành lập Thông tấn xã Giải phóng
+                '01/02/1962', // Đài Phát thanh Giải phóng bắt đầu hoạt động
+                '03/02/1930', // Thành lập Đảng Cộng sản Việt Nam
+                '15/02/1961', // Thống nhất các lực lượng thành Quân Giải phóng miền Nam
+                '17/02/1979', // Chiến tranh bảo vệ biên giới phía Bắc
+                '26/02/1973', // Hội nghị quốc tế về Việt Nam tại Paris
+            ],
+
+            3 => [
+                '04/03/1975', // Mở màn Chiến dịch Tây Nguyên
+                '11/03/1975', // Giải phóng Buôn Ma Thuột
+                '13/03/1954', // Mở màn Chiến dịch Điện Biên Phủ
+                '14/03/1988', // Sự kiện Gạc Ma
+                '18/03/1979', // Kết thúc chiến tranh biên giới Việt–Trung năm 1979
+                '26/03/1931', // Thành lập Đoàn Thanh niên Cộng sản
+                '26/03/1975', // Giải phóng Huế
+            ],
+
+            4 => [
+                '09/04/1975', // Mở màn trận Xuân Lộc
+                '14/04/1975', // Chiến dịch giải phóng các đảo Trường Sa
+                '15/04/1992', // Quốc hội thông qua Hiến pháp năm 1992
+                '25/04/1976', // Tổng tuyển cử bầu Quốc hội chung của cả nước
+                '28/04/1956', // Quân Pháp rút khỏi miền Nam Việt Nam
+                '30/04/1975', // Giải phóng miền Nam, thống nhất đất nước
+            ],
+
+            5 => [
+                '07/05/1954', // Chiến thắng Điện Biên Phủ
+                '08/05/1954', // Khai mạc Hội nghị Genève về Đông Dương
+                '10/05/1941', // Hội nghị Trung ương 8 tại Pác Bó
+                '15/05/1945', // Thành lập Việt Nam Giải phóng quân
+                '15/05/1975', // Mít tinh mừng đất nước thống nhất
+                '19/05/1890', // Ngày sinh Chủ tịch Hồ Chí Minh
+                '19/05/1941', // Thành lập Mặt trận Việt Minh
+            ],
+
+            6 => [
+                '04/06/1945', // Thành lập Khu giải phóng Việt Bắc
+                '05/06/1911', // Nguyễn Tất Thành ra đi tìm đường cứu nước
+                '11/06/1948', // Chủ tịch Hồ Chí Minh phát động thi đua ái quốc
+                '11/06/1963', // Hòa thượng Thích Quảng Đức tự thiêu
+                '12/06/1969', // Thành lập Chính phủ Cách mạng lâm thời miền Nam
+                '16/06/1919', // Nguyễn Ái Quốc gửi Bản yêu sách tại Versailles
+                '21/06/1925', // Báo Thanh Niên ra số đầu tiên
+            ],
+
+            7 => [
+                '03/07/1980', // Ký hiệp định hợp tác khai thác dầu khí Việt–Xô
+                '20/07/1954', // Ký Hiệp định Genève về Đông Dương
+                '21/07/1786', // Nguyễn Huệ tiến ra Bắc Hà
+                '22/07/1954', // Lệnh ngừng bắn trên toàn chiến trường Việt Nam
+                '27/07/1947', // Ngày Thương binh – Liệt sĩ đầu tiên
+                '28/07/1929', // Thành lập Công đoàn Việt Nam
+                '28/07/1995', // Việt Nam gia nhập ASEAN
+            ],
+
+            8 => [
+                '01/08/1941', // Báo Việt Nam Độc lập ra số đầu tiên
+                '04/08/1925', // Bắt đầu cuộc bãi công Ba Son
+                '13/08/1945', // Ban bố Quân lệnh số 1, phát động Tổng khởi nghĩa
+                '19/08/1945', // Cách mạng Tháng Tám thành công tại Hà Nội
+                '28/08/1941', // Nguyễn Hữu Tiến, người vẽ cờ đỏ sao vàng, bị xử bắn
+                '29/08/1975', // Khánh thành Lăng Chủ tịch Hồ Chí Minh
+            ],
+
+            9 => [
+                '02/09/1945', // Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập
+                '02/09/1969', // Chủ tịch Hồ Chí Minh qua đời
+                '13/09/1913', // Ngày sinh Giáo sư, Viện sĩ Trần Đại Nghĩa
+                '15/09/1973', // Fidel Castro thăm vùng giải phóng miền Nam
+                '23/09/1945', // Nam Bộ kháng chiến
+                '27/09/1940', // Khởi nghĩa Bắc Sơn
+            ],
+
+            10 => [
+                '04/10/2013', // Đại tướng Võ Nguyên Giáp từ trần
+                '09/10/1921', // Thành lập Hội Liên hiệp Thuộc địa
+                '10/10/1954', // Giải phóng Thủ đô Hà Nội
+                '10/10/2010', // Đại lễ 1.000 năm Thăng Long – Hà Nội
+                '14/10/1930', // Cuộc đấu tranh của nhân dân Tiền Hải
+                '23/10/1896', // Thành lập Trường Quốc học Huế
+                '23/10/1961', // Thành lập Lữ đoàn Hải quân 125
+            ],
+
+            11 => [
+                '01/11/1968', // Mỹ chấm dứt ném bom miền Bắc lần thứ nhất
+                '04/11/1981', // Hội nghị thống nhất Phật giáo Việt Nam
+                '15/11/1975', // Hội nghị Hiệp thương chính trị thống nhất đất nước
+                '18/11/1930', // Thành lập Mặt trận Dân tộc thống nhất Việt Nam
+                '20/11/1982', // Ngày Nhà giáo Việt Nam đầu tiên
+                '23/11/1940', // Khởi nghĩa Nam Kỳ
+                '29/11/1969', // Quyết định giữ gìn thi hài và xây Lăng Chủ tịch Hồ Chí Minh
+            ],
+
+            12 => [
+                '04/12/1976', // Khai thông tuyến đường sắt Thống Nhất
+                '13/12/1974', // Mở màn Chiến dịch Đường 14 – Phước Long
+                '15/12/1986', // Khai mạc Đại hội VI, mở đầu công cuộc Đổi mới
+                '18/12/1972', // Bắt đầu chiến dịch Điện Biên Phủ trên không
+                '19/12/1946', // Toàn quốc kháng chiến
+                '20/12/1960', // Thành lập Mặt trận Dân tộc Giải phóng miền Nam
+                '22/12/1944', // Thành lập Đội Việt Nam Tuyên truyền Giải phóng quân
+                '29/12/1972', // Kết thúc đợt tập kích chiến lược B-52
+            ],
+        ];
+
         public const CUNG_HOANG_DAO = [
             'bach-duong' => [
                 'name' => 'Bạch Dương',
