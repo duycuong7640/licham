@@ -22,15 +22,14 @@ class CopesController extends Controller
         try {
             if (empty($year) || $year < 1900 || $year > 2050) return response()->view('errors.404', [], 404);
 
-//            $cacheKey = 'cope_year_html_' . md5($slug . '-' . $year);
-//            $ttl = now()->addMinutes(15);
-//            if (Cache::has($cacheKey)) {
-//                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
-//                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
-//                    ->header('Cache-Control', \dataKey::CACHE);
-//            }
-//
-//            $data['cache'] = 1;
+            $cacheKey = 'cope_year_html_' . $year;
+            $ttl = now()->addMinutes(10);
+            if (Cache::has($cacheKey)) {
+                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
+                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+                    ->header('Cache-Control', \dataKey::CACHE);
+            }
+
             $data['year'] = $year;
             $lists = RequestHelpers::request($request, \dataApiRoutes::COPE_YEAR, str_replace(':year', $year, \dataApiRoutes::COPE_YEAR), [], 'get');
             if (!count($lists['lists'])) {
@@ -77,18 +76,19 @@ class CopesController extends Controller
             $data['show'] = 1;
             $data['yearName'] = $yearName;
             $data['isPage'] = 'year';
+            $data['hyperlinks'] = ['Tổng quan', 'Lịch âm năm khác', 'Ngày lễ & kỷ niệm'];
 
             // view
-            return view('pages::copes.year')->with('data', $data);
-//            $html = view('pages::copes.year')->with('data', $data)->render();
-//            $html = Helpers::genCsrfToken($html, '1');
-//            $response = response($html)
-//                ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
-//            $response = Helpers::optimize_html($response);
-//            Cache::put($cacheKey, $response->getContent(), $ttl);
-//
-//            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
-//                ->header('Cache-Control', \dataKey::CACHE);
+            // return view('pages::copes.year')->with('data', $data);
+            $html = view('pages::copes.year')->with('data', $data)->render();
+            $html = Helpers::genCsrfToken($html, '1');
+            $response = response($html)
+                ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
+            $response = Helpers::optimize_html($response);
+            Cache::put($cacheKey, $response->getContent(), $ttl);
+
+            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+                ->header('Cache-Control', \dataKey::CACHE);
         } catch (\Exception $e) {
             return response()->view('errors.500', [], 500);
         }
@@ -100,15 +100,14 @@ class CopesController extends Controller
             $month = Helpers::getMonthDates($y, $m);
             if (empty($month['year'])) return response()->view('errors.404', [], 404);
 
-//            $cacheKey = 'cope_month_html_' . md5($slug . '-' . $month['month'] . '-' . $month['year']);
-//            $ttl = now()->addMinutes(15);
-//            if (Cache::has($cacheKey)) {
-//                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
-//                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
-//                    ->header('Cache-Control', \dataKey::CACHE);
-//            }
+            $cacheKey = 'cope_month_html_' . $m . '_' . $y;
+            $ttl = now()->addMinutes(10);
+            if (Cache::has($cacheKey)) {
+                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
+                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+                    ->header('Cache-Control', \dataKey::CACHE);
+            }
 
-//            $data['cache'] = 1;
             $now = Carbon::now('Asia/Ho_Chi_Minh');
             $day = $now->format('d-m-Y');
             $data['mData'] = $month;
@@ -154,18 +153,19 @@ class CopesController extends Controller
             $data['goodDayCount'] = $goodDayCount;
             $data['badDayCount'] = $badDayCount;
             $data['isPage'] = 'month';
+            $data['hyperlinks'] = ['Lịch tháng', 'Ngày hoàng đạo', 'Ngày xuất hành', 'Sự kiện'];
 
             // view
-            return view('pages::copes.month')->with('data', $data);
-//            $html = view('pages::copes.month')->with('data', $data)->render();
-//            $html = Helpers::genCsrfToken($html, '1');
-//            $response = response($html)
-//                ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
-//            $response = Helpers::optimize_html($response);
-//            Cache::put($cacheKey, $response->getContent(), $ttl);
-//
-//            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
-//                ->header('Cache-Control', \dataKey::CACHE);
+            // return view('pages::copes.month')->with('data', $data);
+            $html = view('pages::copes.month')->with('data', $data)->render();
+            $html = Helpers::genCsrfToken($html, '1');
+            $response = response($html)
+                ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
+            $response = Helpers::optimize_html($response);
+            Cache::put($cacheKey, $response->getContent(), $ttl);
+
+            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+                ->header('Cache-Control', \dataKey::CACHE);
         } catch (\Exception $e) {
             return response()->view('errors.500', [], 500);
         }
@@ -177,19 +177,13 @@ class CopesController extends Controller
             if (empty((int)$d) && empty((int)$m) && empty((int)$y)) return response()->view('errors.404', [], 404);
             $day = $d . '-' . $m . '-' . $y;
 
-//            $cacheKey = 'cope_day_html_' . md5($path . '-' . $day);
-//            $ttl = now()->addMinutes(15);
-//
-//            if (Cache::has($cacheKey)) {
-//                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
-//                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
-//                    ->header('Cache-Control', \dataKey::CACHE);
-//            }
-//
-//            $data['cache'] = 1;
-//            $data['category'] = Helpers::findBySlug($find);
-//            if (empty($data['category']['title'])) return response()->view('errors.404', [], 404);
-//            $data['categoryParent'] = Helpers::findByParentKey(!empty($data['category']['parent']) ? $data['category']['parent'] : $data['category']['type']);
+            $cacheKey = 'cope_day_html_' . $day;
+            $ttl = now()->addMinutes(10);
+            if (Cache::has($cacheKey)) {
+                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
+                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+                    ->header('Cache-Control', \dataKey::CACHE);
+            }
 
             $data['day'] = RequestHelpers::request($request, \dataApiRoutes::COPE_DETAIL, str_replace(':day', $day, \dataApiRoutes::COPE_DETAIL), [], 'get');
             if (empty($data['day']['id'])) {
@@ -232,18 +226,16 @@ class CopesController extends Controller
             $data['shareMXH'] = Helpers::renderShareMXH('pro_show', $SEO);
             $data['show'] = 1;
             $data['isPage'] = 'day';
+            $data['hyperlinks'] = ['Lịch âm hôm nay', 'Giờ hoàng đạo', 'Xuất hành', 'Kiến thức'];
 
-            return view('pages::copes.day')->with('data', $data);
-//            $html = view('pages::copes.day')->with('data', $data)->render();
-//
-//            $html = Helpers::genCsrfToken($html, '1');
-//            $response = response($html)
-//                ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
-//            $response = Helpers::optimize_html($response);
-//            Cache::put($cacheKey, $response->getContent(), $ttl);
-//
-//            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
-//                ->header('Cache-Control', \dataKey::CACHE);
+            // return view('pages::copes.day')->with('data', $data);
+            $html = view('pages::copes.day')->with('data', $data)->render();
+            $html = Helpers::genCsrfToken($html, '1');
+            $response = response($html)->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
+            $response = Helpers::optimize_html($response);
+            Cache::put($cacheKey, $response->getContent(), $ttl);
+            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+                ->header('Cache-Control', \dataKey::CACHE);
         } catch (\Exception $e) {
             return response()->view('errors.500', [], 500);
         }

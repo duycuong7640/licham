@@ -13,7 +13,7 @@
             </svg>
           </span>
             <span class="logo-copy">
-            <b>Lịch An Nhiên</b>
+            <b>Lịch Âm Tốt</b>
             <small>Lịch Việt mỗi ngày</small>
           </span>
         </a>
@@ -32,11 +32,13 @@
     <div class="subnav">
         <div class="subnav-inner">
             <span>Âm lịch Việt Nam · GMT+7</span>
-            <div class="subnav-links">
-                <a href="#detail">Giờ hoàng đạo</a>
-                <a href="#detail">Hướng xuất hành</a>
-                <a href="#knowledge">Kiến thức lịch Việt</a>
-            </div>
+            @if(!empty($data['hyperlinks']))
+                <div class="subnav-links">
+                    @foreach($data['hyperlinks'] as $row)
+                        <a href="#{{ \App\Helpers\Helpers::renderSlug($row) }}">{{ $row }}</a>
+                    @endforeach
+                </div>
+            @endif
         </div>
     </div>
 </header>

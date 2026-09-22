@@ -56,7 +56,7 @@
         </div>
     </div>
     <section class="year-calendar-section" aria-labelledby="year-calendar-title">
-        <div class="year-section-head">
+        <div class="year-section-head" id="tong-quan">
             <div>
                 <span class="section-label">TỔNG QUAN 12 THÁNG</span>
                 <h2 id="pre_year-calendar-title">Lịch cả năm</h2>
@@ -131,7 +131,7 @@
         </div>
     </section>
     <section class="section-block">
-        <article class="card month-day-list good-list">
+        <article class="card month-day-list good-list" id="lich-am-nam-khac">
             <span class="section-label">LỊCH ÂM NĂM KHÁC</span>
             <h2>Xem lịch âm các năm khác</h2>
             <div id="pre_goodDays" class="date-link-grid">
@@ -145,7 +145,7 @@
             </div>
         </article>
     </section>
-    <section class="section-block holiday-grid" aria-label="Ngày lễ nổi bật">
+    <section class="section-block holiday-grid" aria-label="Ngày lễ nổi bật" id="ngay-le-ky-niem">
         <article class="card holiday-card">
             <span class="section-label">DƯƠNG LỊCH</span>
             <h2>Ngày lễ và kỷ niệm</h2>
@@ -188,7 +188,7 @@
             <span class="section-label">TÌM HIỂU LỊCH NĂM</span>
 
             <p class="cms-links">
-                <b>Tra cứu tiếp:</b>
+                <b>Tra cứu tiếp: </b>
                 <a href="{{ route('page.cope.show.day', ['day' => date('d'), 'month' => date('m'), 'year' => date('Y')]) }}" title="Âm lịch hôm nay">Âm lịch hôm nay</a> ·
                 <a href="{{ route('page.cope.show.month', ['month' => date('m'), 'year' => date('Y')]) }}" title="Lịch âm tháng {{ date('m') }}">Lịch âm tháng {{ date('m') }}</a> ·
                 <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi ngày âm dương</a>

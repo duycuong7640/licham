@@ -12,9 +12,9 @@
 
     <nav class="topic-filter" aria-label="Lọc bài viết theo chủ đề">
         <a class="active" href="{{ route('page.cate.index', ['slug' => 'bai-viet']) }}" data-topic="all">Tất cả</a>
-        @foreach($data['hashTags'] as $row)
+        @foreach($hashTags as $row)
             <a href="{{ route('page.post.tags', ['slug' => $row['slug']]) }}"
-               data-topic="{{ $row['slug'] }}"># {{ $row['title'] }}</a>
+               data-topic="{{ $row['slug'] }}" title="{{ $row['title'] }}"># {{ $row['title'] }}</a>
         @endforeach
     </nav>
 
@@ -28,11 +28,11 @@
         <div class="article-grid">
             @php
                 $hashtags = [];
-                foreach ($data['hashTags'] as $row) {
+                foreach ($hashTags as $row) {
                     $hashtags[$row['id']] = $row;
                 }
             @endphp
-            @foreach($data['lists'] as $row)
+            @foreach($data['lists']['data'] as $row)
                 @php
                     $hashtagId = !empty($row['post_hashtags'][0]['hashtag_id']) ? $row['post_hashtags'][0]['hashtag_id'] : '';
                     $hashtag = !empty($hashtags[$hashtagId]) ? $hashtags[$hashtagId] : [];

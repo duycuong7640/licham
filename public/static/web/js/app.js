@@ -1051,3 +1051,27 @@ function hideGlobalLoading() {
 
     loading.style.display = 'none';
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    if ('loading' in HTMLImageElement.prototype) {
+        const images = document.querySelectorAll('img.lazy');
+        images.forEach(img => {
+            if (img.dataset.src) {
+                img.src = img.dataset.src;
+                img.classList.remove('lazy');
+            }
+        });
+    } else {
+        let lazyImageObserver = new IntersectionObserver(function (entries, observer) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    let img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.remove("lazy");
+                    lazyImageObserver.unobserve(img);
+                }
+            });
+        });
+        document.querySelectorAll('.lazy').forEach(img => lazyImageObserver.observe(img));
+    }
+});

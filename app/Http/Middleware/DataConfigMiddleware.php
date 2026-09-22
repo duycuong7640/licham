@@ -22,16 +22,15 @@ class DataConfigMiddleware
         try {
             // Load api
             $config = RequestHelpers::request($request, \dataApiRoutes::CONFIG, \dataApiRoutes::CONFIG, ['domain' => env('DOMAIN_RUN')], 'get');
-            $calendarMonth = RequestHelpers::request($request, \dataApiRoutes::COPE_CALENDAR_MONTH, str_replace(':month', date('m'), str_replace(':year', date('Y'), \dataApiRoutes::COPE_CALENDAR_MONTH)), [], 'get');
-            $topRankPost = RequestHelpers::request($request, \dataApiRoutes::POSTS, \dataApiRoutes::POSTS, ['isPage' => 'rand', 'limit' => 10, 'keySlug' => 'top-rank-post', 'DOMAIN_RUN' => env('DOMAIN_RUN'), 'isRand' => '1', 'page' => '1'], 'post');
+            $hashTags = RequestHelpers::request($request, \dataApiRoutes::HASHTAGS, \dataApiRoutes::HASHTAGS, ['isPage' => 'lists', 'keySlug' => 'lich-am', 'limit' => 12, 'orderField' => 'created_at', 'orderType' => 'ASC', 'type' => 'CALENDARLUNAR', 'typeCategory' => 'LICH_AM', 'page' => 1], 'get');
 
             // Set View
             View::share('configData', $config);
-            View::share('calendarMonth', $calendarMonth);
-            View::share('topRankPost', $topRankPost);
+            View::share('hashTags', $hashTags);
             View::share('menu', \dataMenu::menus());
 
             $request->attributes->add(['configData' => $config]);
+            $request->attributes->add(['hashTags' => $hashTags]);
         } catch (\Exception $e) {
         }
         return $next($request);

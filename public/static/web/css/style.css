@@ -196,6 +196,8 @@ button {
 .nav-trigger span {
     margin-top: -3px;
     font-size: 14px;
+    width: 16px;
+    height: 16px;
     transition: transform 0.16s ease;
 }
 .main-nav > .nav-link.active,
@@ -437,6 +439,15 @@ button {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
+}
+.related-topics-links small {
+    padding: 5px 9px;
+    border: 1px solid #d8e2dc;
+    border-radius: 4px;
+    background: #fff;
+    color: #536159;
+    font-size: 14px;
+    line-height: 1.2;
 }
 .related-topics-links a {
     padding: 5px 9px;
@@ -2238,6 +2249,7 @@ button {
     color: #006e33;
     text-decoration: underline;
 }
+.article-toc a.toc-child{padding-left: 15px;}
 .article-body {
     max-width: 760px;
 }
@@ -2794,7 +2806,7 @@ button {
     .subnav-links {
         display: flex;
         width: 100%;
-        gap: 22px;
+        gap: 15px;
         overflow-x: auto;
         scrollbar-width: none;
     }

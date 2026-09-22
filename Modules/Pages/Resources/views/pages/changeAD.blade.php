@@ -29,7 +29,7 @@
             </div>
             <form method="post" action="" id="pre_convertForm">
                 @csrf()
-                <div class="field">
+                <div class="field" id="chuyen-doi">
                     <label>Hình thức chuyển đổi</label>
                     <div class="text-changeAd">Dương lịch sang âm lịch</div>
                 </div>
@@ -159,7 +159,7 @@
         $rowDay = $data['day'];
         $todayDate = $data['day']['day'];
     @endphp
-    <section class="section-block card calendar-card">
+    <section class="section-block card calendar-card" id="lich-doi-chieu">
         <div class="section-head">
             <div>
                 <span class="section-label">ĐỐI CHIẾU THEO THÁNG</span>
@@ -239,7 +239,7 @@
         </div>
     </section>
 
-    <section class="section-block convert-guide-grid">
+    <section class="section-block convert-guide-grid" id="huong-dan">
         <article class="card convert-guide">
             <span class="section-label">HƯỚNG DẪN TRA CỨU</span>
             <h2>Cách đổi ngày dương sang âm và ngược lại</h2>
@@ -302,7 +302,7 @@
             <span class="section-label">KIẾN THỨC ÂM DƯƠNG LỊCH</span>
 
             <p class="cms-links">
-                <b>Tra cứu tiếp:</b>
+                <b>Tra cứu tiếp: </b>
                 <a href="{{ route('page.cope.show.day', ['day' => date('d'), 'month' => date('m'), 'year' => date('Y')]) }}" title="Âm lịch hôm nay">Âm lịch hôm nay</a> ·
                 <a href="{{ route('page.cope.show.month', ['month' => date('m'), 'year' => date('Y')]) }}" title="Lịch âm tháng {{ date('m') }}">Lịch âm tháng {{ date('m') }}</a> ·
                 <a href="{{ route('page.cope.show.year', ['year' => date('Y')]) }}" title="Lịch âm năm {{ date('Y') }}">Lịch âm năm {{ date('Y') }}</a>

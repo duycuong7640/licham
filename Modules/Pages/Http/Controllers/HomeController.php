@@ -22,6 +22,14 @@ class HomeController extends Controller
     public function index(Request $request): object
     {
         try {
+            $cacheKey = 'cate_home_html';
+            $ttl = now()->addMinutes(10);
+            if (Cache::has($cacheKey) && !$request->has('reset')) {
+                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
+                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+                    ->header('Cache-Control', \dataKey::CACHE);
+            }
+
             $now = Carbon::now('Asia/Ho_Chi_Minh');
             $day = $now->format('d-m-Y');
             $month = (int)$now->format('m');
@@ -46,11 +54,20 @@ class HomeController extends Controller
             $data['page'] = 'home';
             $data['month'] = $month;
             $data['year'] = $year;
+            $data['isPage'] = 'home';
             $data['mData'] = Helpers::getMonthDates($year, $month);
             $data['months'] = RequestHelpers::request($request, \dataApiRoutes::COPE_MONTH, str_replace(':month', $month, str_replace(':year', $year, \dataApiRoutes::COPE_MONTH)), [], 'get');
             $data['day'] = RequestHelpers::request($request, \dataApiRoutes::COPE_DETAIL, str_replace(':day', $day, \dataApiRoutes::COPE_DETAIL), [], 'get');
+            $data['hyperlinks'] = ['Lịch âm hôm nay', 'Giờ hoàng đạo', 'Xuất hành', 'Kiến thức'];
 
-            return view('pages::index')->with('data', $data);
+            // return view('pages::index')->with('data', $data);
+            $html = view('pages::index')->with('data', $data)->render();
+            $html = Helpers::genCsrfToken($html, '1');
+            $response = response($html)->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
+            $response = Helpers::optimize_html($response);
+            Cache::put($cacheKey, $response->getContent(), $ttl);
+            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+                ->header('Cache-Control', \dataKey::CACHE);
         } catch (\Exception $e) {
             return response()->view('errors.500', [], 500);
         }

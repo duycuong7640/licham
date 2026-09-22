@@ -101,9 +101,10 @@ class PostsController extends Controller
             $data['seo'] = $SEO;
             $data['common'] = Helpers::metaHead($SEO);
             $data['shareMXH'] = Helpers::renderShareMXH('pro_show', $SEO, $config);
+            $data['isPage'] = 'posts';
             $data['show'] = 1;
 
-             return view('pages::posts.show')->with('data', $data);
+            return view('pages::posts.show')->with('data', $data);
 
 //            $html = view('pages::posts.show')->with('data', $data)->render();
 //            $html = Helpers::genCsrfToken($html, '1');

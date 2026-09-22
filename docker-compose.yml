@@ -3,11 +3,11 @@ services:
         build:
             context: .
             dockerfile: ./docker/php8.1/Dockerfile
-        container_name: lichso_web
+        container_name: lichamtot_web
         working_dir: /var/www/html
         volumes:
             - ./:/var/www/html
-            - sitemap_lichso_data:/var/www/html/public/xml
+            - sitemap_lichamtot_data:/var/www/html/public/xml
         restart: always
         mem_limit: 512m
         cpus: 1.0
@@ -15,18 +15,18 @@ services:
             - web_network
             - redis_network
         environment:
-            - APP_NAME=lichso.net
+            - APP_NAME=lichamtot.com
             - APP_ENV=production
             - APP_KEY=base64:AJdZ5yZWPio/N1fjxJ5AilPoLAi3v+uthi3k95stJXg=
             - APP_DEBUG=false
-            - APP_URL=https://lichso.net
-            - SITE_NAME=LICHSO
+            - APP_URL=https://lichamtot.com
+            - SITE_NAME=LICHAMTOT
             - FACE=1
 
             - FIELD=
-            - DOMAIN_LOCAL=lichso
-            - DOMAIN_RUN=lichso.net
-            - THUMBNAIL_NAME=lichso
+            - DOMAIN_LOCAL=lichamtot
+            - DOMAIN_RUN=lichamtot.com
+            - THUMBNAIL_NAME=lichamtot
 
             - LOG_CHANNEL=stack
             - LOG_DEPRECATIONS_CHANNEL=null
@@ -34,7 +34,7 @@ services:
             - LOG_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/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
 
             - API_URL=http://news_cms/api/v1/
-            - IMG_URL=https://thumb.lichso.net/images/
+            - IMG_URL=https://thumb.lichamtot.com/images/
 
             - API_URL2=http://news_sys_tool_crawler:3000/api/
             - API_KEY2=jkkjkneqkjbewjqkbew
@@ -60,7 +60,7 @@ services:
             - REDIS_HOST=redis_app
             - REDIS_PASSWORD=eYVX7EwVmmxDSaewq4124d99MtyKVge8oLd2t
             - REDIS_PORT=6379
-            - REDIS_PREFIX=lichso_
+            - REDIS_PREFIX=lichamtot_
 
             - REDIS_EXPIRE_30D=2592000
             - REDIS_EXPIRE_15D=1296000
@@ -85,22 +85,22 @@ services:
         labels:
             - "traefik.enable=true"
 
-            - "traefik.http.routers.lichso_web.rule=Host(`lichso.net`)"
-            - "traefik.http.routers.lichso_web.priority=10"
-            - "traefik.http.routers.lichso_web.entrypoints=web,websecure"
-            - "traefik.http.routers.lichso_web.service=lichso_web"
+            - "traefik.http.routers.lichamtot_web.rule=Host(`lichamtot.com`)"
+            - "traefik.http.routers.lichamtot_web.priority=10"
+            - "traefik.http.routers.lichamtot_web.entrypoints=web,websecure"
+            - "traefik.http.routers.lichamtot_web.service=lichamtot_web"
 
-            - "traefik.http.routers.lichso_www.rule=Host(`www.lichso.net`)"
-            - "traefik.http.routers.lichso_www.priority=100"
-            - "traefik.http.routers.lichso_www.entrypoints=web,websecure"
-            - "traefik.http.routers.lichso_www.middlewares=lichso_www_redirect"
-            - "traefik.http.routers.lichso_www.service=lichso_web"
+            - "traefik.http.routers.lichamtot_www.rule=Host(`www.lichamtot.com`)"
+            - "traefik.http.routers.lichamtot_www.priority=100"
+            - "traefik.http.routers.lichamtot_www.entrypoints=web,websecure"
+            - "traefik.http.routers.lichamtot_www.middlewares=lichamtot_www_redirect"
+            - "traefik.http.routers.lichamtot_www.service=lichamtot_web"
 
-            - "traefik.http.middlewares.lichso_www_redirect.redirectregex.regex=^https?://www\\.lichso\\.net/(.*)"
-            - "traefik.http.middlewares.lichso_www_redirect.redirectregex.replacement=https://lichso.net/$${1}"
-            - "traefik.http.middlewares.lichso_www_redirect.redirectregex.permanent=true"
+            - "traefik.http.middlewares.lichamtot_www_redirect.redirectregex.regex=^https?://www\\.lichamtot\\.net/(.*)"
+            - "traefik.http.middlewares.lichamtot_www_redirect.redirectregex.replacement=https://lichamtot.com/$${1}"
+            - "traefik.http.middlewares.lichamtot_www_redirect.redirectregex.permanent=true"
 
-            - "traefik.http.services.lichso_web.loadbalancer.server.port=80"
+            - "traefik.http.services.lichamtot_web.loadbalancer.server.port=80"
             - "traefik.docker.network=web_network"
 
 networks:
@@ -110,5 +110,5 @@ networks:
         external: true
 
 volumes:
-    sitemap_lichso_data:
+    sitemap_lichamtot_data:
         external: true

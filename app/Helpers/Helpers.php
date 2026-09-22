@@ -540,17 +540,28 @@ class Helpers
 
         if (empty($toc)) return $html;
 
-        $tocHtml = '<div class="toc-box">';
-        $tocHtml .= '<div class="toc-title">Mục lục</div>';
-        $tocHtml .= '<ul class="toc">';
+        $tocHtml = '<nav class="article-toc">';
+        $tocHtml .= '<strong>Nội dung chính</strong>';
 
+        $count_p = 1;
+        $count_c = 1;
         foreach ($toc as $item) {
             $class = $item['tag'] === 'h3' ? 'toc-child' : 'toc-parent';
             $text = $item['tag'] === 'h3' ? $item['text'] : self::formatTextHeading($item['text']);
-            $tocHtml .= "<li class='{$class}'><a href='#{$item['id']}'>{$text}</a></li>";
+
+            if($item['tag'] !== 'h3') {
+                $tocHtml .= "<a class='{$class}' href='#{$item['id']}'>{$count_p}: {$text}</a>";
+                $count_c = 1;
+            }else{
+                $stt = $count_p - 1;
+                $tocHtml .= "<a class='{$class}' href='#{$item['id']}'>{$stt}.{$count_c}: {$text}</a>";
+            }
+
+            if($item['tag'] !== 'h3') $count_p ++;
+            if($item['tag'] === 'h3') $count_c ++;
         }
 
-        $tocHtml .= '</ul></div>';
+        $tocHtml .= '</nav>';
 
         $fragment = $dom->createDocumentFragment();
         $fragment->appendXML($tocHtml);

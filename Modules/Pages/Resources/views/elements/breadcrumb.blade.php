@@ -41,28 +41,31 @@
         <span>{{ $data['hashTag']['title'] }}</span>
     @endif
 
-    @if(!empty($data['year']))
+    @if(!empty($data['isPage']) && $data['isPage'] == 'day' && !empty($data['day']['id']))
         <span>/</span>
-        @if(!empty($data['isPage']) && $data['isPage'] == 'year')
-            <span>Năm {{ $data['year'] }}</span>
-        @else
-            <a href="{{ route('page.cope.show.year', ['year' => $data['year']]) }}">Năm {{ $data['year'] }}</a>
-        @endif
+{{--        <span>Ngày {{ \App\Helpers\Helpers::checkNumber($data['day']['d']) }}-{{ \App\Helpers\Helpers::checkNumber($data['day']['m']) }}-{{ \App\Helpers\Helpers::checkNumber($data['day']['y']) }}</span>--}}
+        <a href="{{ route('page.cope.show.day', ['day' => \App\Helpers\Helpers::checkNumber($data['day']['d']), 'month' => \App\Helpers\Helpers::checkNumber($data['day']['m']), 'year' => $data['day']['y']]) }}">
+            Ngày {{ \App\Helpers\Helpers::checkNumber($data['day']['d']) }}-{{ \App\Helpers\Helpers::checkNumber($data['day']['m']) }}-{{ \App\Helpers\Helpers::checkNumber($data['day']['y']) }}
+        </a>
     @endif
 
-    @if(!empty($data['mData']))
+    @if(!empty($data['mData']) && !empty($data['isPage']) && $data['isPage'] !== 'home')
         <span>/</span>
-        @if(!empty($data['isPage']) && $data['isPage'] == 'month')
-            <span>Tháng {{ \App\Helpers\Helpers::checkNumber($data['mData']['month']) }}</span>
-        @else
+{{--        @if(!empty($data['isPage']) && $data['isPage'] == 'month')--}}
+{{--            <span>Tháng {{ \App\Helpers\Helpers::checkNumber($data['mData']['month']) }}</span>--}}
+{{--        @else--}}
             <a href="{{ route('page.cope.show.month', ['month' => \App\Helpers\Helpers::checkNumber($data['mData']['month']), 'year' => $data['mData']['year']]) }}">
                 Tháng {{ \App\Helpers\Helpers::checkNumber($data['mData']['month']) }}
             </a>
-        @endif
+{{--        @endif--}}
     @endif
 
-    @if(!empty($data['isPage']) && $data['isPage'] == 'day' && !empty($data['day']['id']))
+    @if(!empty($data['year']) && !empty($data['isPage']) && $data['isPage'] !== 'home')
         <span>/</span>
-        <span>Ngày {{ \App\Helpers\Helpers::checkNumber($data['day']['d']) }}-{{ \App\Helpers\Helpers::checkNumber($data['day']['m']) }}-{{ \App\Helpers\Helpers::checkNumber($data['day']['y']) }}</span>
+{{--        @if(!empty($data['isPage']) && $data['isPage'] == 'year')--}}
+{{--            <span>Năm {{ $data['year'] }}</span>--}}
+{{--        @else--}}
+            <a href="{{ route('page.cope.show.year', ['year' => $data['year']]) }}">Năm {{ $data['year'] }}</a>
+{{--        @endif--}}
     @endif
 </nav>

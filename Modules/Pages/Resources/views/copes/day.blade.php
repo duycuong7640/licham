@@ -20,7 +20,7 @@
         class="reading-summary"
         aria-label="Tóm tắt lịch âm hôm nay"
     >
-        <div class="summary-kicker">
+        <div class="summary-kicker" id="lich-am-hom-nay">
             <b>Lịch âm hôm nay</b>
             <span>Thông tin quan trọng trong ngày</span>
         </div>
@@ -65,11 +65,11 @@
           Chủ đề liên quan
         </span>
         <div class="related-topics-links">
-            <a href="index.html">Xem lịch âm</a>
-            <a href="#daily-calendar">Ngày âm lịch</a>
-            <a href="ngay-tot.html">Xem ngày tốt xấu</a>
-            <a href="lich-thang.html">Lịch âm 2026 hôm nay</a>
-            <a href="#daily-calendar">Âm lịch hôm nay là bao nhiêu</a>
+            <small>Xem lịch âm</small>
+            <small>Ngày âm lịch</small>
+            <small>Xem ngày tốt xấu</small>
+            <small>Lịch âm 2026 hôm nay</small>
+            <small>Âm lịch hôm nay là bao nhiêu</small>
         </div>
     </nav>
     <div class="page-grid">
@@ -352,7 +352,7 @@
                     </div>
                 </div>
             @endforeach
-            <div class="detail-row">
+            <div class="detail-row" id="gio-hoang-dao">
                 <h3>Giờ hoàng đạo</h3>
                 <div class="detail-content">
                     @if(!empty($rowDay['options']['AUSPICIOUS_HOUR']))
@@ -509,7 +509,7 @@
             @endif
 
             @if(!empty($row['options']['KONG_MING_FORTUNE_DAY']))
-                <div class="detail-row">
+                <div class="detail-row" id="xuat-hanh">
                     <h3>Ngày xuất hành theo Khổng Minh</h3>
                     <div class="detail-content">
                         @foreach($row['options']['KONG_MING_FORTUNE_DAY'] as $value)
@@ -584,7 +584,7 @@
         </div>
     </section>
     <section class="section-block seo-grid" id="pre_knowledge">
-        <article class="card article-card">
+        <article class="card article-card" id="kien-thuc">
             <span class="section-label">KIẾN THỨC LỊCH VIỆT</span>
             <h2>Lịch âm hôm nay có ý nghĩa gì?</h2>
             <p>
@@ -629,19 +629,19 @@
                 Chọn nội dung anh cần xem để đi thẳng đến công cụ phù hợp.
             </p>
             <div class="lookup-links">
-                <a href="lich-thang.html">
-                    <strong>Lịch âm tháng 9/2026</strong>
+                <a href="{{ route('page.home') }}" title="Lịch âm tháng {{ date('m') }}/{{ date('Y') }}">
+                    <strong>Lịch âm tháng {{ date('m') }}/{{ date('Y') }}</strong>
                     <small>Xem ngày âm, ngày tốt xấu trong tháng</small>
                 </a>
-                <a href="ngay-tot.html">
+                <a href="{{ route('page.home') }}">
                     <strong>Chọn ngày cưới hỏi</strong>
                     <small>Tra cứu ngày phù hợp cho việc hỷ</small>
                 </a>
-                <a href="ngay-tot.html">
+                <a href="{{ route('page.home') }}">
                     <strong>Chọn ngày khai trương</strong>
                     <small>Tham khảo ngày mở hàng, kinh doanh</small>
                 </a>
-                <a href="doi-ngay.html">
+                <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">
                     <strong>Đổi ngày âm dương</strong>
                     <small>Chuyển đổi nhanh giữa hai loại lịch</small>
                 </a>
@@ -653,7 +653,7 @@
             <span class="section-label">KIẾN THỨC</span>
 
             <p class="cms-links">
-                <b>Tra cứu tiếp:</b>
+                <b>Tra cứu tiếp: </b>
                 <a href="{{ route('page.cope.show.month', ['month' => date('m'), 'year' => date('Y')]) }}" title="Lịch âm tháng {{ date('m') }}">Lịch âm tháng {{ date('m') }}</a> ·
                 <a href="{{ route('page.cope.show.year', ['year' => date('Y')]) }}" title="Lịch âm năm {{ date('Y') }}">Lịch âm năm {{ date('Y') }}</a> ·
                 <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi ngày âm dương</a>

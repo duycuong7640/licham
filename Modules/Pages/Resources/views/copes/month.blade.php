@@ -44,7 +44,7 @@
         </div>
     </section>
     <section class="section-block card calendar-card">
-        <div class="section-head">
+        <div class="section-head" id="lich-thang">
             <div>
                 <span class="section-label">LỊCH ÂM DƯƠNG</span>
                 <h2 id="pre_monthTitle">Tháng {{ $data['month'] }} năm {{ $data['year'] }}</h2>
@@ -131,7 +131,7 @@
         </div>
     </section>
     <section class="section-block month-insights">
-        <article class="card month-day-list good-list">
+        <article class="card month-day-list good-list" id="ngay-hoang-dao">
             <span class="section-label">NGÀY HOÀNG ĐẠO</span>
             <h2>Ngày tốt trong tháng {{ $monthButton['month'] }} năm {{ $monthButton['year'] }}</h2>
             <div id="pre_goodDays" class="date-link-grid">
@@ -160,7 +160,7 @@
             </div>
         </article>
     </section>
-    <section class="section-block">
+    <section class="section-block" id="ngay-xuat-hanh">
         <div class="section-head">
             <div>
                 <span class="section-label">NGÀY XUẤT HÀNH ÂM LỊCH</span>
@@ -187,7 +187,7 @@
         </div>
     </section>
     @if(!empty($data['historical_events']))
-        <section class="section-block">
+        <section class="section-block" id="su-kien">
             <div class="section-head">
                 <div>
                     <span class="section-label">SỰ KIỆN LỊCH SỬ</span>
@@ -261,7 +261,7 @@
             <span class="section-label">KIẾN THỨC</span>
 
             <p class="cms-links">
-                <b>Tra cứu tiếp:</b>
+                <b>Tra cứu tiếp: </b>
                 <a href="{{ route('page.cope.show.day', ['day' => date('d'), 'month' => date('m'), 'year' => date('Y')]) }}" title="Âm lịch hôm nay">Âm lịch hôm nay</a> ·
                 <a href="{{ route('page.cope.show.year', ['year' => date('Y')]) }}" title="Lịch âm năm {{ date('Y') }}">Lịch âm năm {{ date('Y') }}</a> ·
                 <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi ngày âm dương</a>
