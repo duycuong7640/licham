@@ -549,16 +549,16 @@ class Helpers
             $class = $item['tag'] === 'h3' ? 'toc-child' : 'toc-parent';
             $text = $item['tag'] === 'h3' ? $item['text'] : self::formatTextHeading($item['text']);
 
-            if($item['tag'] !== 'h3') {
+            if ($item['tag'] !== 'h3') {
                 $tocHtml .= "<a class='{$class}' href='#{$item['id']}'>{$count_p}: {$text}</a>";
                 $count_c = 1;
-            }else{
+            } else {
                 $stt = $count_p - 1;
                 $tocHtml .= "<a class='{$class}' href='#{$item['id']}'>{$stt}.{$count_c}: {$text}</a>";
             }
 
-            if($item['tag'] !== 'h3') $count_p ++;
-            if($item['tag'] === 'h3') $count_c ++;
+            if ($item['tag'] !== 'h3') $count_p++;
+            if ($item['tag'] === 'h3') $count_c++;
         }
 
         $tocHtml .= '</nav>';
@@ -2960,15 +2960,37 @@ class Helpers
         }
 
         return [
-            'day' => self::checkNumber((int) $matches[1]),
-            'month' => self::checkNumber((int) $matches[2]),
+            'day' => self::checkNumber((int)$matches[1]),
+            'month' => self::checkNumber((int)$matches[2]),
             'value' => trim($matches[3]),
         ];
     }
 
     public static function checkNumber($number)
     {
+        return (int)$number;
         return $number < 10 ? '0' . $number : $number;
+    }
+
+    public static function getPrevNextDay(int $d, int $m, int $y): array
+    {
+        $date = Carbon::create($y, $m, $d);
+
+        $yesterday = $date->copy()->subDay();
+        $tomorrow = $date->copy()->addDay();
+
+        return [
+            'yesterday' => [
+                'd' => (int) $yesterday->format('d'),
+                'm' => (int) $yesterday->format('m'),
+                'y' => (int) $yesterday->format('Y'),
+            ],
+            'tomorrow' => [
+                'd' => (int) $tomorrow->format('d'),
+                'm' => (int) $tomorrow->format('m'),
+                'y' => (int) $tomorrow->format('Y'),
+            ],
+        ];
     }
 
 }

@@ -3,8 +3,15 @@
 @section('content')
     @php
         $row = $data['day'];
-        [$year, $month, $day] = explode('-', $row['day']);
-        [$lunarYear, $lunarMonth, $lunarDay] = explode('-', $row['lunarDay']);
+        $dE = explode('-', $row['day']);
+        $day = (int) $dE[2];
+        $month = (int) $dE[1];
+        $year = (int) $dE[0];
+        $ldE = explode('-', $row['lunarDay']);
+        $lunarDay = (int) $ldE[2];
+        $lunarMonth = (int) $ldE[1];
+        $lunarYear = (int) $ldE[0];
+        $preNextData = \App\Helpers\Helpers::getPrevNextDay($day, $month, $year);
         $thu = \App\Helpers\Helpers::formatVietnameseDateNumber($row['day']);
         $dayKhongMinh = !empty($row['options']['KONG_MING_FORTUNE_DAY'][0]) ? \App\Helpers\Helpers::getKongMingFortune($row['options']['KONG_MING_FORTUNE_DAY'][0]['value']) : [];
         $nguhanh = !empty($row['options']['FIVE_ELEMENTS']) ? \App\Helpers\Helpers::execTagPContent(\App\Helpers\Helpers::getCopeValueByOption($row['options']['FIVE_ELEMENTS'], 'FIVE_ELEMENTS')) : '';
@@ -280,6 +287,54 @@
             <span><i class="bad-dot"></i> Ngày xấu</span>
             <span>Ngày âm ở góc phải</span>
             <span>Di chuột hoặc chạm để xem nhanh</span>
+        </div>
+    </section>
+    @php
+        $day = (int) $dE[2];
+        $month = (int) $dE[1];
+        $year = (int) $dE[0];
+    @endphp
+    <section class="section-block card home-calendar-content" aria-labelledby="today-lunar-title">
+        <div class="calendar-content-topline">
+            <a class="calendar-month-link" href="{{ route('page.cope.show.month', ['month' => $month, 'year' => $year]) }}" title="Xem chi tiết lịch tháng {{ $month }}/{{ $year }}">
+                Xem chi tiết lịch tháng {{ $month }}/{{ $year }}
+                <span aria-hidden="true">→</span>
+            </a>
+        </div>
+
+        <div class="calendar-content-body">
+            <article class="calendar-today-copy">
+                <span class="section-label">LỊCH ÂM HÔM NAY</span>
+                <h2 id="today-lunar-title">Hôm nay là ngày bao nhiêu âm lịch?</h2>
+                <p class="calendar-content-lead">
+                    Hôm nay, <strong>{{ $thu }} ngày {{ $day }}/{{ $month }}/{{ $year }}</strong> dương lịch,
+                    tương ứng <strong>ngày {{ $lunarDay }}/{{ $lunarMonth }} năm Bính Ngọ</strong> âm lịch.
+                    Hôm nay là ngày <strong>{{ $row['strDay'] }}</strong>, tháng
+                    <strong>{{ $row['strMonth'] }}</strong>, năm <strong>{{ $row['strYear'] }}</strong>.
+                </p>
+                <p>
+                    Tiết khí hiện tại là <strong>{{ $tietkhi }}</strong>. Người xem có thể
+                    tra cứu thêm giờ hoàng đạo, hướng xuất hành, tuổi xung và những
+                    việc nên hoặc không nên thực hiện trong ngày.
+                </p>
+                <a class="calendar-detail-cta"
+                    href="{{ route('page.cope.show.day', ['day' => $day, 'month' => $month, 'year' => $year]) }}"
+                   title="Xem ngày {{ $day }}/{{ $month }}/{{ $year }} tốt hay xấu">
+                    Xem ngày {{ $day }}/{{ $month }}/{{ $year }} tốt hay xấu
+                    <span aria-hidden="true">→</span>
+                </a>
+            </article>
+            <aside class="calendar-lookup" aria-labelledby="calendar-lookup-title">
+                <h3 id="calendar-lookup-title">Tra cứu lịch âm – lịch vạn niên</h3>
+                <nav class="calendar-lookup-links" aria-label="Tra cứu lịch nhanh">
+                    <a href="{{ route('page.cope.show.day', ['day' => $preNextData['yesterday']['d'], 'month' => $preNextData['yesterday']['m'], 'year' => $preNextData['yesterday']['y']]) }}" title="Lịch âm hôm qua">Lịch âm hôm qua</a>
+                    <a class="is-current" href="{{ route('page.cope.show.day', ['day' => $day, 'month' => $month, 'year' => $year]) }}" title="Lịch âm hôm nay">Lịch âm hôm nay</a>
+                    <a href="{{ route('page.cope.show.day', ['day' => $preNextData['tomorrow']['d'], 'month' => $preNextData['tomorrow']['m'], 'year' => $preNextData['tomorrow']['y']]) }}" title="Lịch âm ngày mai">Lịch âm ngày mai</a>
+                    <a href="{{ route('page.cope.show.month', ['month' => $month, 'year' => $year]) }}" title="Lịch tháng {{ $month }}/{{ $year }}">Lịch tháng {{ $month }}/{{ $year }}</a>
+                    <a href="{{ route('page.cope.show.year', ['year' => $year]) }}" title="Lịch năm {{ $year }}">Lịch năm {{ $year }}</a>
+                    <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi ngày âm dương</a>
+                </nav>
+            </aside>
         </div>
     </section>
     <section class="section-block" id="pre_detail">
@@ -685,6 +740,141 @@
                 <span class="section-label">{!! $content_title_home !!}</span>
             @endif
             {!! !empty($configData) ? \App\Helpers\Helpers::renderCode($configData, settingKey::CONTENT_HOME) : '' !!}
+
+            <h2>Lịch âm hôm nay - Tra cứu lịch vạn niên Việt Nam</h2>
+
+            <p>
+                <strong>Lịch Âm Tốt</strong> giúp tra cứu <strong>lịch âm hôm nay</strong>,
+                lịch vạn niên và thông tin ngày âm dương theo lịch Việt Nam.
+                Người dùng có thể xem ngày âm lịch, Can Chi, tiết khí, giờ hoàng đạo,
+                tuổi xung, hướng xuất hành và các thông tin thường được tham khảo
+                khi xem ngày tốt xấu.
+            </p>
+
+            <p>
+                Bên cạnh lịch ngày, bạn có thể xem
+                <a href="">lịch âm theo tháng</a>,
+                <a href="">lịch âm theo năm</a>
+                hoặc sử dụng công cụ
+                <a href="">đổi ngày âm dương</a>
+                để tra cứu các mốc thời gian trong quá khứ và tương lai.
+            </p>
+
+
+            <h3>Lịch âm hôm nay cho biết những thông tin gì?</h3>
+
+            <p>
+                Khi xem lịch âm hôm nay, thông tin cơ bản nhất là ngày dương lịch
+                và ngày âm lịch tương ứng. Ngoài ra, lịch truyền thống còn sử dụng
+                hệ thống Thiên Can, Địa Chi, tiết khí và nhiều yếu tố lịch pháp
+                để mô tả đặc điểm của từng ngày.
+            </p>
+
+            <p>
+                Người dùng có thể tra cứu Can Chi của ngày, tháng và năm,
+                giờ hoàng đạo, tuổi xung, hướng xuất hành cũng như những việc
+                nên làm hoặc nên hạn chế theo quan niệm lịch pháp dân gian.
+                Nếu cần xem đầy đủ hơn, bạn có thể truy cập
+                <a href="">lịch ngày hôm nay</a>
+                để xem thông tin chi tiết.
+            </p>
+
+
+            <h3>Lịch vạn niên và lịch âm có gì khác nhau?</h3>
+
+            <p>
+                Trong cách sử dụng phổ biến, <strong>lịch âm</strong> thường được dùng
+                để chỉ ngày tháng theo âm lịch, trong khi <strong>lịch vạn niên</strong>
+                cung cấp phạm vi thông tin rộng hơn. Một trang lịch vạn niên có thể
+                bao gồm ngày dương, ngày âm, Can Chi, tiết khí, giờ hoàng đạo,
+                ngày hoàng đạo, ngày hắc đạo và nhiều dữ liệu lịch pháp truyền thống.
+            </p>
+
+            <p>
+                Vì vậy, nếu chỉ muốn biết hôm nay là ngày bao nhiêu âm lịch,
+                người dùng có thể xem nhanh phần ngày âm. Khi cần tìm hiểu kỹ hơn
+                về đặc điểm của một ngày, lịch vạn niên sẽ cung cấp nhiều thông tin
+                để tham khảo hơn.
+            </p>
+
+
+            <h3>Ngày tốt xấu được xem như thế nào?</h3>
+
+            <p>
+                Theo lịch pháp và quan niệm dân gian, việc xem ngày tốt xấu
+                thường không dựa vào một yếu tố duy nhất. Tùy từng phương pháp,
+                người xem có thể tham khảo Can Chi, ngày hoàng đạo hoặc hắc đạo,
+                sao tốt, sao xấu, trực ngày, tuổi xung và tính chất của công việc.
+            </p>
+
+            <p>
+                Một ngày được xem là thuận lợi cho một công việc chưa chắc đã phù hợp
+                với tất cả các công việc khác. Vì vậy, khi tra cứu ngày tốt xấu,
+                nên xem tổng hợp nhiều thông tin thay vì chỉ dựa vào một chỉ số riêng lẻ.
+            </p>
+
+
+            <h3>Giờ hoàng đạo hôm nay là gì?</h3>
+
+            <p>
+                <strong>Giờ hoàng đạo</strong> là những khung giờ được xem là thuận lợi
+                theo cách tính của lịch pháp dân gian. Mỗi ngày có các giờ hoàng đạo
+                và giờ hắc đạo khác nhau, thường được tham khảo khi xuất hành,
+                bắt đầu công việc hoặc thực hiện một số việc quan trọng.
+            </p>
+
+            <p>
+                Trên Lịch Âm Tốt, thông tin giờ hoàng đạo được hiển thị theo từng ngày
+                để người dùng có thể tra cứu nhanh mà không cần tự tính Can Chi của giờ.
+            </p>
+
+
+            <h3>Tra cứu lịch âm theo ngày, tháng và năm</h3>
+
+            <p>
+                Ngoài lịch âm hôm nay, người dùng có thể tra cứu lịch theo từng ngày,
+                từng tháng hoặc cả năm. Việc xem lịch theo thời gian giúp dễ dàng
+                kiểm tra một ngày trong quá khứ hoặc tương lai, đối chiếu ngày âm dương
+                và theo dõi các ngày trong từng tháng.
+            </p>
+
+            <p>
+                Bạn có thể xem
+                <a href="">lịch âm hôm qua</a>,
+                <a href="">lịch âm hôm nay</a>,
+                <a href="">lịch âm ngày mai</a>,
+                <a href="">lịch âm theo tháng</a>
+                hoặc
+                <a href="">lịch âm theo năm</a>
+                tùy theo nhu cầu tra cứu.
+            </p>
+
+
+            <h3>Đổi ngày dương sang ngày âm và ngược lại</h3>
+
+            <p>
+                Công cụ <a href="">đổi ngày âm dương</a> giúp tìm ngày âm tương ứng
+                với một ngày dương hoặc chuyển từ ngày âm sang ngày dương.
+                Tính năng này hữu ích khi cần tra cứu ngày sinh âm lịch, ngày giỗ,
+                ngày lễ truyền thống hoặc các mốc thời gian được ghi theo lịch âm.
+            </p>
+
+
+            <h3>Lịch âm trong đời sống người Việt</h3>
+
+            <p>
+                Dù dương lịch được sử dụng phổ biến trong công việc và đời sống hằng ngày,
+                lịch âm vẫn gắn với nhiều phong tục của người Việt như Tết Nguyên đán,
+                ngày rằm, mùng một, giỗ chạp và các ngày lễ truyền thống.
+                Vì vậy, nhu cầu tra cứu song song ngày âm và ngày dương
+                vẫn rất phổ biến trong đời sống hiện nay.
+            </p>
+
+            <p class="knowledge-note">
+                Các thông tin về ngày tốt xấu, giờ hoàng đạo, hướng xuất hành
+                và các yếu tố lịch pháp trên Lịch Âm Tốt được cung cấp với mục đích
+                tra cứu và tham khảo theo văn hóa, lịch pháp và quan niệm dân gian truyền thống.
+            </p>
 
             <p class="cms-links">
                 <b>Tra cứu tiếp: </b>

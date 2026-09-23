@@ -1228,6 +1228,116 @@ button {
 .cms-content a:hover {
     text-decoration: underline;
 }
+.home-calendar-content {
+    margin-top: 18px;
+    padding: 0;
+    overflow: hidden;
+}
+.calendar-content-topline {
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 22px;
+    border-bottom: 1px solid var(--line);
+    background: #f4f8f5;
+}
+.calendar-month-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--green-dark);
+    font-size: 15px;
+    font-weight: 700;
+}
+.calendar-month-link:hover,
+.calendar-month-link:focus-visible {
+    color: var(--red);
+    outline: 0;
+}
+.calendar-content-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.75fr);
+}
+.calendar-today-copy {
+    padding: 28px 30px 30px;
+}
+.calendar-today-copy h2 {
+    margin: 7px 0 13px;
+    color: var(--text);
+    font-size: 27px;
+    line-height: 1.3;
+}
+.calendar-today-copy p {
+    margin: 0 0 13px;
+    color: #4f5a53;
+    font-size: 16px;
+    line-height: 1.75;
+}
+.calendar-today-copy .calendar-content-lead {
+    color: #303a34;
+    font-size: 17px;
+}
+.calendar-detail-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 42px;
+    margin-top: 4px;
+    padding: 9px 15px;
+    border: 1px solid #97c7a9;
+    border-radius: 6px;
+    background: #eef7f1;
+    color: var(--green-dark);
+    font-weight: 700;
+}
+.calendar-detail-cta:hover,
+.calendar-detail-cta:focus-visible {
+    border-color: var(--green);
+    background: #e0f0e6;
+    outline: 0;
+}
+.calendar-lookup {
+    padding: 27px 24px;
+    border-left: 1px solid var(--line);
+    background: #fbfcfb;
+}
+.calendar-lookup h3 {
+    margin: 0 0 14px;
+    color: #26342c;
+    font-size: 19px;
+    line-height: 1.4;
+}
+.calendar-lookup-links {
+    display: grid;
+    gap: 7px;
+}
+.calendar-lookup-links a {
+    position: relative;
+    padding: 9px 30px 9px 12px;
+    border: 1px solid #dce5df;
+    border-radius: 5px;
+    background: #fff;
+    color: #465149;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+}
+.calendar-lookup-links a::after {
+    content: "›";
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    color: #789182;
+    font-size: 20px;
+    transform: translateY(-52%);
+}
+.calendar-lookup-links a:hover,
+.calendar-lookup-links a:focus-visible,
+.calendar-lookup-links .is-current {
+    border-color: #a8d0b7;
+    background: #edf7f0;
+    color: var(--green-dark);
+    outline: 0;
+}
 @keyframes status-pulse {
     0% {
         box-shadow: 0 0 0 0 rgb(255 255 255 / 65%);
@@ -3332,7 +3442,65 @@ button {
         line-height: 1.5;
     }
 }
+@media (max-width: 850px) {
+    .calendar-content-body {
+        grid-template-columns: 1fr;
+    }
+    .calendar-lookup {
+        border-top: 1px solid var(--line);
+        border-left: 0;
+    }
+}
+
+@media (max-width: 560px) {
+    .home-calendar-content {
+        margin-top: 14px;
+    }
+    .calendar-content-topline {
+        justify-content: flex-start;
+        padding: 11px 15px;
+    }
+    .calendar-month-link {
+        font-size: 14px;
+    }
+    .calendar-today-copy,
+    .calendar-lookup {
+        padding: 20px 16px;
+    }
+    .calendar-today-copy h2 {
+        margin-top: 5px;
+        font-size: 23px;
+        line-height: 1.32;
+    }
+    .calendar-today-copy p,
+    .calendar-today-copy .calendar-content-lead {
+        font-size: 16px;
+        line-height: 1.65;
+    }
+    .calendar-detail-cta {
+        width: 100%;
+        justify-content: space-between;
+        padding: 10px 13px;
+    }
+    .calendar-lookup h3 {
+        font-size: 18px;
+    }
+    .calendar-lookup-links {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .calendar-lookup-links a {
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        padding: 8px 26px 8px 10px;
+        font-size: 14px;
+    }
+}
+
 @media (max-width: 359px) {
+    .calendar-lookup-links {
+        grid-template-columns: 1fr;
+    }
     .header-main {
         padding: 0 8px;
         gap: 6px;

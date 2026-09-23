@@ -138,8 +138,7 @@
                 @foreach($months as $values)
                     @foreach($values as $month)
                         @if(!empty($month['id']) && $month['isDay'])
-                            <a href="{{ route('page.cope.show.day', ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']]) }}">Ngày {{ \App\Helpers\Helpers::checkNumber($month['day']) }}
-                                /{{ \App\Helpers\Helpers::checkNumber($month['month']) }}/{{ $month['year'] }}</a>
+                            <a href="{{ route('page.cope.show.day', ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']]) }}">Ngày {{ \App\Helpers\Helpers::checkNumber($month['day']) }}/{{ \App\Helpers\Helpers::checkNumber($month['month']) }}/{{ $month['year'] }}</a>
                         @endif
                     @endforeach
                 @endforeach
@@ -152,8 +151,7 @@
                 @foreach($months as $values)
                     @foreach($values as $month)
                         @if(!empty($month['id']) && !$month['isDay'])
-                            <a href="{{ route('page.cope.show.day', ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']]) }}">Ngày {{ \App\Helpers\Helpers::checkNumber($month['day']) }}
-                                /{{ \App\Helpers\Helpers::checkNumber($month['month']) }}/{{ $month['year'] }}</a>
+                            <a href="{{ route('page.cope.show.day', ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']]) }}">Ngày {{ \App\Helpers\Helpers::checkNumber($month['day']) }}/{{ \App\Helpers\Helpers::checkNumber($month['month']) }}/{{ $month['year'] }}</a>
                         @endif
                     @endforeach
                 @endforeach
@@ -176,8 +174,7 @@
                         @endphp
                         <div class="detail-row detail-row-custom">
                             <div class="detail-content">
-                                {{ \App\Helpers\Helpers::checkNumber($month['lunarDay']) }}
-                                /{{ \App\Helpers\Helpers::checkNumber($month['lunarMonth']) }} - Ngày
+                                {{ \App\Helpers\Helpers::checkNumber($month['lunarDay']) }}/{{ \App\Helpers\Helpers::checkNumber($month['lunarMonth']) }} - Ngày
                                 <strong>{{ !empty($dayKhongMinh[0]) ? $dayKhongMinh[0] : '' }}</strong>: {{ !empty($dayKhongMinh[1]) ? $dayKhongMinh[1] : '' }}
                             </div>
                         </div>
@@ -197,8 +194,7 @@
             <div class="detail-table">
                 @foreach($data['historical_events'] as $event)
                     <div class="detail-row">
-                        <h3>{{ \App\Helpers\Helpers::checkNumber($event['day']) }}
-                            /{{ \App\Helpers\Helpers::checkNumber($event['month']) }}/{{ $event['year'] }}</h3>
+                        <h3>{{ \App\Helpers\Helpers::checkNumber($event['day']) }}/{{ \App\Helpers\Helpers::checkNumber($event['month']) }}/{{ $event['year'] }}</h3>
                         <div class="detail-content">
                             {!! $event['value'] !!}
                         </div>
