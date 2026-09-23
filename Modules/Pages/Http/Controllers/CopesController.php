@@ -23,11 +23,22 @@ class CopesController extends Controller
             if (empty($year) || $year < 1900 || $year > 2050) return response()->view('errors.404', [], 404);
 
             $cacheKey = 'cope_year_html_' . $year;
+//            $ttl = now()->addMinutes(10);
+//            if (Cache::has($cacheKey)) {
+//                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
+//                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+//                    ->header('Cache-Control', \dataKey::CACHE);
+//            }
+
             $ttl = now()->addMinutes(10);
-            if (Cache::has($cacheKey)) {
-                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
-                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
-                    ->header('Cache-Control', \dataKey::CACHE);
+            $htmlCache = Cache::store('html');
+            if ($request->has('reset')) {
+                $htmlCache->forget($cacheKey);
+            } else {
+                $cachedHtml = $htmlCache->get($cacheKey);
+                if ($cachedHtml !== null) {
+                    return response(Helpers::genCsrfToken($cachedHtml, ''), 200)->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)->header('Cache-Control', \dataKey::CACHE);
+                }
             }
 
             $data['year'] = $year;
@@ -81,14 +92,23 @@ class CopesController extends Controller
             // view
             // return view('pages::copes.year')->with('data', $data);
             $html = view('pages::copes.year')->with('data', $data)->render();
-            $html = Helpers::genCsrfToken($html, '1');
-            $response = response($html)
-                ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
-            $response = Helpers::optimize_html($response);
-            Cache::put($cacheKey, $response->getContent(), $ttl);
 
-            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
-                ->header('Cache-Control', \dataKey::CACHE);
+            $html = Helpers::genCsrfToken($html, '1');
+            $response = response($html)->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
+            $response = Helpers::optimize_html($response);
+            $html = $response->getContent();
+            $htmlCache->put($cacheKey, $html, $ttl);
+
+            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)->header('Cache-Control', \dataKey::CACHE);
+
+//            $html = Helpers::genCsrfToken($html, '1');
+//            $response = response($html)
+//                ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
+//            $response = Helpers::optimize_html($response);
+//            Cache::put($cacheKey, $response->getContent(), $ttl);
+//
+//            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+//                ->header('Cache-Control', \dataKey::CACHE);
         } catch (\Exception $e) {
             return response()->view('errors.500', [], 500);
         }
@@ -101,11 +121,21 @@ class CopesController extends Controller
             if (empty($month['year'])) return response()->view('errors.404', [], 404);
 
             $cacheKey = 'cope_month_html_' . $m . '_' . $y;
+//            $ttl = now()->addMinutes(10);
+//            if (Cache::has($cacheKey)) {
+//                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
+//                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+//                    ->header('Cache-Control', \dataKey::CACHE);
+//            }
             $ttl = now()->addMinutes(10);
-            if (Cache::has($cacheKey)) {
-                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
-                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
-                    ->header('Cache-Control', \dataKey::CACHE);
+            $htmlCache = Cache::store('html');
+            if ($request->has('reset')) {
+                $htmlCache->forget($cacheKey);
+            } else {
+                $cachedHtml = $htmlCache->get($cacheKey);
+                if ($cachedHtml !== null) {
+                    return response(Helpers::genCsrfToken($cachedHtml, ''), 200)->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)->header('Cache-Control', \dataKey::CACHE);
+                }
             }
 
             $now = Carbon::now('Asia/Ho_Chi_Minh');
@@ -159,13 +189,21 @@ class CopesController extends Controller
             // return view('pages::copes.month')->with('data', $data);
             $html = view('pages::copes.month')->with('data', $data)->render();
             $html = Helpers::genCsrfToken($html, '1');
-            $response = response($html)
-                ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
+            $response = response($html)->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
             $response = Helpers::optimize_html($response);
-            Cache::put($cacheKey, $response->getContent(), $ttl);
+            $html = $response->getContent();
+            $htmlCache->put($cacheKey, $html, $ttl);
 
-            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
-                ->header('Cache-Control', \dataKey::CACHE);
+            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)->header('Cache-Control', \dataKey::CACHE);
+
+//            $html = Helpers::genCsrfToken($html, '1');
+//            $response = response($html)
+//                ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
+//            $response = Helpers::optimize_html($response);
+//            Cache::put($cacheKey, $response->getContent(), $ttl);
+//
+//            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+//                ->header('Cache-Control', \dataKey::CACHE);
         } catch (\Exception $e) {
             return response()->view('errors.500', [], 500);
         }
@@ -178,11 +216,21 @@ class CopesController extends Controller
             $day = $d . '-' . $m . '-' . $y;
 
             $cacheKey = 'cope_day_html_' . $day;
+//            $ttl = now()->addMinutes(10);
+//            if (Cache::has($cacheKey)) {
+//                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
+//                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+//                    ->header('Cache-Control', \dataKey::CACHE);
+//            }
             $ttl = now()->addMinutes(10);
-            if (Cache::has($cacheKey)) {
-                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
-                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
-                    ->header('Cache-Control', \dataKey::CACHE);
+            $htmlCache = Cache::store('html');
+            if ($request->has('reset')) {
+                $htmlCache->forget($cacheKey);
+            } else {
+                $cachedHtml = $htmlCache->get($cacheKey);
+                if ($cachedHtml !== null) {
+                    return response(Helpers::genCsrfToken($cachedHtml, ''), 200)->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)->header('Cache-Control', \dataKey::CACHE);
+                }
             }
 
             $data['day'] = RequestHelpers::request($request, \dataApiRoutes::COPE_DETAIL, str_replace(':day', $day, \dataApiRoutes::COPE_DETAIL), [], 'get');
@@ -233,9 +281,17 @@ class CopesController extends Controller
             $html = Helpers::genCsrfToken($html, '1');
             $response = response($html)->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
             $response = Helpers::optimize_html($response);
-            Cache::put($cacheKey, $response->getContent(), $ttl);
-            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
-                ->header('Cache-Control', \dataKey::CACHE);
+            $html = $response->getContent();
+            $htmlCache->put($cacheKey, $html, $ttl);
+
+            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)->header('Cache-Control', \dataKey::CACHE);
+
+//            $html = Helpers::genCsrfToken($html, '1');
+//            $response = response($html)->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
+//            $response = Helpers::optimize_html($response);
+//            Cache::put($cacheKey, $response->getContent(), $ttl);
+//            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+//                ->header('Cache-Control', \dataKey::CACHE);
         } catch (\Exception $e) {
             return response()->view('errors.500', [], 500);
         }
