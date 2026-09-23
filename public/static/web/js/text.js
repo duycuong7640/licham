@@ -512,19 +512,19 @@ function renderToday() {
 }
 
 function init() {
-    // const footer = $(".site-footer");
-    // if (footer) {
-    //     footer.innerHTML = `<div class="footer-inner">
-    //   <div class="footer-brand">
-    //     <a class="footer-logo" href="index.html"><span aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="4.5" width="18" height="16" rx="2.5"></rect><path d="M7 2.5v4M17 2.5v4M3 9h18"></path><path class="footer-logo-date" d="M8 12h3v3H8zM14 12h3v3h-3zM8 17h3v2H8z"></path></svg></span><b>Lịch An Nhiên</b></a>
-    //     <p>Tra cứu lịch âm, lịch vạn niên và kiến thức lịch Việt rõ ràng, thuận tiện trên mọi thiết bị.</p>
-    //     <small class="footer-note">Lịch Việt · Múi giờ GMT+7</small>
-    //   </div>
-    //   <nav class="footer-column" aria-label="Tra cứu lịch"><h3>Tra cứu</h3><a href="index.html">Âm lịch hôm nay</a><a href="lich-thang.html">Lịch theo tháng</a><a href="lich-nam.html">Lịch theo năm</a><a href="doi-ngay.html">Đổi ngày âm dương</a></nav>
-    //   <nav class="footer-column" aria-label="Kiến thức lịch Việt"><h3>Khám phá</h3><a href="ngay-tot.html">Xem ngày tốt</a><a href="bai-viet.html">Bài viết</a><a href="bai-viet.html?category=tu-vi">Tử vi</a><a href="bai-viet.html?category=phong-thuy">Phong thủy</a></nav>
-    // </div>
-    // <div class="footer-bottom"><span>© ${new Date().getFullYear()} Lịch An Nhiên</span><span>Dữ liệu lịch pháp mang tính tham khảo</span></div>`;
-    // }
+    const footer = $(".site-footer");
+    if (footer) {
+        footer.innerHTML = `<div class="footer-inner">
+      <div class="footer-brand">
+        <a class="footer-logo" href="index.html"><span aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="4.5" width="18" height="16" rx="2.5"></rect><path d="M7 2.5v4M17 2.5v4M3 9h18"></path><path class="footer-logo-date" d="M8 12h3v3H8zM14 12h3v3h-3zM8 17h3v2H8z"></path></svg></span><b>Lịch An Nhiên</b></a>
+        <p>Tra cứu lịch âm, lịch vạn niên và kiến thức lịch Việt rõ ràng, thuận tiện trên mọi thiết bị.</p>
+        <small class="footer-note">Lịch Việt · Múi giờ GMT+7</small>
+      </div>
+      <nav class="footer-column" aria-label="Tra cứu lịch"><h3>Tra cứu</h3><a href="index.html">Âm lịch hôm nay</a><a href="lich-thang.html">Lịch theo tháng</a><a href="lich-nam.html">Lịch theo năm</a><a href="doi-ngay.html">Đổi ngày âm dương</a></nav>
+      <nav class="footer-column" aria-label="Kiến thức lịch Việt"><h3>Khám phá</h3><a href="ngay-tot.html">Xem ngày tốt</a><a href="bai-viet.html">Bài viết</a><a href="bai-viet.html?category=tu-vi">Tử vi</a><a href="bai-viet.html?category=phong-thuy">Phong thủy</a></nav>
+    </div>
+    <div class="footer-bottom"><span>© ${new Date().getFullYear()} Lịch An Nhiên</span><span>Dữ liệu lịch pháp mang tính tham khảo</span></div>`;
+    }
     const headerTools = $(".header-tools");
     if (headerTools && !headerTools.querySelector(".mobile-clock")) {
         headerTools.insertAdjacentHTML(
@@ -549,153 +549,153 @@ function init() {
                 isOpen ? "M6 6l12 12M18 6 6 18" : "M4 7h16M4 12h16M4 17h16",
             );
     };
-    // const menuYear = new Date().getFullYear();
-    // const selectedMenuYear =
-    //     requestedYear >= menuYear && requestedYear <= 2050
-    //         ? requestedYear
-    //         : menuYear;
-    // $$("[data-month-menu]").forEach((menu) => {
-    //     menu.innerHTML = Array.from(
-    //         { length: 12 },
-    //         (_, index) =>
-    //             `<a href="lich-thang.html?month=${index + 1}&year=${selectedMenuYear}">Tháng ${index + 1}</a>`,
-    //     ).join("");
-    // });
-    // $$("[data-year-menu]").forEach((menu) => {
-    //     menu.innerHTML = Array.from(
-    //         { length: Math.max(1, 2050 - menuYear + 1) },
-    //         (_, index) => {
-    //             const year = menuYear + index;
-    //             return `<a href="lich-nam.html?year=${year}">${year}</a>`;
-    //         },
-    //     ).join("");
-    // });
-    // const monthSelect = $("#monthSelect");
-    // const yearSelect = $("#yearSelect");
-    // if (monthSelect) {
-    //     monthSelect.innerHTML = Array.from(
-    //         { length: 12 },
-    //         (_, index) => `<option value="${index}">Tháng ${index + 1}</option>`,
-    //     ).join("");
-    //     monthSelect.value = String(cursor.getMonth());
-    // }
-    // if (yearSelect) {
-    //     yearSelect.innerHTML = Array.from({ length: 151 }, (_, index) => {
-    //         const year = 1900 + index;
-    //         return `<option value="${year}">${year}</option>`;
-    //     }).join("");
-    //     yearSelect.value = String(cursor.getFullYear());
-    // }
-    // const navigateToSelectedMonth = () => {
-    //     if (!monthSelect || !yearSelect) return;
-    //     const month = Number(monthSelect.value) + 1;
-    //     const year = Number(yearSelect.value);
-    //     window.location.assign(`/lich-thang-${month}-${year}`);
-    // };
-    // monthSelect?.addEventListener("change", navigateToSelectedMonth);
-    // yearSelect?.addEventListener("change", navigateToSelectedMonth);
-    // const annualYearSelect = $("#annualYearSelect");
-    // if (annualYearSelect) {
-    //     annualYearSelect.innerHTML = Array.from(
-    //         { length: Math.max(1, 2050 - menuYear + 1) },
-    //         (_, index) => {
-    //             const year = menuYear + index;
-    //             return `<option value="${year}">${year}</option>`;
-    //         },
-    //     ).join("");
-    //     annualYearSelect.value = String(
-    //         requestedYear >= menuYear && requestedYear <= 2050
-    //             ? requestedYear
-    //             : menuYear,
-    //     );
-    //     annualYearSelect.addEventListener("change", () => {
-    //         window.location.assign(`/lich-nam-${annualYearSelect.value}`);
-    //     });
-    // }
+    const menuYear = new Date().getFullYear();
+    const selectedMenuYear =
+        requestedYear >= menuYear && requestedYear <= 2050
+            ? requestedYear
+            : menuYear;
+    $$("[data-month-menu]").forEach((menu) => {
+        menu.innerHTML = Array.from(
+            { length: 12 },
+            (_, index) =>
+                `<a href="lich-thang.html?month=${index + 1}&year=${selectedMenuYear}">Tháng ${index + 1}</a>`,
+        ).join("");
+    });
+    $$("[data-year-menu]").forEach((menu) => {
+        menu.innerHTML = Array.from(
+            { length: Math.max(1, 2050 - menuYear + 1) },
+            (_, index) => {
+                const year = menuYear + index;
+                return `<a href="lich-nam.html?year=${year}">${year}</a>`;
+            },
+        ).join("");
+    });
+    const monthSelect = $("#monthSelect");
+    const yearSelect = $("#yearSelect");
+    if (monthSelect) {
+        monthSelect.innerHTML = Array.from(
+            { length: 12 },
+            (_, index) => `<option value="${index}">Tháng ${index + 1}</option>`,
+        ).join("");
+        monthSelect.value = String(cursor.getMonth());
+    }
+    if (yearSelect) {
+        yearSelect.innerHTML = Array.from({ length: 151 }, (_, index) => {
+            const year = 1900 + index;
+            return `<option value="${year}">${year}</option>`;
+        }).join("");
+        yearSelect.value = String(cursor.getFullYear());
+    }
+    const navigateToSelectedMonth = () => {
+        if (!monthSelect || !yearSelect) return;
+        const month = Number(monthSelect.value) + 1;
+        const year = Number(yearSelect.value);
+        window.location.assign(`/lich-thang-${month}-${year}`);
+    };
+    monthSelect?.addEventListener("change", navigateToSelectedMonth);
+    yearSelect?.addEventListener("change", navigateToSelectedMonth);
+    const annualYearSelect = $("#annualYearSelect");
+    if (annualYearSelect) {
+        annualYearSelect.innerHTML = Array.from(
+            { length: Math.max(1, 2050 - menuYear + 1) },
+            (_, index) => {
+                const year = menuYear + index;
+                return `<option value="${year}">${year}</option>`;
+            },
+        ).join("");
+        annualYearSelect.value = String(
+            requestedYear >= menuYear && requestedYear <= 2050
+                ? requestedYear
+                : menuYear,
+        );
+        annualYearSelect.addEventListener("change", () => {
+            window.location.assign(`/lich-nam-${annualYearSelect.value}`);
+        });
+    }
 
-    // const selectedTopic = pageParams.get("category") || "all";
-    // const articleItems = $$(".article-item[data-category]");
-    // if (articleItems.length) {
-    //     const pageSize = 3;
-    //     const filteredArticles = [...articleItems].filter(
-    //         (article) =>
-    //             selectedTopic === "all" || article.dataset.category === selectedTopic,
-    //     );
-    //     const totalPages = Math.ceil(filteredArticles.length / pageSize);
-    //     const requestedPage = Math.max(1, Number(pageParams.get("page")) || 1);
-    //     const currentPage = Math.min(requestedPage, Math.max(1, totalPages));
-    //     articleItems.forEach((article) => (article.hidden = true));
-    //     filteredArticles
-    //         .slice((currentPage - 1) * pageSize, currentPage * pageSize)
-    //         .forEach((article) => (article.hidden = false));
-    //     $$("[data-topic]").forEach((topic) => {
-    //         topic.classList.toggle("active", topic.dataset.topic === selectedTopic);
-    //     });
-    //     if ($("#articleCount")) {
-    //         $("#articleCount").textContent =
-    //             `${filteredArticles.length} bài viết${totalPages > 1 ? ` · Trang ${currentPage}/${totalPages}` : ""}`;
-    //     }
-    //     if ($("#articleEmpty")) {
-    //         $("#articleEmpty").hidden = filteredArticles.length !== 0;
-    //     }
-    //     const pagination = $("#articlePagination");
-    //     if (pagination) {
-    //         const pageHref = (page) => {
-    //             const params = new URLSearchParams();
-    //             if (selectedTopic !== "all") params.set("category", selectedTopic);
-    //             if (page > 1) params.set("page", page);
-    //             const query = params.toString();
-    //             return `bai-viet.html${query ? `?${query}` : ""}`;
-    //         };
-    //         pagination.hidden = totalPages <= 1;
-    //         if (totalPages > 1) {
-    //             const pages = [
-    //                 ...new Set([
-    //                     1,
-    //                     currentPage - 1,
-    //                     currentPage,
-    //                     currentPage + 1,
-    //                     totalPages,
-    //                 ]),
-    //             ]
-    //                 .filter((page) => page >= 1 && page <= totalPages)
-    //                 .sort((a, b) => a - b);
-    //             let previousPage = 0;
-    //             const pageLinks = pages
-    //                 .map((page) => {
-    //                     const separator =
-    //                         page - previousPage > 1
-    //                             ? '<span class="pagination-ellipsis">…</span>'
-    //                             : "";
-    //                     previousPage = page;
-    //                     return `${separator}<a href="${pageHref(page)}"${page === currentPage ? ' class="active" aria-current="page"' : ""}>${page}</a>`;
-    //                 })
-    //                 .join("");
-    //             pagination.innerHTML = `${
-    //                 currentPage > 1
-    //                     ? `<a class="pagination-nav" href="${pageHref(currentPage - 1)}" aria-label="Trang trước">‹ Trước</a>`
-    //                     : '<span class="pagination-nav disabled">‹ Trước</span>'
-    //             }<span class="pagination-pages">${pageLinks}</span>${
-    //                 currentPage < totalPages
-    //                     ? `<a class="pagination-nav" href="${pageHref(currentPage + 1)}" aria-label="Trang sau">Sau ›</a>`
-    //                     : '<span class="pagination-nav disabled">Sau ›</span>'
-    //             }`;
-    //         }
-    //     }
-    // }
-    // renderToday();
-    // renderCalendar();
-    // renderYearOverview();
-    // $("#prevDay")?.addEventListener("click", () => {
-    //     current.setDate(current.getDate() - 1);
-    //     renderToday();
-    //     renderCalendar();
-    // });
-    // $("#nextDay")?.addEventListener("click", () => {
-    //     current.setDate(current.getDate() + 1);
-    //     renderToday();
-    //     renderCalendar();
-    // });
+    const selectedTopic = pageParams.get("category") || "all";
+    const articleItems = $$(".article-item[data-category]");
+    if (articleItems.length) {
+        const pageSize = 3;
+        const filteredArticles = [...articleItems].filter(
+            (article) =>
+                selectedTopic === "all" || article.dataset.category === selectedTopic,
+        );
+        const totalPages = Math.ceil(filteredArticles.length / pageSize);
+        const requestedPage = Math.max(1, Number(pageParams.get("page")) || 1);
+        const currentPage = Math.min(requestedPage, Math.max(1, totalPages));
+        articleItems.forEach((article) => (article.hidden = true));
+        filteredArticles
+            .slice((currentPage - 1) * pageSize, currentPage * pageSize)
+            .forEach((article) => (article.hidden = false));
+        $$("[data-topic]").forEach((topic) => {
+            topic.classList.toggle("active", topic.dataset.topic === selectedTopic);
+        });
+        if ($("#articleCount")) {
+            $("#articleCount").textContent =
+                `${filteredArticles.length} bài viết${totalPages > 1 ? ` · Trang ${currentPage}/${totalPages}` : ""}`;
+        }
+        if ($("#articleEmpty")) {
+            $("#articleEmpty").hidden = filteredArticles.length !== 0;
+        }
+        const pagination = $("#articlePagination");
+        if (pagination) {
+            const pageHref = (page) => {
+                const params = new URLSearchParams();
+                if (selectedTopic !== "all") params.set("category", selectedTopic);
+                if (page > 1) params.set("page", page);
+                const query = params.toString();
+                return `bai-viet.html${query ? `?${query}` : ""}`;
+            };
+            pagination.hidden = totalPages <= 1;
+            if (totalPages > 1) {
+                const pages = [
+                    ...new Set([
+                        1,
+                        currentPage - 1,
+                        currentPage,
+                        currentPage + 1,
+                        totalPages,
+                    ]),
+                ]
+                    .filter((page) => page >= 1 && page <= totalPages)
+                    .sort((a, b) => a - b);
+                let previousPage = 0;
+                const pageLinks = pages
+                    .map((page) => {
+                        const separator =
+                            page - previousPage > 1
+                                ? '<span class="pagination-ellipsis">…</span>'
+                                : "";
+                        previousPage = page;
+                        return `${separator}<a href="${pageHref(page)}"${page === currentPage ? ' class="active" aria-current="page"' : ""}>${page}</a>`;
+                    })
+                    .join("");
+                pagination.innerHTML = `${
+                    currentPage > 1
+                        ? `<a class="pagination-nav" href="${pageHref(currentPage - 1)}" aria-label="Trang trước">‹ Trước</a>`
+                        : '<span class="pagination-nav disabled">‹ Trước</span>'
+                }<span class="pagination-pages">${pageLinks}</span>${
+                    currentPage < totalPages
+                        ? `<a class="pagination-nav" href="${pageHref(currentPage + 1)}" aria-label="Trang sau">Sau ›</a>`
+                        : '<span class="pagination-nav disabled">Sau ›</span>'
+                }`;
+            }
+        }
+    }
+    renderToday();
+    renderCalendar();
+    renderYearOverview();
+    $("#prevDay")?.addEventListener("click", () => {
+        current.setDate(current.getDate() - 1);
+        renderToday();
+        renderCalendar();
+    });
+    $("#nextDay")?.addEventListener("click", () => {
+        current.setDate(current.getDate() + 1);
+        renderToday();
+        renderCalendar();
+    });
     menuButton?.addEventListener("click", () => {
         const nav = $(".main-nav");
         const isOpen = nav?.classList.toggle("open") || false;
@@ -877,7 +877,7 @@ function init() {
         }
         cursor = new Date(date.getFullYear(), date.getMonth(), 1);
         current = date;
-        // renderCalendar();
+        renderCalendar();
         $("#convertResult")?.scrollIntoView({
             behavior: "smooth",
             block: "center",
@@ -885,193 +885,3 @@ function init() {
     });
 }
 init();
-
-
-function cleanContent(root) {
-    if (!root) return;
-
-    // =========================
-    // 1. XÓA <p> RỖNG NẾU CÓ
-    // =========================
-    root.querySelectorAll('p').forEach(p => {
-        const text = p.textContent
-            .replace(/\u00A0/g, '')
-            .replace(/\s+/g, '');
-
-        // Không có chữ hoặc số
-        if (!/[\p{L}\p{N}]/u.test(text)) {
-            p.remove();
-        }
-    });
-
-    // =========================
-    // 2. XỬ LÝ STRONG / SPAN
-    // =========================
-    root.querySelectorAll('strong').forEach(el => {
-
-        // Nếu nằm trong strong/span khác thì bỏ qua
-        // VD: <span><strong>TỐT</strong></span>
-        if (el.parentElement?.closest('strong, span')) {
-            return;
-        }
-
-        // Bên trong đã có <br> => không thêm
-        if (el.querySelector('br')) {
-            return;
-        }
-
-        /*
-         * Tìm container gần nhất:
-         * - Nếu nằm trong <p> thì xét từ đầu <p>
-         * - Nếu không có <p> thì xét từ đầu .cleanContent
-         */
-        const container = el.closest('p') || root;
-
-        // Lấy tất cả nội dung đứng trước strong/span
-        const range = document.createRange();
-        range.selectNodeContents(container);
-        range.setEndBefore(el);
-
-        const beforeFragment = range.cloneContents();
-
-        const beforeText = beforeFragment.textContent
-            .replace(/\u00A0/g, '')
-            .replace(/\s+/g, '');
-
-        // strong/span nằm đầu đoạn => không thêm br
-        if (beforeText === '') {
-            return;
-        }
-
-        // =========================
-        // KIỂM TRA NGAY TRƯỚC CÓ BR
-        // =========================
-        let prev = el.previousSibling;
-
-        // Bỏ qua khoảng trắng / &nbsp;
-        while (
-            prev &&
-            prev.nodeType === Node.TEXT_NODE &&
-            prev.textContent
-                .replace(/\u00A0/g, '')
-                .trim() === ''
-            ) {
-            prev = prev.previousSibling;
-        }
-
-        // Ngay trước đã có <br>
-        if (
-            prev &&
-            prev.nodeType === Node.ELEMENT_NODE &&
-            prev.tagName === 'BR'
-        ) {
-            return;
-        }
-
-        // =========================
-        // THÊM BR
-        // =========================
-        el.before(document.createElement('br'));
-    });
-}
-
-
-function runCleanContent() {
-    document.querySelectorAll('.cleanContent').forEach(root => {
-        cleanContent(root);
-    });
-}
-
-
-// Chạy sau khi DOM đã sẵn sàng
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', runCleanContent);
-} else {
-    runCleanContent();
-}
-
-document.addEventListener('click', function (e) {
-
-    const el = e.target.closest('a.btn-loading, button.btn-loading');
-
-    if (!el) {
-        return;
-    }
-
-    // Nếu đang loading
-    if (el.classList.contains('btn-loading-active')) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        return;
-    }
-
-    el.classList.add('btn-loading-active');
-
-    if (el.tagName === 'BUTTON') {
-        el.disabled = true;
-    }
-
-    showGlobalLoading();
-
-    // tự mở lại sau 3 giây
-    setTimeout(function () {
-
-        el.classList.remove('btn-loading-active');
-
-        if (el.tagName === 'BUTTON') {
-            el.disabled = false;
-        }
-
-        hideGlobalLoading();
-
-    }, 2000);
-});
-
-
-function showGlobalLoading() {
-
-    const loading = document.getElementById('global-loading');
-
-    loading.style.display = 'block';
-
-    // restart animation progress
-    const progress = loading.querySelector('.global-loading-progress');
-
-    progress.style.animation = 'none';
-
-    progress.offsetHeight;
-
-    progress.style.animation = 'loading-progress 3s linear forwards';
-}
-
-
-function hideGlobalLoading() {
-
-    const loading = document.getElementById('global-loading');
-
-    loading.style.display = 'none';
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    if ('loading' in HTMLImageElement.prototype) {
-        const images = document.querySelectorAll('img.lazy');
-        images.forEach(img => {
-            if (img.dataset.src) {
-                img.src = img.dataset.src;
-                img.classList.remove('lazy');
-            }
-        });
-    } else {
-        let lazyImageObserver = new IntersectionObserver(function (entries, observer) {
-            entries.forEach(function (entry) {
-                if (entry.isIntersecting) {
-                    let img = entry.target;
-                    img.src = img.dataset.src;
-                    img.classList.remove("lazy");
-                    lazyImageObserver.unobserve(img);
-                }
-            });
-        });
-        document.querySelectorAll('.lazy').forEach(img => lazyImageObserver.observe(img));
-    }
-});

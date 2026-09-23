@@ -2746,6 +2746,7 @@ button {
     body {
         line-height: 1.65;
     }
+    .day-tooltip{display: none !important; opacity: 0 !important;}
     main h1 {
         line-height: 1.28;
     }
