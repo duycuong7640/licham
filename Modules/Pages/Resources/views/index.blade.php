@@ -33,11 +33,10 @@
         </div>
         <div class="summary-grid">
             <p class="summary-line">
-                Ngày <b>Dương Lịch</b>: <strong id="pre_summarySolar">{{ $day }}-{{ $month }}-{{ $year }}</strong>
+                Ngày <b>Dương Lịch</b>: <strong id="pre_summarySolar">{{ $day.'/'.$month.'/'.$year }}</strong>
             </p>
             <p class="summary-line">
-                Ngày <b>Âm Lịch</b>: <strong id="pre_summaryLunar">{{ $lunarDay }}-{{ $lunarMonth }}
-                    -{{ $lunarYear }}</strong>
+                Ngày <b>Âm Lịch</b>: <strong id="pre_summaryLunar">{{ $lunarDay.'/'.$lunarMonth.'/'.$lunarYear }}</strong>
             </p>
             <p class="summary-line">
                 Ngày trong tuần: <strong id="pre_summaryWeekday">{{ $thu }}</strong>
@@ -66,25 +65,12 @@
             </p>
         </div>
     </section>
-    <nav class="related-topics" aria-label="Chủ đề lịch âm liên quan">
-        <span class="related-topics-label">
-          <span class="related-topics-icon" aria-hidden="true"></span>
-          Chủ đề liên quan
-        </span>
-        <div class="related-topics-links">
-            <small>Xem lịch âm</small>
-            <small>Ngày âm lịch</small>
-            <small>Xem ngày tốt xấu</small>
-            <small>Lịch âm 2026 hôm nay</small>
-            <small>Âm lịch hôm nay là bao nhiêu</small>
-        </div>
-    </nav>
     <div class="page-grid">
         <section class="card today-card">
             <div class="today-heading">
                 <div>
                     <span class="section-label">LỊCH ÂM HÔM NAY</span>
-                    <h1 id="pre_pageDate">{{ $thu }}, {{ $day }} tháng {{ $month }}, {{ $year }}</h1>
+                    <p id="pre_pageDate">{{ $thu }}, {{ $day }} tháng {{ $month }}, {{ $year }}</p>
                 </div>
                 <div class="arrow-group">
                     <button id="pre_prevDay" class="icon-btn">‹</button>
@@ -204,18 +190,18 @@
         <div class="section-head">
             <div>
                 <span class="section-label">LỊCH ÂM DƯƠNG</span>
-                <h2 id="pre_monthTitle">Lịch xxx âm tháng {{ $data['month'] }} năm {{ $data['year'] }}</h2>
+                <h2 id="pre_monthTitle">Lịch âm tháng {{ $data['month'] }} năm {{ $data['year'] }}</h2>
             </div>
             <div class="month-controls">
-                <a href="{{ route('page.cope.show.month', ['month' => $monthButton['prev']['month'], 'year' => $monthButton['prev']['year']]) }}"
-                   title="Xem lịch tháng {{ $monthButton['prev']['month'] }} năm {{ $monthButton['prev']['year'] }}"
-                   aria-label="Xem lịch tháng {{ $monthButton['prev']['month'] }} năm {{ $monthButton['prev']['year'] }}">‹</a>
-                <a href="{{ route('page.cope.show.month', ['month' => date('m'), 'year' => date('Y')]) }}"
-                   title="Xem lịch tháng {{ date('m') }} năm {{ date('Y') }}"
-                   aria-label="Xem lịch tháng {{ date('m') }} năm {{ date('Y') }}">Tháng này</a>
-                <a href="{{ route('page.cope.show.month', ['month' => $monthButton['next']['month'], 'year' => $monthButton['next']['year']]) }}"
-                   title="Xem lịch tháng {{ $monthButton['next']['month'] }} năm {{ $monthButton['next']['year'] }}"
-                   aria-label="Xem lịch tháng {{ $monthButton['next']['month'] }} năm {{ $monthButton['next']['year'] }}">›</a>
+                <a href="{{ route('page.cope.show.month', ['month' => (int)$monthButton['prev']['month'], 'year' => $monthButton['prev']['year']]) }}"
+                   title="Xem lịch tháng {{ (int)$monthButton['prev']['month'] }} năm {{ $monthButton['prev']['year'] }}"
+                   aria-label="Xem lịch tháng {{ (int)$monthButton['prev']['month'] }} năm {{ $monthButton['prev']['year'] }}">‹</a>
+                <a href="{{ route('page.cope.show.month', ['month' => (int)date('m'), 'year' => date('Y')]) }}"
+                   title="Xem lịch tháng {{ (int)date('m') }} năm {{ date('Y') }}"
+                   aria-label="Xem lịch tháng {{ (int) date('m') }} năm {{ date('Y') }}">Tháng này</a>
+                <a href="{{ route('page.cope.show.month', ['month' => (int)$monthButton['next']['month'], 'year' => $monthButton['next']['year']]) }}"
+                   title="Xem lịch tháng {{ (int)$monthButton['next']['month'] }} năm {{ $monthButton['next']['year'] }}"
+                   aria-label="Xem lịch tháng {{ (int)$monthButton['next']['month'] }} năm {{ $monthButton['next']['year'] }}">›</a>
             </div>
         </div>
         <div class="weekdays">
@@ -328,7 +314,7 @@
                 <h3 id="calendar-lookup-title">Tra cứu lịch âm – lịch vạn niên</h3>
                 <nav class="calendar-lookup-links" aria-label="Tra cứu lịch nhanh">
                     <a href="{{ route('page.cope.show.day', ['day' => $preNextData['yesterday']['d'], 'month' => $preNextData['yesterday']['m'], 'year' => $preNextData['yesterday']['y']]) }}" title="Lịch âm hôm qua">Lịch âm hôm qua</a>
-                    <a class="is-current" href="{{ route('page.cope.show.day', ['day' => $day, 'month' => $month, 'year' => $year]) }}" title="Lịch âm hôm nay">Lịch âm hôm nay</a>
+                    <a class="is-current" href="{{ route('page.home') }}" title="Lịch âm hôm nay">Lịch âm hôm nay</a>
                     <a href="{{ route('page.cope.show.day', ['day' => $preNextData['tomorrow']['d'], 'month' => $preNextData['tomorrow']['m'], 'year' => $preNextData['tomorrow']['y']]) }}" title="Lịch âm ngày mai">Lịch âm ngày mai</a>
                     <a href="{{ route('page.cope.show.month', ['month' => $month, 'year' => $year]) }}" title="Lịch tháng {{ $month }}/{{ $year }}">Lịch tháng {{ $month }}/{{ $year }}</a>
                     <a href="{{ route('page.cope.show.year', ['year' => $year]) }}" title="Lịch năm {{ $year }}">Lịch năm {{ $year }}</a>
@@ -485,7 +471,7 @@
                     <h3>Ngày kỵ</h3>
                     <div class="detail-content">
                         @foreach($row['options']['TABOO_DAY'] as $value)
-                            <p>{{ strip_tags($value['value']) }}</p>
+                            <p>{{ \App\Helpers\Helpers::addSpaceAfterPunctuation(strip_tags($value['value'])) }}</p>
                         @endforeach
                     </div>
                 </div>
@@ -638,254 +624,382 @@
         </div>
     </section>
     <section class="section-block seo-grid" id="pre_knowledge">
-        <article class="card article-card" id="kien-thuc-lich-am">
+
+        <article class="card article-card" id="kien-thuc">
+
             <span class="section-label">KIẾN THỨC LỊCH VIỆT</span>
-            <h2>Lịch âm là gì? Cách xem lịch âm hôm nay</h2>
+
+            <h2>Kiến thức cơ bản về lịch âm Việt Nam</h2>
+
             <p>
-                <strong>Lịch âm hôm nay</strong> giúp tra cứu ngày âm lịch tương ứng với ngày dương lịch,
-                cùng các thông tin như Can Chi, tiết khí, giờ hoàng đạo, tuổi xung và hướng xuất hành.
-                Tại <strong>Lịch Âm Tốt</strong>, bạn có thể xem nhanh lịch ngày, lịch tháng, lịch năm
-                hoặc chuyển đổi ngày âm dương theo lịch Việt Nam.
+                Lịch âm và lịch pháp truyền thống Việt Nam sử dụng nhiều khái niệm
+                như ngày âm dương, Can Chi, tháng nhuận và tiết khí.
+                Hiểu những khái niệm cơ bản này giúp việc tra cứu lịch trở nên
+                rõ ràng và dễ đối chiếu hơn.
             </p>
+
             <p class="knowledge-note">
-                Khi xem ngày, nên đối chiếu nhiều thông tin như ngày âm dương, Can Chi,
-                giờ hoàng đạo và mục đích công việc. Các nội dung về ngày tốt xấu mang tính
-                tham khảo theo lịch pháp và quan niệm dân gian truyền thống.
+                Các thông tin về ngày tốt xấu, Can Chi, giờ hoàng đạo và những yếu tố
+                lịch pháp khác nên được xem trong mối liên hệ với nhau thay vì
+                chỉ dựa vào một thông tin riêng lẻ.
             </p>
+
             <div class="faq">
+
                 <details>
                     <summary>Âm lịch là gì?</summary>
                     <p>
                         Âm lịch là cách tính thời gian dựa chủ yếu vào chu kỳ của Mặt Trăng.
-                        Lịch truyền thống Việt Nam sử dụng hệ thống âm dương lịch, kết hợp
-                        chu kỳ Mặt Trăng với năm Mặt Trời để phù hợp với sự thay đổi của mùa.
+                        Lịch truyền thống Việt Nam thực tế là hệ thống âm dương lịch,
+                        kết hợp chu kỳ Mặt Trăng với chu kỳ của năm Mặt Trời.
                     </p>
                 </details>
+
                 <details>
                     <summary>Vì sao âm lịch có tháng nhuận?</summary>
                     <p>
-                        Một năm âm lịch ngắn hơn năm dương lịch. Vì vậy, sau một số năm
-                        sẽ cần thêm tháng nhuận để lịch âm tiếp tục phù hợp với chu kỳ
-                        thời tiết và mùa trong năm.
+                        Một năm gồm 12 tháng âm lịch ngắn hơn một năm dương lịch.
+                        Vì vậy, sau một số năm cần bổ sung tháng nhuận để lịch âm
+                        tiếp tục phù hợp với chu kỳ mùa trong năm.
                     </p>
                 </details>
+
                 <details>
-                    <summary>Giờ hoàng đạo là gì?</summary>
+                    <summary>Can Chi là gì?</summary>
                     <p>
-                        Giờ hoàng đạo là những khung giờ được xem là thuận lợi theo
-                        lịch pháp dân gian. Thông tin này thường được tham khảo khi
-                        xuất hành, khai trương hoặc thực hiện một số công việc quan trọng.
-                    </p>
-                </details>
-                <details>
-                    <summary>Can Chi của ngày có ý nghĩa gì?</summary>
-                    <p>
-                        Can Chi được hình thành từ 10 Thiên Can và 12 Địa Chi.
-                        Hệ thống này được dùng để gọi tên năm, tháng, ngày và giờ
+                        Can Chi là hệ thống kết hợp 10 Thiên Can và 12 Địa Chi,
+                        được sử dụng để gọi tên năm, tháng, ngày và giờ
                         trong lịch pháp truyền thống.
                     </p>
                 </details>
+
+                <details>
+                    <summary>Lịch âm và dương lịch khác nhau thế nào?</summary>
+                    <p>
+                        Dương lịch được xây dựng chủ yếu dựa trên chu kỳ Trái Đất
+                        chuyển động quanh Mặt Trời, trong khi lịch âm gắn với
+                        chu kỳ của Mặt Trăng. Lịch truyền thống Việt Nam kết hợp
+                        cả hai yếu tố nên thường được gọi chính xác hơn là âm dương lịch.
+                    </p>
+                </details>
+
             </div>
+
         </article>
+
+
         <aside class="card link-card" aria-labelledby="quick-lookup-title">
+
             <span class="section-label">TRA CỨU NHANH</span>
+
             <h2 id="quick-lookup-title">Tra cứu lịch âm theo nhu cầu</h2>
+
             <p class="lookup-intro">
-                Chọn nội dung cần xem để tra cứu lịch âm, ngày tốt và các công cụ liên quan.
+                Chọn nội dung cần xem để tra cứu lịch âm và các công cụ liên quan.
             </p>
+
             <div class="lookup-links">
+
                 <a href="{{ route('page.cope.show.month', [
-                        'month' => now()->month,
-                        'year' => now()->year
-                    ]) }}"
+                    'month' => now()->month,
+                    'year' => now()->year
+                ]) }}"
                    title="Lịch âm tháng {{ now()->month }}/{{ now()->year }}">
+
                     <strong>
                         Lịch âm tháng {{ now()->month }}/{{ now()->year }}
                     </strong>
+
                     <small>
-                        Xem lịch âm dương và ngày tốt xấu trong tháng
+                        Xem ngày âm dương và ngày tốt xấu trong tháng
                     </small>
+
                 </a>
-                <a href="{{ route('page.cope.show.year', ['year' => now()->year]) }}"
+
+
+                <a href="{{ route('page.cope.show.year', [
+                    'year' => now()->year
+                ]) }}"
                    title="Lịch âm năm {{ now()->year }}">
+
                     <strong>
                         Lịch âm năm {{ now()->year }}
                     </strong>
+
                     <small>
-                        Tra cứu lịch âm, ngày lễ và các tháng trong năm
+                        Tra cứu 12 tháng và các ngày trong năm
                     </small>
+
                 </a>
-                <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">
+
+
+                <a href="{{ route('page.cate.index', [
+                    'slug' => 'doi-ngay-am-duong'
+                ]) }}"
+                   title="Đổi ngày âm dương">
+
                     <strong>Đổi ngày âm dương</strong>
+
                     <small>
                         Chuyển đổi ngày dương sang âm và ngược lại
                     </small>
-                </a>
-                <a href="{{ route('page.cate.index', ['slug' => 'bai-viet']) }}"
-                   title="Bài viết tử vi, phong thủy">
-                    <strong>Bài viết</strong>
-                    <small>
-                        Tử vi · Phong thủy · 12 con giáp · Lịch Việt
-                    </small>
-                </a>
-            </div>
-        </aside>
-    </section>
-    <article class="card seo-analysis" aria-labelledby="seo-analysis-title">
-        <div class="cms-content">
-            @php
-                $content_title_home =  !empty($configData) ? \App\Helpers\Helpers::renderCode($configData, settingKey::CONTENT_HOME_TITLE) : '';
-            @endphp
-            @if($content_title_home)
-                <span class="section-label">{!! $content_title_home !!}</span>
-            @endif
-            {!! !empty($configData) ? \App\Helpers\Helpers::renderCode($configData, settingKey::CONTENT_HOME) : '' !!}
 
-            <h2>Lịch âm hôm nay - Tra cứu lịch vạn niên Việt Nam</h2>
+                </a>
+
+
+                <a href="{{ route('page.cate.index', [
+                    'slug' => 'bai-viet'
+                ]) }}"
+                   title="Bài viết lịch Việt, tử vi và phong thủy">
+
+                    <strong>Bài viết</strong>
+
+                    <small>
+                        Lịch Việt · Tử vi · Phong thủy · 12 con giáp
+                    </small>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+    </section>
+    <article class="card seo-analysis"
+             aria-labelledby="seo-analysis-title">
+
+        <div class="cms-content">
+
+            <h2 id="seo-analysis-title">
+                Tra cứu lịch âm, lịch vạn niên và ngày tốt xấu
+            </h2>
 
             <p>
-                <strong>Lịch Âm Tốt</strong> giúp tra cứu <strong>lịch âm hôm nay</strong>,
-                lịch vạn niên và thông tin ngày âm dương theo lịch Việt Nam.
-                Người dùng có thể xem ngày âm lịch, Can Chi, tiết khí, giờ hoàng đạo,
-                tuổi xung, hướng xuất hành và các thông tin thường được tham khảo
-                khi xem ngày tốt xấu.
+                <strong>Lịch Âm Tốt</strong> cung cấp thông tin
+                <strong>lịch âm hôm nay</strong>, lịch vạn niên và ngày âm dương
+                theo lịch Việt Nam. Người dùng có thể tra cứu Can Chi, tiết khí,
+                giờ hoàng đạo, tuổi xung, hướng xuất hành và nhiều dữ liệu lịch pháp
+                thường được tham khảo khi xem ngày.
             </p>
 
             <p>
-                Bên cạnh lịch ngày, bạn có thể xem
-                <a href="">lịch âm theo tháng</a>,
-                <a href="">lịch âm theo năm</a>
+                Ngoài lịch ngày, bạn có thể xem
+                <a href="{{ route('page.cope.show.month', [
+                    'month' => $month,
+                    'year' => $year
+                ]) }}"
+                   title="Lịch âm tháng {{ $month }}/{{ $year }}">
+                    lịch âm theo tháng
+                </a>,
+                <a href="{{ route('page.cope.show.year', [
+                    'year' => $year
+                ]) }}"
+                   title="Lịch âm năm {{ $year }}">
+                    lịch âm theo năm
+                </a>
                 hoặc sử dụng công cụ
-                <a href="">đổi ngày âm dương</a>
+                <a href="{{ route('page.cate.index', [
+                    'slug' => 'doi-ngay-am-duong'
+                ]) }}"
+                   title="Đổi ngày âm dương">
+                    đổi ngày âm dương
+                </a>
                 để tra cứu các mốc thời gian trong quá khứ và tương lai.
             </p>
 
 
-            <h3>Lịch âm hôm nay cho biết những thông tin gì?</h3>
+            <h3>Lịch âm hôm nay gồm những thông tin nào?</h3>
 
             <p>
                 Khi xem lịch âm hôm nay, thông tin cơ bản nhất là ngày dương lịch
-                và ngày âm lịch tương ứng. Ngoài ra, lịch truyền thống còn sử dụng
-                hệ thống Thiên Can, Địa Chi, tiết khí và nhiều yếu tố lịch pháp
-                để mô tả đặc điểm của từng ngày.
+                và ngày âm lịch tương ứng. Bên cạnh đó, người dùng còn có thể tra cứu
+                Can Chi của ngày, tháng và năm, tiết khí, giờ hoàng đạo,
+                tuổi xung và hướng xuất hành.
             </p>
 
             <p>
-                Người dùng có thể tra cứu Can Chi của ngày, tháng và năm,
-                giờ hoàng đạo, tuổi xung, hướng xuất hành cũng như những việc
-                nên làm hoặc nên hạn chế theo quan niệm lịch pháp dân gian.
-                Nếu cần xem đầy đủ hơn, bạn có thể truy cập
-                <a href="">lịch ngày hôm nay</a>
-                để xem thông tin chi tiết.
+                Những dữ liệu này giúp người xem có cái nhìn tổng hợp hơn về
+                đặc điểm của ngày theo lịch pháp truyền thống. Nếu cần xem sâu hơn,
+                bạn có thể truy cập
+                <a href="{{ route('page.cope.show.day', [
+                    'day' => now()->day,
+                    'month' => now()->month,
+                    'year' => now()->year
+                ]) }}"
+                   title="Chi tiết lịch ngày {{ now()->format('d/m/Y') }}">
+                    chi tiết lịch ngày {{ now()->format('d/m/Y') }}
+                </a>.
             </p>
 
 
-            <h3>Lịch vạn niên và lịch âm có gì khác nhau?</h3>
+            <h3>Lịch vạn niên và lịch âm khác nhau thế nào?</h3>
 
             <p>
                 Trong cách sử dụng phổ biến, <strong>lịch âm</strong> thường được dùng
-                để chỉ ngày tháng theo âm lịch, trong khi <strong>lịch vạn niên</strong>
-                cung cấp phạm vi thông tin rộng hơn. Một trang lịch vạn niên có thể
-                bao gồm ngày dương, ngày âm, Can Chi, tiết khí, giờ hoàng đạo,
-                ngày hoàng đạo, ngày hắc đạo và nhiều dữ liệu lịch pháp truyền thống.
+                để chỉ ngày tháng theo âm lịch. <strong>Lịch vạn niên</strong> có phạm vi
+                tra cứu rộng hơn, kết hợp ngày dương, ngày âm và nhiều thông tin
+                lịch pháp của từng ngày.
             </p>
 
             <p>
-                Vì vậy, nếu chỉ muốn biết hôm nay là ngày bao nhiêu âm lịch,
-                người dùng có thể xem nhanh phần ngày âm. Khi cần tìm hiểu kỹ hơn
-                về đặc điểm của một ngày, lịch vạn niên sẽ cung cấp nhiều thông tin
-                để tham khảo hơn.
+                Một trang lịch vạn niên có thể bao gồm Can Chi, tiết khí,
+                giờ hoàng đạo, ngày hoàng đạo hoặc hắc đạo, tuổi xung,
+                hướng xuất hành và các yếu tố thường được sử dụng khi xem ngày.
             </p>
 
 
-            <h3>Ngày tốt xấu được xem như thế nào?</h3>
+            <h3>Xem ngày tốt xấu cần đối chiếu những yếu tố nào?</h3>
 
             <p>
                 Theo lịch pháp và quan niệm dân gian, việc xem ngày tốt xấu
-                thường không dựa vào một yếu tố duy nhất. Tùy từng phương pháp,
+                không nên dựa vào một yếu tố duy nhất. Tùy từng phương pháp,
                 người xem có thể tham khảo Can Chi, ngày hoàng đạo hoặc hắc đạo,
-                sao tốt, sao xấu, trực ngày, tuổi xung và tính chất của công việc.
+                trực ngày, sao tốt, sao xấu, tuổi xung và mục đích của công việc.
             </p>
 
             <p>
-                Một ngày được xem là thuận lợi cho một công việc chưa chắc đã phù hợp
-                với tất cả các công việc khác. Vì vậy, khi tra cứu ngày tốt xấu,
-                nên xem tổng hợp nhiều thông tin thay vì chỉ dựa vào một chỉ số riêng lẻ.
+                Vì các hệ thống xem ngày có thể đưa ra những đánh giá khác nhau,
+                một ngày thuận lợi theo yếu tố này chưa chắc phù hợp với mọi công việc.
+                Do đó, nên đối chiếu nhiều dữ liệu trước khi tham khảo kết quả.
             </p>
 
 
-            <h3>Giờ hoàng đạo hôm nay là gì?</h3>
+            <h3>Giờ hoàng đạo và giờ hắc đạo là gì?</h3>
 
             <p>
                 <strong>Giờ hoàng đạo</strong> là những khung giờ được xem là thuận lợi
-                theo cách tính của lịch pháp dân gian. Mỗi ngày có các giờ hoàng đạo
-                và giờ hắc đạo khác nhau, thường được tham khảo khi xuất hành,
-                bắt đầu công việc hoặc thực hiện một số việc quan trọng.
+                theo lịch pháp dân gian, trong khi giờ hắc đạo thường được xem
+                là những khung giờ kém thuận lợi hơn.
             </p>
 
             <p>
-                Trên Lịch Âm Tốt, thông tin giờ hoàng đạo được hiển thị theo từng ngày
-                để người dùng có thể tra cứu nhanh mà không cần tự tính Can Chi của giờ.
+                Các khung giờ này thay đổi theo từng ngày.
+                Lịch Âm Tốt hiển thị trực tiếp giờ hoàng đạo và giờ hắc đạo
+                trong thông tin của từng ngày để người dùng dễ tra cứu.
             </p>
 
 
             <h3>Tra cứu lịch âm theo ngày, tháng và năm</h3>
 
             <p>
-                Ngoài lịch âm hôm nay, người dùng có thể tra cứu lịch theo từng ngày,
-                từng tháng hoặc cả năm. Việc xem lịch theo thời gian giúp dễ dàng
-                kiểm tra một ngày trong quá khứ hoặc tương lai, đối chiếu ngày âm dương
-                và theo dõi các ngày trong từng tháng.
+                Người dùng có thể tra cứu lịch theo từng ngày, từng tháng
+                hoặc cả năm. Cách tra cứu này giúp kiểm tra một ngày trong
+                quá khứ hoặc tương lai, đối chiếu ngày âm dương và theo dõi
+                các ngày trong từng tháng.
             </p>
 
             <p>
                 Bạn có thể xem
-                <a href="">lịch âm hôm qua</a>,
-                <a href="">lịch âm hôm nay</a>,
-                <a href="">lịch âm ngày mai</a>,
-                <a href="">lịch âm theo tháng</a>
+                <a href="{{ route('page.cope.show.day', [
+                    'day' => $preNextData['yesterday']['d'],
+                    'month' => $preNextData['yesterday']['m'],
+                    'year' => $preNextData['yesterday']['y']
+                ]) }}"
+                   title="Lịch âm hôm qua">
+                    lịch âm hôm qua
+                </a>,
+                <a href="{{ route('page.home') }}"
+                   title="Lịch âm hôm nay">
+                    lịch âm hôm nay
+                </a>,
+                <a href="{{ route('page.cope.show.day', [
+                    'day' => $preNextData['tomorrow']['d'],
+                    'month' => $preNextData['tomorrow']['m'],
+                    'year' => $preNextData['tomorrow']['y']
+                ]) }}"
+                   title="Lịch âm ngày mai">
+                    lịch âm ngày mai
+                </a>,
+                <a href="{{ route('page.cope.show.month', [
+                    'month' => $month,
+                    'year' => $year
+                ]) }}"
+                   title="Lịch âm tháng {{ $month }}/{{ $year }}">
+                    lịch tháng {{ $month }}/{{ $year }}
+                </a>
                 hoặc
-                <a href="">lịch âm theo năm</a>
-                tùy theo nhu cầu tra cứu.
+                <a href="{{ route('page.cope.show.year', [
+                    'year' => $year
+                ]) }}"
+                   title="Lịch âm năm {{ $year }}">
+                    lịch năm {{ $year }}
+                </a>.
             </p>
 
 
-            <h3>Đổi ngày dương sang ngày âm và ngược lại</h3>
+            <h3>Đổi ngày âm dương như thế nào?</h3>
 
             <p>
-                Công cụ <a href="">đổi ngày âm dương</a> giúp tìm ngày âm tương ứng
-                với một ngày dương hoặc chuyển từ ngày âm sang ngày dương.
-                Tính năng này hữu ích khi cần tra cứu ngày sinh âm lịch, ngày giỗ,
-                ngày lễ truyền thống hoặc các mốc thời gian được ghi theo lịch âm.
+                Công cụ
+                <a href="{{ route('page.cate.index', [
+                    'slug' => 'doi-ngay-am-duong'
+                ]) }}"
+                   title="Đổi ngày âm dương">
+                    đổi ngày âm dương
+                </a>
+                giúp tìm ngày âm tương ứng với một ngày dương hoặc chuyển
+                từ ngày âm sang ngày dương. Công cụ hữu ích khi tra cứu
+                ngày sinh âm lịch, ngày giỗ, ngày lễ truyền thống
+                hoặc những mốc thời gian được ghi theo lịch âm.
             </p>
 
 
             <h3>Lịch âm trong đời sống người Việt</h3>
 
             <p>
-                Dù dương lịch được sử dụng phổ biến trong công việc và đời sống hằng ngày,
-                lịch âm vẫn gắn với nhiều phong tục của người Việt như Tết Nguyên đán,
-                ngày rằm, mùng một, giỗ chạp và các ngày lễ truyền thống.
-                Vì vậy, nhu cầu tra cứu song song ngày âm và ngày dương
-                vẫn rất phổ biến trong đời sống hiện nay.
+                Dù dương lịch được sử dụng phổ biến trong công việc và sinh hoạt
+                hằng ngày, lịch âm vẫn gắn với nhiều phong tục của người Việt
+                như Tết Nguyên đán, ngày rằm, mùng một, giỗ chạp
+                và các ngày lễ truyền thống.
             </p>
+
+            <p>
+                Vì vậy, việc tra cứu song song ngày âm và ngày dương
+                vẫn có ý nghĩa trong đời sống, đặc biệt khi cần đối chiếu
+                những ngày lễ, phong tục và mốc thời gian truyền thống.
+            </p>
+
 
             <p class="knowledge-note">
                 Các thông tin về ngày tốt xấu, giờ hoàng đạo, hướng xuất hành
-                và các yếu tố lịch pháp trên Lịch Âm Tốt được cung cấp với mục đích
-                tra cứu và tham khảo theo văn hóa, lịch pháp và quan niệm dân gian truyền thống.
+                và những yếu tố lịch pháp trên Lịch Âm Tốt được cung cấp
+                với mục đích tra cứu và tham khảo theo văn hóa,
+                lịch pháp và quan niệm dân gian truyền thống.
             </p>
 
+
             <p class="cms-links">
-                <b>Tra cứu tiếp: </b>
-                <a href="{{ route('page.cope.show.month', ['month' => date('m'), 'year' => date('Y')]) }}"
-                   title="Lịch âm tháng {{ date('m') }}">Lịch âm tháng {{ date('m') }}</a> ·
-                <a href="{{ route('page.cope.show.year', ['year' => date('Y')]) }}" title="Lịch âm năm {{ date('Y') }}">Lịch
-                    âm năm {{ date('Y') }}</a> ·
-                <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi
-                    ngày âm dương</a>
+                <b>Tra cứu tiếp:</b>
+
+                <a href="{{ route('page.cope.show.month', [
+                    'month' => (int) date('m'),
+                    'year' => date('Y')
+                ]) }}"
+                   title="Lịch âm tháng {{ (int) date('m') }}">
+                    Lịch âm tháng {{ (int) date('m') }}
+                </a>
+
+                ·
+
+                <a href="{{ route('page.cope.show.year', [
+                    'year' => date('Y')
+                ]) }}"
+                   title="Lịch âm năm {{ date('Y') }}">
+                    Lịch âm năm {{ date('Y') }}
+                </a>
+
+                ·
+
+                <a href="{{ route('page.cate.index', [
+                    'slug' => 'doi-ngay-am-duong'
+                ]) }}"
+                   title="Đổi ngày âm dương">
+                    Đổi ngày âm dương
+                </a>
             </p>
+
         </div>
+
     </article>
 @endsection
 

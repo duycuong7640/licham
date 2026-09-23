@@ -784,7 +784,7 @@ class Helpers
         $url = !empty($params['canonical']) ? $params['canonical'] : request()->url();
         $title = !empty($params['title_seo']) ? $params['title_seo'] : '';
         $description = !empty($params['meta_des']) ? $params['meta_des'] : '';
-        $logo = !empty($params['logo']) ? $params['logo'] : asset('static/web/images/logo.svg');
+        $logo = !empty($params['logo']) ? $params['logo'] : asset('static/web/images/logo.png');
         $image = !empty($params['logo_share']) ? $params['logo_share'] : asset('static/web/images/share.jpg');
         $baseUrl = route('page.home');
         $domainName = request()->getHost();
@@ -2991,6 +2991,11 @@ class Helpers
                 'y' => (int) $tomorrow->format('Y'),
             ],
         ];
+    }
+
+    public static function addSpaceAfterPunctuation(string $str): string
+    {
+        return preg_replace('/([.,])(?=\S)/u', '$1 ', $str);
     }
 
 }

@@ -507,10 +507,12 @@ button {
     margin-bottom: 16px;
 }
 .today-heading h1,
+.today-heading p,
 .form-card h1 {
     font-size: var(--fs-page);
     line-height: 1.25;
     margin: 5px 0 0;
+    font-weight: bold;
 }
 .today-card > h1 {
     margin: 20px 0 22px;
@@ -2688,7 +2690,7 @@ button {
 
     .data-table {
         min-width: 600px;
-        font-size: 15px;
+        font-size: 16px;
     }
 
     .data-table th,
@@ -2697,7 +2699,7 @@ button {
     }
 
     .data-table thead th {
-        font-size: 14px;
+        font-size: 15px;
     }
 
     /* Giữ cột đầu tiên khi kéo ngang */
@@ -2901,7 +2903,7 @@ button {
         border-radius: 5px;
         background: rgb(255 255 255 / 10%);
         color: #fff;
-        font-size: 15px;
+        font-size: 16px;
         font-weight: 700;
         font-variant-numeric: tabular-nums;
         letter-spacing: 0.02em;
@@ -2932,7 +2934,7 @@ button {
     }
     .subnav-links a {
         flex: 0 0 auto;
-        font-size: 14px;
+        font-size: 15px;
         white-space: nowrap;
     }
     .logo small {
@@ -2953,7 +2955,7 @@ button {
         height: 23px;
     }
     .logo b {
-        font-size: 18px;
+        font-size: 19px;
         white-space: nowrap;
     }
     .container {
@@ -2962,7 +2964,7 @@ button {
     .breadcrumb {
         flex-wrap: wrap;
         padding: 12px 0 9px;
-        font-size: 14px;
+        font-size: 15px;
         line-height: 1.45;
     }
     .section-block {
@@ -2987,7 +2989,7 @@ button {
     }
     .month-page-head h1,
     .year-page-head h1 {
-        font-size: 26px;
+        font-size: 27px;
     }
     .month-toolbar {
         grid-template-columns: 1fr 1fr;
@@ -3043,13 +3045,13 @@ button {
         border-right: 0;
     }
     .year-summary strong {
-        font-size: 18px;
+        font-size: 19px;
         line-height: 1.25;
     }
     .year-summary span {
         max-width: 86px;
         margin-top: 4px;
-        font-size: 14px;
+        font-size: 15px;
         line-height: 1.35;
     }
     .year-section-head .legend {
@@ -3066,13 +3068,13 @@ button {
     }
     .mini-days a > strong,
     .mini-days > span > strong {
-        font-size: 16px;
+        font-size: 17px;
     }
     .convert-heading {
         padding: 19px 17px;
     }
     .convert-heading h1 {
-        font-size: 26px;
+        font-size: 27px;
     }
     .convert-form-card,
     .convert-guide,
@@ -3099,10 +3101,10 @@ button {
         padding: 12px 5px;
     }
     .conversion-pair strong {
-        font-size: 38px;
+        font-size: 39px;
     }
     .conversion-pair span {
-        font-size: 14px;
+        font-size: 15px;
     }
     .conversion-facts > div {
         grid-template-columns: 1fr;
@@ -3112,7 +3114,7 @@ button {
         padding: 22px 18px;
     }
     .editorial-hero h1 {
-        font-size: 26px;
+        font-size: 27px;
     }
     .topic-filter {
         gap: 6px;
@@ -3141,13 +3143,13 @@ button {
         padding: 22px 18px 26px;
     }
     .article-detail-head h1 {
-        font-size: 27px;
+        font-size: 28px;
     }
     .article-lead {
-        font-size: 17px;
+        font-size: 18px;
     }
     .article-body p {
-        font-size: 16px;
+        font-size: 17px;
     }
     .today-card,
     .facts-card,
@@ -3190,7 +3192,7 @@ button {
     .calendar-card > .section-head h2 {
         margin-top: 2px;
         color: var(--green-dark);
-        font-size: 22px;
+        font-size: 23px;
         line-height: 1.3;
     }
     .calendar-card > .section-head .month-controls {
@@ -3226,7 +3228,7 @@ button {
         border-radius: 5px;
         background: var(--soft);
         color: #535b62;
-        font-size: 14px;
+        font-size: 15px;
         line-height: 1.35;
         justify-content: center;
         text-align: center;
@@ -3248,7 +3250,7 @@ button {
         border-radius: 50%;
         background: #e0e5e8;
         color: #586169;
-        font-size: 12px;
+        font-size: 13px;
         font-style: normal;
         font-weight: 700;
     }
@@ -3265,11 +3267,11 @@ button {
     .convert-heading h1,
     .editorial-hero h1,
     .article-detail-head h1 {
-        font-size: 26px;
+        font-size: 27px;
     }
     .year-section-head h2,
     .article-index-head h2 {
-        font-size: 22px;
+        font-size: 23px;
     }
     .reading-summary {
         padding: 13px 14px;
@@ -3289,17 +3291,17 @@ button {
     }
     .summary-line {
         padding: 4px 0 4px 20px;
-        font-size: 16px;
+        font-size: 17px;
     }
     .date-panel {
         min-width: 0;
         padding: 14px 5px;
     }
     .date-panel strong {
-        font-size: 68px;
+        font-size: 69px;
     }
     .date-panel b {
-        font-size: 15px;
+        font-size: 16px;
         line-height: 1.4;
     }
     .status-line {
@@ -3323,19 +3325,19 @@ button {
     .status-line > span:last-child {
         display: block;
         padding: 11px 12px 0;
-        font-size: 15px;
+        font-size: 16px;
         line-height: 1.5;
     }
     .fact-list div {
         grid-template-columns: 110px 1fr;
-        font-size: 16px;
+        font-size: 17px;
     }
     .section-head h2,
     .article-card h2,
     .facts-card h2,
     .link-card h3,
     .feature h3 {
-        font-size: 22px;
+        font-size: 23px;
     }
     .calendar-day {
         min-height: 70px;
@@ -3343,7 +3345,7 @@ button {
     }
     .calendar-day strong {
         display: block;
-        font-size: 18px;
+        font-size: 19px;
         line-height: 1.15;
     }
     .calendar-day small {
@@ -3352,7 +3354,7 @@ button {
         bottom: 7px;
         float: none;
         max-width: calc(100% - 22px);
-        font-size: 13px;
+        font-size: 14px;
         line-height: 1;
         white-space: nowrap;
     }
@@ -3364,7 +3366,7 @@ button {
     }
     .weekdays div {
         padding: 8px 2px;
-        font-size: 13px;
+        font-size: 14px;
         line-height: 1.2;
         white-space: nowrap;
     }
@@ -3403,7 +3405,7 @@ button {
         padding: 14px 15px;
     }
     .detail-content {
-        font-size: 16px;
+        font-size: 17px;
     }
     .form-grid,
     .feature-grid {
@@ -3413,7 +3415,7 @@ button {
         padding: 20px 16px;
     }
     .cms-content h2 {
-        font-size: 22px;
+        font-size: 23px;
     }
     .site-footer {
         margin-top: 36px;
@@ -3461,7 +3463,7 @@ button {
         padding: 11px 15px;
     }
     .calendar-month-link {
-        font-size: 14px;
+        font-size: 15px;
     }
     .calendar-today-copy,
     .calendar-lookup {
@@ -3469,12 +3471,12 @@ button {
     }
     .calendar-today-copy h2 {
         margin-top: 5px;
-        font-size: 23px;
+        font-size: 24px;
         line-height: 1.32;
     }
     .calendar-today-copy p,
     .calendar-today-copy .calendar-content-lead {
-        font-size: 16px;
+        font-size: 17px;
         line-height: 1.65;
     }
     .calendar-detail-cta {
@@ -3483,7 +3485,7 @@ button {
         padding: 10px 13px;
     }
     .calendar-lookup h3 {
-        font-size: 18px;
+        font-size: 19px;
     }
     .calendar-lookup-links {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3493,7 +3495,7 @@ button {
         display: flex;
         align-items: center;
         padding: 8px 26px 8px 10px;
-        font-size: 14px;
+        font-size: 15px;
     }
 }
 
@@ -3512,11 +3514,11 @@ button {
         max-width: calc(100% - 120px);
     }
     .logo b {
-        font-size: 17px;
+        font-size: 18px;
     }
     .mobile-clock {
         min-width: 70px;
-        font-size: 14px;
+        font-size: 15px;
     }
     .footer-inner {
         grid-template-columns: 1fr;
