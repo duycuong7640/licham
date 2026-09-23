@@ -24,7 +24,7 @@ class HomeController extends Controller
         try {
             $now = Carbon::now('Asia/Ho_Chi_Minh');
             $cacheKey = 'cate_home_html_' . $now->format('Ymd');
-            $ttl = now()->addMinutes(30);
+            $ttl = now()->addMinutes(2);
             $htmlCache = Cache::store('html');
             if ($request->has('reset')) {
                 $htmlCache->forget($cacheKey);

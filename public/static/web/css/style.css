@@ -538,6 +538,10 @@ button {
 .summary-kicker b {
     font-size: 17px;
 }
+.summary-kicker h1 {
+    font-size: 17px;
+    margin: 0; padding: 0;
+}
 .summary-kicker span {
     font-size: 14px;
     color: var(--muted);
@@ -692,6 +696,7 @@ button {
     background: #fff;
     animation: status-pulse 2.2s ease-out infinite;
 }
+.link-card h2{font-size: 19px;}
 .facts-card h2,
 .link-card h3,
 .feature h3 {
@@ -1253,6 +1258,7 @@ button {
     border-top: 1px solid var(--line);
     padding: 12px 0;
 }
+.faq details:last-child{padding-bottom: 8px;}
 .faq summary {
     font-size: var(--fs-body);
     font-weight: 600;
