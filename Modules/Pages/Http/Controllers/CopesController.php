@@ -30,7 +30,7 @@ class CopesController extends Controller
 //                    ->header('Cache-Control', \dataKey::CACHE);
 //            }
 
-            $ttl = now()->addMinutes(10);
+            $ttl = now()->addMinutes(2);
             $htmlCache = Cache::store('html');
             if ($request->has('reset')) {
                 $htmlCache->forget($cacheKey);
@@ -64,19 +64,19 @@ class CopesController extends Controller
             }
             $currentYear = (int)now('Asia/Ho_Chi_Minh')->year;
             $isIndexable = $yearNumber >= $currentYear - 1 && $yearNumber <= $currentYear + 2;
-            $yearLabel = $yearName ? $yearNumber . ' (' . $yearName . ')' : (string)$yearNumber;
 
             // seo
             $config = $request->get('configData');
-            $siteName = env('SITE_NAME');
+            $setting = $config['setting'] ?? [];
+            $siteName = !empty($setting['title']) ? $setting['title'] : env('SITE_NAME');
             $SEO = [
                 'name' => $siteName,
                 'slug' => $year,
                 'logo' => !empty($config['setting']['thumbnail']) ? Helpers::renderThumb($config['setting']['thumbnail']) : '',
                 'logo_share' => !empty($config['setting']['thumbnailShare']) ? Helpers::renderThumb($config['setting']['thumbnailShare']) : '',
                 'fav' => asset('static/web/images/favicon/favicon.ico'),
-                'title_seo' => 'Lịch vạn niên ' . $yearLabel . ' – Âm dương 12 tháng',
-                'meta_des' => $yearNumber . ($yearName ? ' là năm ' . $yearName . '.' : '.') . ' Lịch 12 tháng hiển thị ngày âm, ngày dương,' . ' ngày Hoàng đạo, Hắc đạo' . ' cùng các ngày lễ trong năm.',
+                'title_seo' => 'Lịch Âm Năm ' . $yearNumber . ' - Lịch Vạn Niên ' . $yearName . ' 12 Tháng',
+                'meta_des' => 'Xem lịch âm năm ' . $yearNumber . ' (' . $yearName . '): lịch âm dương 12 tháng, ngày hoàng đạo, hắc đạo, ngày lễ, Tết và thông tin từng ngày trong năm.',
                 'canonical' => $request->url(),
                 'robots' => $isIndexable ? 'index, follow' : 'noindex, follow',
             ];
@@ -162,15 +162,16 @@ class CopesController extends Controller
 
             // seo
             $config = $request->get('configData');
-            $siteName = env('SITE_NAME');
+            $setting = $config['setting'] ?? [];
+            $siteName = !empty($setting['title']) ? $setting['title'] : env('SITE_NAME');
             $SEO = [
                 'name' => $siteName,
                 'slug' => $month,
                 'logo' => !empty($config['setting']['thumbnail']) ? Helpers::renderThumb($config['setting']['thumbnail']) : '',
                 'logo_share' => !empty($config['setting']['thumbnailShare']) ? Helpers::renderThumb($config['setting']['thumbnailShare']) : '',
                 'fav' => asset('static/web/images/favicon/favicon.ico'),
-                'title_seo' => 'Tháng ' . $monthNumber . '/' . $yearNumber . ' có những ngày nào tốt?',
-                'meta_des' => 'Tháng ' . $monthNumber . '/' . $yearNumber . ' có ' . $goodDayCount . ' ngày Hoàng đạo' . ' và ' . $badDayCount . ' ngày Hắc đạo.' . ' Mỗi ngày đều ghi rõ ngày âm, giờ đẹp,' . ' việc nên làm và điều cần tránh.',
+                'title_seo' => 'Lịch Âm Tháng ' . $monthNumber . '/' . $yearNumber . ' - Xem Ngày Tốt Xấu, Hoàng Đạo',
+                'meta_des' => 'Xem lịch âm tháng ' . $monthNumber . '/' . $yearNumber . ': ngày âm dương, ngày hoàng đạo, ngày hắc đạo, giờ tốt, ngày lễ và thông tin xuất hành trong tháng.',
                 'meta_key' => '',
                 'canonical' => $request->url(),
                 'robots' => $isIndexable ? 'index, follow' : 'noindex, follow',
@@ -222,7 +223,7 @@ class CopesController extends Controller
 //                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
 //                    ->header('Cache-Control', \dataKey::CACHE);
 //            }
-            $ttl = now()->addMinutes(10);
+            $ttl = now()->addMinutes(2);
             $htmlCache = Cache::store('html');
             if ($request->has('reset')) {
                 $htmlCache->forget($cacheKey);
@@ -251,19 +252,20 @@ class CopesController extends Controller
             $indexTo = $now->addYears(2)->endOfYear();
             $isIndexable = $pageDate->betweenIncluded($indexFrom, $indexTo);
             $lunarTimestamp = strtotime($data['day']['lunarDay']);
-            $lunarDate = date('d/m/Y', $lunarTimestamp);
+            $lunarDate = date('d/m', $lunarTimestamp);
             $dayType = !empty($data['day']['isDay']) ? 'Hoàng đạo' : 'Hắc đạo';
 
             $config = $request->get('configData');
-            $siteName = env('SITE_NAME');
+            $setting = $config['setting'] ?? [];
+            $siteName = !empty($setting['title']) ? $setting['title'] : env('SITE_NAME');
             $SEO = [
                 'name' => $siteName,
                 'slug' => !empty($data['day']['slug']) ? $data['day']['slug'] : '',
                 'logo' => !empty($config['setting']['thumbnail']) ? Helpers::renderThumb($config['setting']['thumbnail']) : '',
                 'logo_share' => !empty($config['setting']['thumbnailShare']) ? Helpers::renderThumb($config['setting']['thumbnailShare']) : '',
                 'fav' => asset('static/web/images/favicon/favicon.ico'),
-                'title_seo' => 'Ngày ' . $displayDate . ' (' . $data['day']['strDay'] . ') tốt hay xấu?',
-                'meta_des' => 'Ngày ' . $displayDate . ' là ngày ' . $data['day']['strDay'] . ', ' . $lunarDate . ' âm lịch, thuộc ' . $dayType . '. Xem ngày này hợp làm việc gì, ' . 'nên tránh gì và giờ nào đẹp.',
+                'title_seo' => 'Lịch Âm Ngày '.$displayDate.' - Ngày '.$data['day']['strDay'].' Tốt Hay Xấu?',
+                'meta_des' => 'Lịch âm ngày '.$displayDate.' là '.$lunarDate.' âm lịch, ngày '.$data['day']['strDay'].', '.$dayType.'. Xem giờ hoàng đạo, tuổi xung, hướng xuất hành, việc nên làm và nên tránh.',
                 'meta_key' => '',
                 'canonical' => $request->url(),
                 'robots' => $isIndexable ? 'index, follow' : 'noindex, follow'
@@ -292,7 +294,7 @@ class CopesController extends Controller
 //            Cache::put($cacheKey, $response->getContent(), $ttl);
 //            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
 //                ->header('Cache-Control', \dataKey::CACHE);
-        } catch (\Exception $e) {
+        } catch (\Exception $e) {Helpers::pre($e->getMessage());
             return response()->view('errors.500', [], 500);
         }
     }

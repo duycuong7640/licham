@@ -16,6 +16,118 @@
             }
             if($strYear) break;
         }
+
+        // data
+        $isLeapYear = ($year % 400 === 0) || ($year % 4 === 0 && $year % 100 !== 0);
+        $totalDaysInYear = $isLeapYear ? 366 : 365;
+
+        $totalGoodDays = 0;
+        $totalBadDays = 0;
+        $monthStats = [];
+        $tetSolarDate = null;
+
+        $isLeapYear =
+        ($year % 400 === 0)
+        || ($year % 4 === 0 && $year % 100 !== 0);
+
+        $totalDaysInYear = $isLeapYear ? 366 : 365;
+
+        $tetDay = null;
+        $firstDayOfYear = null;
+        $lastDayOfYear = null;
+        foreach ($data['calendar'] as $monthNum => $monthData) {
+
+            foreach ($monthData['days'] as $day) {
+
+                if (empty($day) || $day['type'] === 'empty' || (int) $day['solar_year'] !== (int) $year) {
+                    continue;
+                }
+
+                /*
+                 * 01/01 dương lịch
+                 */
+                if (
+                    (int) $day['solar_day'] === 1
+                    && (int) $day['solar_month'] === 1
+                ) {
+                    $firstDayOfYear = $day;
+                }
+
+                /*
+                 * 31/12 dương lịch
+                 */
+                if (
+                    (int) $day['solar_day'] === 31
+                    && (int) $day['solar_month'] === 12
+                ) {
+                    $lastDayOfYear = $day;
+                }
+
+                /*
+                 * Mùng 1 Tết của đúng năm âm lịch
+                 */
+                if (
+                    empty($tetDay)
+                    && (int) $day['lunar_day'] === 1
+                    && (int) $day['lunar_month'] === 1
+                    && (int) $day['lunar_year'] === (int) $year
+                ) {
+                    $tetDay = $day;
+                }
+            }
+        }
+
+
+        /*
+         * Thứ của ngày Tết
+         */
+        $tetWeekday = null;
+
+        if (!empty($tetDay)) {
+
+            $weekdays = [
+                0 => 'Chủ nhật',
+                1 => 'Thứ Hai',
+                2 => 'Thứ Ba',
+                3 => 'Thứ Tư',
+                4 => 'Thứ Năm',
+                5 => 'Thứ Sáu',
+                6 => 'Thứ Bảy',
+            ];
+
+            $tetCarbon = \Carbon\Carbon::create(
+                (int) $tetDay['solar_year'],
+                (int) $tetDay['solar_month'],
+                (int) $tetDay['solar_day']
+            );
+
+            $tetWeekday = $weekdays[$tetCarbon->dayOfWeek] ?? null;
+        }
+
+
+        /*
+         * Tìm tháng có nhiều ngày hoàng đạo nhất
+         */
+        $maxGoodDays = 0;
+        $bestGoodMonths = [];
+
+        foreach ($monthStats as $monthNum => $stats) {
+
+            if ($stats['good'] > $maxGoodDays) {
+                $maxGoodDays = $stats['good'];
+                $bestGoodMonths = [$monthNum];
+
+            } elseif (
+                $stats['good'] === $maxGoodDays
+                && $maxGoodDays > 0
+            ) {
+                $bestGoodMonths[] = $monthNum;
+            }
+        }
+
+        $bestGoodMonthsText = collect($bestGoodMonths)
+            ->map(fn($month) => 'tháng ' . $month)
+            ->implode(', ');
     @endphp
     <section class="card year-page-head">
         <div>
@@ -29,7 +141,7 @@
             @endif
             <label for="yearSelect">
                 Chọn năm
-                <select id="pre_yearSelect">
+                <select id="yearSelect">
                     @for($y = 1900; $y <= 2050; $y++)
                         <option value="{{ $y }}" {{ $y == $year ? 'selected' : '' }}>
                             {{ $y }}
@@ -44,37 +156,47 @@
     </section>
     <div class="year-summary">
         <div>
-            <strong>12</strong>
-            <span>Tháng trong năm</span>
-        </div>
-        <div>
-            <strong>365</strong><span>Ngày dương lịch</span>
-        </div>
-        <div>
             <strong>{{ $strYear }}</strong>
             <span>Can Chi năm</span>
         </div>
+
+        <div>
+            <strong>{{ $totalDaysInYear }}</strong>
+            <span>Ngày dương lịch</span>
+        </div>
+
+        <div>
+            <strong>{{ $isLeapYear ? 'Có' : 'Không' }}</strong>
+            <span>Năm nhuận dương lịch</span>
+        </div>
+
+        @if(!empty($tetSolarDate))
+            <div>
+                <strong>{{ $tetSolarDate }}</strong>
+                <span>Tết Nguyên đán</span>
+            </div>
+        @endif
     </div>
-    <section class="year-calendar-section" aria-labelledby="year-calendar-title">
-        <div class="year-section-head" id="tong-quan">
+    <section class="year-calendar-section" aria-labelledby="pre_year-calendar-title">
+        <div class="year-section-head">
             <div>
                 <span class="section-label">TỔNG QUAN 12 THÁNG</span>
-                <h2 id="pre_year-calendar-title">Lịch cả năm</h2>
+                <h2 id="pre_year-calendar-title">Lịch âm năm {{ $year }} theo 12 tháng</h2>
             </div>
             <div class="legend">
-                <span><i></i>Ngày tốt</span>
-                <span><i class="bad-dot"></i>Ngày xấu</span>
+                <span><i></i>Ngày hoàng đạo</span>
+                <span><i class="bad-dot"></i>Ngày hắc đạo</span>
             </div>
         </div>
         <div class="year-overview">
             @foreach($data['calendar'] as $monthNum => $monthData)
                 <section class="mini-month">
-                    <h2>
+                    <h3>
                         <a href="{{ route('page.cope.show.month', ['month' => \App\Helpers\Helpers::checkNumber($monthData['month']), 'year' => $monthData['year']]) }}"
                            title="Tháng {{ $monthData['month'] }}">
-                            Tháng {{ $monthData['month'] }}
+                            Lịch âm tháng {{ $monthData['month'] }}/{{ $monthData['year'] }}
                         </a>
-                    </h2>
+                    </h3>
                     <div class="mini-week">
                         <span>T2</span>
                         <span>T3</span>
@@ -130,6 +252,122 @@
             @endforeach
         </div>
     </section>
+    <section class="section-block year-information" id="tong-quan" aria-labelledby="year-overview-title">
+        <article class="card seo-analysis">
+
+            <div class="cms-content">
+
+            <span class="section-label">
+                THÔNG TIN NĂM {{ $year }}
+            </span>
+
+
+                <h2 id="year-overview-title">
+                    Lịch âm năm {{ $year }}: {{ $strYear }}, Tết và các mốc âm dương
+                </h2>
+
+
+                <p>
+                    <strong>Năm {{ $year }}</strong> là năm
+                    <strong>{{ $strYear }}</strong> theo Can Chi.
+                    Đây là
+                    @if($isLeapYear)
+                        <strong>năm nhuận dương lịch</strong> với 366 ngày,
+                    @else
+                        năm dương lịch có 365 ngày,
+                    @endif
+                    bắt đầu từ ngày 01/01/{{ $year }} và kết thúc
+                    vào ngày 31/12/{{ $year }}.
+                    Lịch âm trong năm không trùng hoàn toàn với ranh giới
+                    của năm dương lịch, vì năm âm lịch được tính theo
+                    chu kỳ tháng âm và bắt đầu từ Tết Nguyên đán.
+                </p>
+
+
+                @if(!empty($tetDay))
+
+                    <h3>
+                        Tết Nguyên đán {{ $year }} vào ngày nào?
+                    </h3>
+
+                    <p>
+                        Mùng 1 tháng Giêng năm
+                        <strong>{{ $strYear }}</strong>
+                        rơi vào
+
+                        @if(!empty($tetWeekday))
+                            <strong>{{ $tetWeekday }}</strong>,
+                        @endif
+
+                        ngày
+
+                        <a href="{{ route('page.cope.show.day', [
+                            'day'   => $tetDay['solar_day'],
+                            'month' => $tetDay['solar_month'],
+                            'year'  => $tetDay['solar_year']
+                        ]) }}"
+                           title="Lịch ngày {{ $tetDay['solar_day'] }}/{{ $tetDay['solar_month'] }}/{{ $tetDay['solar_year'] }}">
+
+                            <strong>
+                                {{ \App\Helpers\Helpers::checkNumber($tetDay['solar_day']) }}/{{ \App\Helpers\Helpers::checkNumber($tetDay['solar_month']) }}/{{ $tetDay['solar_year'] }}
+                            </strong>
+
+                        </a>
+
+                        dương lịch. Đây là thời điểm bắt đầu
+                        tháng Giêng và năm âm lịch {{ $strYear }}.
+                    </p>
+
+                @endif
+
+
+                @if(!empty($firstDayOfYear) && !empty($lastDayOfYear))
+                    <h3>
+                        Đầu và cuối năm {{ $year }} là ngày bao nhiêu âm lịch?
+                    </h3>
+                    <p>
+                        Ngày
+                        <a href="{{ route('page.cope.show.day', ['day'   => $firstDayOfYear['solar_day'], 'month' => $firstDayOfYear['solar_month'], 'year'  => $firstDayOfYear['solar_year']]) }}" title="Lịch ngày {{ $firstDayOfYear['solar_day'] }}/{{ $firstDayOfYear['solar_month'] }}/{{ $firstDayOfYear['solar_year'] }}">
+                            <strong>{{ $firstDayOfYear['solar_day'] }}/{{ $firstDayOfYear['solar_month'] }}/{{ $firstDayOfYear['solar_year'] }}</strong>
+                        </a>
+                        dương lịch tương ứng ngày
+                        <strong>
+                            {{ \App\Helpers\Helpers::checkNumber($firstDayOfYear['lunar_day']) }}/{{ \App\Helpers\Helpers::checkNumber($firstDayOfYear['lunar_month']) }}
+                        </strong>
+                        âm lịch.
+                        Trong khi đó, ngày
+                        <a href="{{ route('page.cope.show.day', ['day'   => $lastDayOfYear['solar_day'], 'month' => $lastDayOfYear['solar_month'], 'year'  => $lastDayOfYear['solar_year']]) }}" title="Lịch ngày {{ $lastDayOfYear['solar_day'] }}/{{ $lastDayOfYear['solar_month'] }}/{{ $lastDayOfYear['solar_year'] }}">
+                            <strong>{{ $lastDayOfYear['solar_day'] }}/{{ $lastDayOfYear['solar_month'] }}/{{ $lastDayOfYear['solar_year'] }}</strong>
+                        </a>
+                        tương ứng ngày
+                        <strong>
+                            {{ \App\Helpers\Helpers::checkNumber($lastDayOfYear['lunar_day']) }}/{{ \App\Helpers\Helpers::checkNumber($lastDayOfYear['lunar_month']) }}
+                        </strong>
+                        âm lịch.
+                        Hai mốc này giúp thấy rõ sự chênh lệch giữa
+                        năm dương lịch và chu kỳ của lịch âm.
+                    </p>
+                @endif
+                <h3>
+                    Năm {{ $year }} có phải năm nhuận không?
+                </h3>
+                <p>
+                    @if($isLeapYear)
+                        Có. <strong>{{ $year }} là năm nhuận dương lịch</strong>,
+                        có 366 ngày; riêng tháng 2 có 29 ngày.
+                    @else
+                        Không. <strong>{{ $year }} không phải năm nhuận dương lịch</strong>,
+                        có 365 ngày; tháng 2 có 28 ngày.
+                    @endif
+                    Khái niệm năm nhuận dương lịch này khác với
+                    <strong>tháng nhuận trong âm lịch</strong>.
+                    Tháng nhuận âm lịch được xác định theo quy tắc
+                    của lịch âm dương và không phụ thuộc trực tiếp
+                    vào việc năm dương lịch có 365 hay 366 ngày.
+                </p>
+            </div>
+        </article>
+    </section>
     <section class="section-block">
         <article class="card month-day-list good-list" id="lich-am-nam-khac">
             <span class="section-label">LỊCH ÂM NĂM KHÁC</span>
@@ -183,17 +421,46 @@
             @endif
         </article>
     </section>
-    <article class="card seo-analysis" aria-labelledby="convert-seo-title">
+    <article class="card seo-analysis"
+             aria-labelledby="year-related-title">
+
         <div class="cms-content">
-            <span class="section-label">TÌM HIỂU LỊCH NĂM</span>
+
+        <span class="section-label">
+            TRA CỨU LIÊN QUAN
+        </span>
+
+            <h2 id="year-related-title">
+                Tra cứu thêm từ lịch âm năm {{ $year }}
+            </h2>
+
+            <p>
+                Từ lịch âm năm {{ $year }}, bạn có thể chọn từng tháng
+                trong bảng lịch phía trên để xem chi tiết ngày âm dương,
+                Can Chi, ngày hoàng đạo – hắc đạo và thông tin của từng ngày.
+                Ngoài ra, có thể chuyển sang năm liền trước, năm liền sau
+                hoặc sử dụng các công cụ tra cứu lịch khác.
+            </p>
 
             <p class="cms-links">
                 <b>Tra cứu tiếp: </b>
-                <a href="{{ route('page.cope.show.day', ['day' => date('d'), 'month' => date('m'), 'year' => date('Y')]) }}" title="Âm lịch hôm nay">Âm lịch hôm nay</a> ·
-                <a href="{{ route('page.cope.show.month', ['month' => date('m'), 'year' => date('Y')]) }}" title="Lịch âm tháng {{ date('m') }}">Lịch âm tháng {{ date('m') }}</a> ·
+                <a href="{{ route('page.cope.show.day', ['day' => (int) date('d'), 'month' => (int) date('m'), 'year' => date('Y')]) }}" title="Âm lịch hôm nay">Âm lịch hôm nay</a> ·
+                <a href="{{ route('page.cope.show.month', ['month' => (int) date('m'), 'year' => date('Y')]) }}" title="Lịch âm tháng {{ (int) date('m') }}">Lịch âm tháng {{ (int) date('m') }}</a> ·
+                @if(($year + 1) <= 2050)
+                    <a href="{{ route('page.cope.show.year', ['year' => (int) date('m'), 'year' => date('Y')]) }}" title="Lịch âm năm {{ $year + 1 }}">Lịch âm năm {{ $year + 1 }}</a> ·
+                @endif
                 <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi ngày âm dương</a>
             </p>
+
+            <p class="content-note">
+                Thông tin lịch pháp trên trang được trình bày nhằm phục vụ
+                nhu cầu tra cứu và tham khảo. Khi cần xem một ngày cụ thể,
+                nên mở trang chi tiết của ngày đó để đối chiếu đầy đủ
+                các thông tin liên quan.
+            </p>
+
         </div>
+
     </article>
 @endsection
 

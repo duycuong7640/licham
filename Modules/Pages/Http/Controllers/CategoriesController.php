@@ -67,7 +67,8 @@ class CategoriesController extends Controller
             $canonical = route('page.cate.index', ['slug' => $slug]);
             $titleSeo = 'Đổi ngày âm dương';
             $config = $request->get('configData');
-            $siteName = env('SITE_NAME');
+            $setting = $config['setting'] ?? [];
+            $siteName = !empty($setting['title']) ? $setting['title'] : env('SITE_NAME');
             $SEO = [
                 'name' => $siteName,
                 'slug' => !empty($data['detail']['slug']) ? $data['detail']['slug'] : '',

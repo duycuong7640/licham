@@ -3,9 +3,37 @@
 @section('content')
     @php
         $row = $data['day'];
-        [$year, $month, $day] = explode('-', $row['day']);
-        [$lunarYear, $lunarMonth, $lunarDay] = explode('-', $row['lunarDay']);
+        $dE = explode('-', $row['day']);
+        $day = (int) $dE[2];
+        $month = (int) $dE[1];
+        $year = (int) $dE[0];
+        $ldE = explode('-', $row['lunarDay']);
+        $lunarDay = (int) $ldE[2];
+        $lunarMonth = (int) $ldE[1];
+        $lunarYear = (int) $ldE[0];
+        $currentDate = \Carbon\Carbon::createFromFormat('Y-m-d', $row['day'], 'Asia/Ho_Chi_Minh');
+        $dateText = $day.'/'.$month.'/'.$year;
+        $lunarDateText = $lunarDay.'/'.$lunarMonth.'/'.$lunarYear;
+        $todayDate = \Carbon\Carbon::today('Asia/Ho_Chi_Minh');
+        $isToday = $currentDate->isSameDay($todayDate);
         $thu = \App\Helpers\Helpers::formatVietnameseDateNumber($row['day']);
+        $dayStatus = !empty($row['isDay']) ? 'Hoàng đạo' : 'Hắc đạo';
+
+        $previousDate = $currentDate->copy()->subDay();
+        $nextDate = $currentDate->copy()->addDay();
+        $previousDayRoute = [
+            'day'   => (int) $previousDate->format('d'),
+            'month' => (int) $previousDate->format('m'),
+            'year'  => (int) $previousDate->format('Y'),
+        ];
+        $nextDayRoute = [
+            'day'   => (int) $nextDate->format('d'),
+            'month' => (int) $nextDate->format('m'),
+            'year'  => (int) $nextDate->format('Y'),
+        ];
+        $previousDayText = $previousDate->format('d/m/Y');
+        $nextDayText = $nextDate->format('d/m/Y');
+
         $dayKhongMinh = !empty($row['options']['KONG_MING_FORTUNE_DAY'][0]) ? \App\Helpers\Helpers::getKongMingFortune($row['options']['KONG_MING_FORTUNE_DAY'][0]['value']) : [];
         $nguhanh = !empty($row['options']['FIVE_ELEMENTS']) ? \App\Helpers\Helpers::execTagPContent(\App\Helpers\Helpers::getCopeValueByOption($row['options']['FIVE_ELEMENTS'], 'FIVE_ELEMENTS')) : '';
         $textNguhanh = $nguhanh ? \App\Helpers\Helpers::getValueByLabel($nguhanh, 'Ngũ hành niên mệnh') : '';
@@ -14,6 +42,53 @@
         $arrTuoixung = $tuoixung ? \App\Helpers\Helpers::getXungInfo($tuoixung) : [];
         $dayOffices = !empty($row['options']['DAY_OFFICER']) ? \App\Helpers\Helpers::getCopeValueByOption2($row['options']['DAY_OFFICER'], 'DAY_OFFICER') : '';
         $viecnenlam = explode('. ', \App\Helpers\Helpers::getContentInBrackets($dayOffices));
+
+        $dayOfficerTitle = '';
+        if (!empty($dayOffices)) {
+            $dayOfficerTitle = trim(preg_replace('/\s*\(.*$/u', '', strip_tags($dayOffices)));
+        }
+        $dayOfficerContent = !empty($dayOffices)? trim(\App\Helpers\Helpers::getContentInBrackets($dayOffices)) : '';
+        $goodStarCount = !empty($row['options']['GOOD_STAR']) ? count($row['options']['GOOD_STAR']) : 0;
+
+        $goodStarNames = [];
+        if (!empty($row['options']['GOOD_STAR'])) {
+            foreach ($row['options']['GOOD_STAR'] as $value) {
+                $text = trim(
+                    strip_tags($value['value'] ?? '')
+                );
+                if (empty($text)) {
+                    continue;
+                }
+                $parts = explode(':', $text, 2);
+                if (!empty($parts[0])) {
+                    $goodStarNames[] = trim($parts[0]);
+                }
+            }
+        }
+
+        $badStarCount = !empty($row['options']['BAD_STAR']) ? count($row['options']['BAD_STAR']) : 0;
+        $badStarNames = [];
+        if (!empty($row['options']['BAD_STAR'])) {
+            foreach ($row['options']['BAD_STAR'] as $value) {
+                $text = trim(
+                    strip_tags($value['value'] ?? '')
+                );
+                if (empty($text)) {
+                    continue;
+                }
+                $parts = explode(':', $text, 2);
+                if (!empty($parts[0])) {
+                    $badStarNames[] = trim($parts[0]);
+                }
+            }
+        }
+
+        $xungNgay = !empty($arrTuoixung['xungngay'])
+            ? trim($arrTuoixung['xungngay'])
+            : '';
+
+        $hasTabooDay = !empty($tabooText);
+
     @endphp
     <section
         id="pre_daily-calendar"
@@ -21,8 +96,9 @@
         aria-label="Tóm tắt lịch âm hôm nay"
     >
         <div class="summary-kicker" id="lich-am-hom-nay">
-            <b>Lịch âm hôm nay</b>
-            <span>Thông tin quan trọng trong ngày</span>
+            <h1>Lịch âm ngày {{ $day . '/' . $month . '/' .$year }}</h1>
+            <span>
+                {{ $isToday ? 'Lịch âm hôm nay' : 'Lịch âm theo ngày' }}</span>
         </div>
         <div class="summary-grid">
             <p class="summary-line">
@@ -59,29 +135,20 @@
             </p>
         </div>
     </section>
-    <nav class="related-topics" aria-label="Chủ đề lịch âm liên quan">
-        <span class="related-topics-label">
-          <span class="related-topics-icon" aria-hidden="true"></span>
-          Chủ đề liên quan
-        </span>
-        <div class="related-topics-links">
-            <small>Xem lịch âm</small>
-            <small>Ngày âm lịch</small>
-            <small>Xem ngày tốt xấu</small>
-            <small>Lịch âm 2026 hôm nay</small>
-            <small>Âm lịch hôm nay là bao nhiêu</small>
-        </div>
-    </nav>
     <div class="page-grid">
         <section class="card today-card">
             <div class="today-heading">
                 <div>
                     <span class="section-label">LỊCH ÂM HÔM NAY</span>
-                    <h1 id="pre_pageDate">{{ $thu }}, {{ $day }} tháng {{ $month }}, {{ $year }}</h1>
+                    <p id="pre_pageDate">{{ $thu }}, {{ $day }} tháng {{ $month }}, {{ $year }}</p>
                 </div>
                 <div class="arrow-group">
-                    <button id="pre_prevDay" class="icon-btn">‹</button>
-                    <button id="pre_nextDay" class="icon-btn">›</button>
+                    <a href="{{ route('page.cope.show.day', $previousDayRoute) }}" class="icon-btn btn-loading" title="Lịch ngày {{ $previousDayText }}" aria-label="Xem lịch ngày {{ $previousDayText }}">
+                        ‹
+                    </a>
+                    <a href="{{ route('page.cope.show.day', $nextDayRoute) }}" class="icon-btn btn-loading" title="Lịch ngày {{ $nextDayText }}" aria-label="Xem lịch ngày {{ $nextDayText }}">
+                        ›
+                    </a>
                 </div>
             </div>
             <div class="date-panels">
@@ -287,7 +354,7 @@
         <div class="section-head">
             <div>
                 <span class="section-label">XEM NGÀY TỐT XẤU</span>
-                <h2>Thông tin chi tiết hôm nay</h2>
+                <h2>Thông tin chi tiết ngày {{ $dateText }}</h2>
             </div>
         </div>
         <div class="detail-table">
@@ -583,78 +650,125 @@
             @endif
         </div>
     </section>
-    <section class="section-block seo-grid" id="pre_knowledge">
-        <article class="card article-card" id="kien-thuc">
-            <span class="section-label">KIẾN THỨC LỊCH VIỆT</span>
-            <h2>Lịch âm hôm nay có ý nghĩa gì?</h2>
-            <p>
-                Lịch âm Việt Nam kết hợp chu kỳ Mặt Trăng với các tiết khí của năm
-                Mặt Trời. Bên cạnh ngày âm, lịch vạn niên còn cung cấp Can Chi và
-                những dữ liệu văn hóa truyền thống thường được tham khảo trong đời
-                sống.
-            </p>
-            <p class="knowledge-note">
-                Khi tra cứu, nên đối chiếu ngày dương, ngày âm, giờ hoàng đạo và mục
-                đích công việc để có góc nhìn đầy đủ thay vì chỉ dựa vào một thông
-                tin riêng lẻ.
-            </p>
-            <div class="faq">
-                <details>
-                    <summary>Vì sao âm lịch có tháng nhuận?</summary>
-                    <p>
-                        Tháng nhuận giúp năm âm lịch duy trì sự tương ứng với chu kỳ
-                        mùa.
-                    </p>
-                </details>
-                <details>
-                    <summary>Giờ hoàng đạo được dùng để làm gì?</summary>
-                    <p>
-                        Đây là các khung giờ tốt theo lịch pháp dân gian, thường được
-                        tham khảo khi xuất hành hoặc bắt đầu công việc.
-                    </p>
-                </details>
-                <details>
-                    <summary>Can Chi của ngày cho biết điều gì?</summary>
-                    <p>
-                        Can Chi là hệ thống kết hợp Thiên Can và Địa Chi, được dùng để
-                        gọi tên ngày, tháng, năm trong lịch pháp truyền thống.
-                    </p>
-                </details>
-            </div>
-        </article>
-        <aside class="card link-card">
-            <span class="section-label">TRA CỨU NHANH</span>
-            <h3>Tra cứu theo nhu cầu</h3>
-            <p class="lookup-intro">
-                Chọn nội dung anh cần xem để đi thẳng đến công cụ phù hợp.
-            </p>
-            <div class="lookup-links">
-                <a href="{{ route('page.home') }}" title="Lịch âm tháng {{ date('m') }}/{{ date('Y') }}">
-                    <strong>Lịch âm tháng {{ date('m') }}/{{ date('Y') }}</strong>
-                    <small>Xem ngày âm, ngày tốt xấu trong tháng</small>
-                </a>
-                <a href="{{ route('page.home') }}">
-                    <strong>Chọn ngày cưới hỏi</strong>
-                    <small>Tra cứu ngày phù hợp cho việc hỷ</small>
-                </a>
-                <a href="{{ route('page.home') }}">
-                    <strong>Chọn ngày khai trương</strong>
-                    <small>Tham khảo ngày mở hàng, kinh doanh</small>
-                </a>
-                <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">
-                    <strong>Đổi ngày âm dương</strong>
-                    <small>Chuyển đổi nhanh giữa hai loại lịch</small>
-                </a>
-            </div>
-        </aside>
-    </section>
-    <article class="card seo-analysis" aria-labelledby="convert-seo-title">
+    <article class="card seo-analysis" aria-labelledby="day-analysis-title">
         <div class="cms-content">
-            <span class="section-label">KIẾN THỨC</span>
-
+            <span class="section-label">
+                NHẬN ĐỊNH TRONG NGÀY
+            </span>
+            <h2 id="day-analysis-title">
+                Nhận định lịch ngày {{ $dateText }}
+            </h2>
+            <p>
+                Ngày <strong>{{ $dateText }}</strong>
+                tương ứng <strong>{{ $lunarDateText }}</strong> âm lịch,
+                là ngày <strong>{{ $row['strDay'] }}</strong>,
+                tháng <strong>{{ $row['strMonth'] }}</strong>,
+                năm <strong>{{ $row['strYear'] }}</strong>.
+                @if(!empty($dayStatus))
+                    Theo phân loại Hoàng đạo – Hắc đạo,
+                    đây là <strong>ngày {{ $dayStatus }}</strong>.
+                @endif
+            </p>
+            @if(!empty($dayOfficerTitle) || !empty($textNguhanh) || !empty($tietkhi))
+                <p>
+                    @if(!empty($dayOfficerTitle))
+                        Ngày có
+                        <strong>Trực {{ $dayOfficerTitle }}</strong>.
+                        @if(!empty($dayOfficerContent))
+                            {{ rtrim($dayOfficerContent, '.') }}.
+                        @endif
+                    @endif
+                    @if(!empty($textNguhanh))
+                        Ngũ hành của ngày là
+                        <strong>{{ $textNguhanh }}</strong>.
+                    @endif
+                    @if(!empty($tietkhi))
+                        Thời điểm này thuộc tiết khí
+                        <strong>{{ $tietkhi }}</strong>.
+                    @endif
+                </p>
+            @endif
+            @if(
+                $goodStarCount > 0
+                || $badStarCount > 0
+            )
+                <p>
+                    @if($goodStarCount > 0)
+                        Trong ngày có
+                        {{ $goodStarCount }}
+                        sao tốt đáng chú ý
+                        <strong>
+                            {{ implode(', ', $goodStarNames) }}
+                        </strong>.
+                    @endif
+                    @if($badStarCount > 0)
+                        @if($goodStarCount > 0)
+                            Bên cạnh đó,
+                        @endif
+                        có
+                        {{ $badStarCount }}
+                        sao xấu cần lưu ý
+                        <strong>
+                            {{ implode(', ', $badStarNames) }}
+                        </strong>.
+                    @endif
+                </p>
+            @endif
+            @if(!empty($xungNgay) || $hasTabooDay)
+                <p>
+                    @if(!empty($xungNgay))
+                        Các tuổi xung với ngày gồm
+                        <strong>{{ rtrim($xungNgay, '.') }}</strong>.
+                    @endif
+                    @if($hasTabooDay)
+                        Ngày này cũng có yếu tố cần lưu ý:
+                        {{ rtrim($tabooText, '.') }}.
+                    @endif
+                </p>
+            @endif
+            @if(!empty($dayKhongMinh[0]) || !empty($joyDirection) || !empty($wealthDirection))
+                <p>
+                    @if(!empty($dayKhongMinh[0]) && !empty($dayKhongMinh[1]))
+                        Theo Khổng Minh, ngày này thuộc
+                        <strong>{{ $dayKhongMinh[0] }}</strong>:
+                        {{ rtrim($dayKhongMinh[1], '.') }}.
+                    @endif
+                    @if(!empty($joyDirection))
+                        Hỷ thần ở
+                        <strong>{{ $joyDirection }}</strong>.
+                    @endif
+                    @if(!empty($wealthDirection))
+                        Tài thần ở
+                        <strong>{{ $wealthDirection }}</strong>.
+                    @endif
+                </p>
+            @endif
+            <p class="knowledge-note">
+                @if($goodStarCount > 0 && $badStarCount > 0)
+                    Ngày {{ $dateText }} có cả yếu tố thuận lợi
+                    và những điểm cần lưu ý.
+                    Khi chọn ngày cho một công việc cụ thể,
+                    nên đối chiếu Trực ngày, sao tốt – sao xấu,
+                    tuổi xung và giờ thực hiện.
+                @elseif($goodStarCount > 0 && $badStarCount === 0)
+                    Ngày {{ $dateText }} có nhiều yếu tố thuận
+                    theo dữ liệu lịch pháp trên trang.
+                    Tuy vậy, vẫn nên đối chiếu với mục đích
+                    công việc và tuổi của người thực hiện.
+                @elseif($badStarCount > 0)
+                    Ngày {{ $dateText }} có một số yếu tố
+                    cần thận trọng theo lịch pháp truyền thống.
+                    Nên xem kỹ từng công việc cụ thể
+                    trước khi lựa chọn thời điểm thực hiện.
+                @else
+                    Khi xem ngày {{ $dateText }},
+                    nên đối chiếu nhiều yếu tố lịch pháp
+                    thay vì dựa vào một thông tin riêng lẻ.
+                @endif
+            </p>
             <p class="cms-links">
                 <b>Tra cứu tiếp: </b>
-                <a href="{{ route('page.cope.show.month', ['month' => date('m'), 'year' => date('Y')]) }}" title="Lịch âm tháng {{ date('m') }}">Lịch âm tháng {{ date('m') }}</a> ·
+                <a href="{{ route('page.cope.show.month', ['month' => (int) date('m'), 'year' => date('Y')]) }}" title="Lịch âm tháng {{ (int) date('m') }}">Lịch âm tháng {{ (int) date('m') }}</a> ·
                 <a href="{{ route('page.cope.show.year', ['year' => date('Y')]) }}" title="Lịch âm năm {{ date('Y') }}">Lịch âm năm {{ date('Y') }}</a> ·
                 <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi ngày âm dương</a>
             </p>

@@ -1810,7 +1810,7 @@ button {
     display: block;
     line-height: 1.45;
 }
-.month-events .text-event{max-height: 65px; overflow-x: scroll;}
+.month-events .text-event{max-height: 83.2px; overflow-x: scroll;}
 .event-calendar {
     display: inline-block;
     margin-top: 4px;
@@ -1880,7 +1880,7 @@ button {
 }
 .year-summary {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     margin: 16px 0 24px;
     border: 1px solid var(--line);
     border-radius: var(--radius);
@@ -1970,7 +1970,7 @@ button {
     border-radius: 5px;
     background: #fff;
 }
-.mini-month h2 {
+.mini-month h2, .mini-month h3 {
     margin: 0;
     padding: 13px 12px;
     background: #3f8f60;

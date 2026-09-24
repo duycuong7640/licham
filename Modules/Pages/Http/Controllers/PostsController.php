@@ -27,7 +27,8 @@ class PostsController extends Controller
             if (!$keyword || count_chars($keyword) <= 3) return redirect(route('page.home'));
 
             $config = $request->get('configData');
-            $siteName = !empty($config['setting']['title']) ? $config['setting']['title'] : env('SITE_NAME');
+            $setting = $config['setting'] ?? [];
+            $siteName = !empty($setting['title']) ? $setting['title'] : env('SITE_NAME');
             $SEO = [
                 'name' => $siteName,
                 'logo' => !empty($config['setting']['thumbnail']) ? Helpers::renderThumb($config['setting']['thumbnail']) : '',
@@ -157,7 +158,8 @@ class PostsController extends Controller
             }
 
             $config = $request->get('configData');
-            $siteName = env('SITE_NAME');
+            $setting = $config['setting'] ?? [];
+            $siteName = !empty($setting['title']) ? $setting['title'] : env('SITE_NAME');
             $SEO = [
                 'name' => $siteName,
                 'slug' => !empty($data['detail']['slug']) ? $data['detail']['slug'] : '',
@@ -210,7 +212,8 @@ class PostsController extends Controller
     {
         try {
             $config = $request->get('configData');
-            $siteName = env('SITE_NAME');
+            $setting = $config['setting'] ?? [];
+            $siteName = !empty($setting['title']) ? $setting['title'] : env('SITE_NAME');
             $SEO = [
                 'name' => $siteName,
                 'slug' => !empty($data['detail']['slug']) ? $data['detail']['slug'] : '',
@@ -239,7 +242,8 @@ class PostsController extends Controller
     {
         try {
             $config = $request->get('configData');
-            $siteName = env('SITE_NAME');
+            $setting = $config['setting'] ?? [];
+            $siteName = !empty($setting['title']) ? $setting['title'] : env('SITE_NAME');
             $SEO = [
                 'name' => $siteName,
                 'slug' => !empty($data['detail']['slug']) ? $data['detail']['slug'] : '',
@@ -268,7 +272,8 @@ class PostsController extends Controller
     {
         try {
             $config = $request->get('configData');
-            $siteName = env('SITE_NAME');
+            $setting = $config['setting'] ?? [];
+            $siteName = !empty($setting['title']) ? $setting['title'] : env('SITE_NAME');
             $SEO = [
                 'name' => $siteName,
                 'slug' => !empty($data['detail']['slug']) ? $data['detail']['slug'] : '',

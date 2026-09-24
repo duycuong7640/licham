@@ -203,27 +203,80 @@
             </div>
         </section>
     @endif
+    @php
+        $monthDays = collect($months)
+            ->flatten(1)
+            ->filter(fn($item) => !empty($item['id']))
+            ->values();
+
+        $goodDaysCount = $monthDays
+            ->filter(fn($item) => !empty($item['isDay']))
+            ->count();
+
+        $badDaysCount = $monthDays
+            ->filter(fn($item) => empty($item['isDay']))
+            ->count();
+
+        $importantEvents = [];
+        $importantEventDates = dataKey::HISTORIES_IMPORTANT_LISTS[(int)$data['month']] ?? [];
+
+        if (!empty($data['historical_events'])) {
+            foreach ($data['historical_events'] as $event) {
+
+                $eventDate =
+                    \App\Helpers\Helpers::checkNumber($event['day'])
+                    . '/'
+                    . \App\Helpers\Helpers::checkNumber($event['month'])
+                    . '/'
+                    . $event['year'];
+
+                if (in_array($eventDate, $importantEventDates)) {
+                    $importantEvents[] = $event;
+
+                    if (count($importantEvents) >= 3) {
+                        break;
+                    }
+                }
+            }
+        }
+    @endphp
     <section class="section-block month-information">
         <article class="card month-seo">
-            <span class="section-label">THÔNG TIN TRONG THÁNG</span>
-            <h2 id="pre_seoMonthTitle">Tổng quan lịch âm tháng 9 năm 2026</h2>
+            <span class="section-label">
+                THÔNG TIN TRONG THÁNG
+            </span>
+            <h2 id="pre_seoMonthTitle">
+                Tổng quan lịch âm tháng {{ $data['month'] }} năm {{ $data['year'] }}
+            </h2>
             <p>
-                Lịch tháng giúp đối chiếu ngày dương với ngày âm, theo dõi Can Chi
-                và lựa chọn thời điểm phù hợp cho sinh hoạt gia đình. Khi xem ngày,
-                nên kết hợp trạng thái hoàng đạo, tuổi xung và khung giờ tốt thay vì
-                chỉ dựa vào một dấu hiệu.
+                <strong>
+                    Lịch âm tháng {{ $data['month'] }}/{{ $data['year'] }}
+                </strong>
+                giúp đối chiếu ngày dương và ngày âm, tra cứu Can Chi,
+                ngày hoàng đạo – hắc đạo, giờ tốt và thông tin lịch pháp
+                của từng ngày trong tháng.
+                Tháng này có
+                <strong>{{ $goodDaysCount }} ngày hoàng đạo</strong>
+                và
+                <strong>{{ $badDaysCount }} ngày hắc đạo</strong>.
             </p>
-            <h3>Cách sử dụng bảng lịch tháng</h3>
+
+            <h3>Cách xem lịch tháng</h3>
+
             <p>
-                Số lớn trong mỗi ô là ngày dương lịch, số nhỏ ở góc phải là ngày âm
-                lịch. Di chuột hoặc chạm vào ngày trong tháng để xem nhanh Can Chi,
-                giờ tốt và việc phù hợp.
+                Số lớn trong mỗi ô là ngày dương lịch, số nhỏ là ngày âm.
+                Di chuột hoặc chạm vào từng ngày để xem nhanh Can Chi,
+                giờ hoàng đạo và thông tin phù hợp; chọn ngày để xem
+                đầy đủ thông tin chi tiết.
             </p>
-            <h3>Lưu ý khi chọn ngày tốt</h3>
+
+            <h3>Lưu ý khi xem ngày tốt xấu</h3>
+
             <p>
-                Thông tin lịch pháp mang tính tham khảo văn hóa. Với cưới hỏi, động
-                thổ hoặc công việc quan trọng, cần cân nhắc thêm điều kiện thực tế
-                và nhu cầu của gia đình.
+                Một ngày có thể thuận lợi theo yếu tố này nhưng chưa phù hợp
+                theo yếu tố khác. Vì vậy, nên đối chiếu thêm trực ngày,
+                sao tốt – sao xấu, tuổi xung và mục đích công việc.
+                Các thông tin lịch pháp mang tính tra cứu và tham khảo.
             </p>
         </article>
         <aside class="card month-events">
@@ -232,7 +285,7 @@
             <ul id="pre_monthEvents">
                 @php
                     $dem = 0;
-                    $histories_important = dataKey::HISTORIES_IMPORTANT[(int)$data['month']];
+                    $histories_important = dataKey::HISTORIES_IMPORTANT_LISTS[(int)$data['month']];
                 @endphp
                 @foreach($data['historical_events'] as $event)
                     @php $evDay = \App\Helpers\Helpers::checkNumber($event['day']).'/'.\App\Helpers\Helpers::checkNumber($event['month']).'/'.\App\Helpers\Helpers::checkNumber($event['year']) @endphp
@@ -254,11 +307,49 @@
     </section>
     <article class="card seo-analysis" aria-labelledby="convert-seo-title">
         <div class="cms-content">
-            <span class="section-label">KIẾN THỨC</span>
+            <span class="section-label">
+            TRA CỨU LIÊN QUAN
+        </span>
+
+            <h2 id="month-related-title">
+                Tra cứu lịch âm theo ngày, tháng và năm
+            </h2>
+
+            <p>
+                Trang lịch âm tháng {{ $data['month'] }}/{{ $data['year'] }}
+                giúp theo dõi toàn bộ ngày âm dương trong tháng và tra cứu nhanh
+                ngày hoàng đạo, ngày hắc đạo, Can Chi, giờ tốt cùng thông tin
+                lịch khác liên quan. Nếu cần xem kỹ một ngày cụ thể,
+                bạn có thể chọn trực tiếp ngày đó trên bảng lịch để mở
+                trang thông tin chi tiết.
+            </p>
+
+            <p>
+                Ngoài việc xem lịch theo tháng, bạn có thể
+                <a href="{{ route('page.home') }}" title="Lịch âm hôm nay">
+                    xem lịch âm hôm nay
+                </a>
+                để tra cứu ngày hiện tại,
+                <a href="{{ route('page.cope.show.year', ['year' => $data['year']]) }}" title="Lịch âm năm {{ $data['year'] }}">
+                    xem lịch âm năm {{ $data['year'] }}
+                </a>
+                để theo dõi đầy đủ 12 tháng trong năm hoặc sử dụng
+                <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">
+                    công cụ đổi ngày âm dương
+                </a>
+                khi cần tìm ngày âm tương ứng với ngày dương và ngược lại.
+            </p>
+
+            <p>
+                Khi tra cứu ngày tốt xấu, nên xem thông tin của từng ngày
+                trong bối cảnh cụ thể thay vì chỉ dựa vào một tiêu chí riêng lẻ.
+                Các dữ liệu trên Lịch Âm Tốt được trình bày nhằm hỗ trợ tra cứu
+                lịch Việt và tham khảo các quan niệm lịch pháp truyền thống.
+            </p>
 
             <p class="cms-links">
                 <b>Tra cứu tiếp: </b>
-                <a href="{{ route('page.cope.show.day', ['day' => date('d'), 'month' => date('m'), 'year' => date('Y')]) }}" title="Âm lịch hôm nay">Âm lịch hôm nay</a> ·
+                <a href="{{ route('page.cope.show.day', ['day' => (int) date('d'), 'month' => (int) date('m'), 'year' => date('Y')]) }}" title="Âm lịch hôm nay">Âm lịch hôm nay</a> ·
                 <a href="{{ route('page.cope.show.year', ['year' => date('Y')]) }}" title="Lịch âm năm {{ date('Y') }}">Lịch âm năm {{ date('Y') }}</a> ·
                 <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi ngày âm dương</a>
             </p>
