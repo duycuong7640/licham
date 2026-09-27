@@ -50,7 +50,7 @@ class CategoriesController extends Controller
 
 
             $cacheKey = 'category_change_ad_page_html_' . $slug . '_' . $day;
-            $ttl = now()->addMinutes(5);
+            $ttl = now()->addMinutes(30);
             if (Cache::has($cacheKey) && !$request->has('reset')) {
                 return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
                     ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
@@ -65,7 +65,7 @@ class CategoriesController extends Controller
             $data['months'] = RequestHelpers::request($request, \dataApiRoutes::COPE_MONTH, str_replace(':month', $m, str_replace(':year', $y, \dataApiRoutes::COPE_MONTH)), [], 'get');
 
             $canonical = route('page.cate.index', ['slug' => $slug]);
-            $titleSeo = 'Đổi ngày âm dương';
+            $titleSeo = 'Đổi Ngày Âm Dương - Chuyển Đổi Âm Lịch & Dương Lịch';
             $config = $request->get('configData');
             $setting = $config['setting'] ?? [];
             $siteName = !empty($setting['title']) ? $setting['title'] : env('SITE_NAME');
@@ -76,7 +76,7 @@ class CategoriesController extends Controller
                 'logo_share' => !empty($config['setting']['thumbnailShare']) ? Helpers::renderThumb($config['setting']['thumbnailShare']) : '',
                 'fav' => asset('static/web/images/favicon/favicon.ico'),
                 'title_seo' => $titleSeo,
-                'meta_des' => '',
+                'meta_des' => 'Công cụ đổi ngày dương sang âm và âm sang dương, kèm Can Chi, tiết khí, giờ hoàng đạo và lịch đối chiếu.',
                 'meta_key' => '',
                 'canonical' => $canonical,
                 'robots' => 'index, follow',
@@ -129,8 +129,8 @@ class CategoriesController extends Controller
                 'logo' => !empty($setting['thumbnail']) ? Helpers::renderThumb($setting['thumbnail']) : asset('static/web/images/logo.png'),
                 'logo_share' => !empty($setting['articleThumbnailShare']) ? Helpers::renderThumb($setting['articleThumbnailShare']) : (!empty($setting['thumbnailShare']) ? Helpers::renderThumb($setting['thumbnailShare']) : asset('static/web/images/share.png')),
                 'fav' => asset('static/web/images/favicon/favicon.ico'),
-                'title_seo' => 'Bài viết',
-                'meta_des' => '',
+                'title_seo' => 'Kiến Thức Lịch Âm, Tử Vi, Phong Thủy & Văn Hóa Việt | Lịch Âm Tốt',
+                'meta_des' => 'Khám phá kiến thức lịch âm, tử vi, phong thủy, 12 con giáp và phong tục Việt Nam. Nội dung dễ hiểu, hỗ trợ tra cứu và tìm hiểu văn hóa truyền thống.',
                 'meta_key' => '',
                 'canonical' => $canonical,
             ];
@@ -165,7 +165,6 @@ class CategoriesController extends Controller
             return response()->view('errors.500', [], 500);
         }
     }
-
     public function tags($slug, Request $request)
     {
         try {

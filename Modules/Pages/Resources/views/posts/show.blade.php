@@ -1,6 +1,54 @@
 @extends('pages::layouts.app')
 
 @section('content')
+    @push('schema')
+        <script type="application/ld+json">
+            {!! json_encode([
+                '@context' => 'https://schema.org',
+                '@graph' => [
+                    [
+                        '@type' => 'CollectionPage',
+                        '@id' => $data['seo']['canonical'] . '#webpage',
+                        'url' => $data['seo']['canonical'],
+                        'name' => $data['detail']['title'],
+                        'description' => $data['detail']['description'],
+                        'inLanguage' => 'vi-VN',
+                        'breadcrumb' => [
+                            '@id' => $data['seo']['canonical'] . '#breadcrumb',
+                        ],
+                        'about' => [
+                            '@type' => 'Thing',
+                            'name' => $data['seo']['name'],
+                        ],
+                    ],
+                    [
+                        '@type' => 'BreadcrumbList',
+                        '@id' => $data['seo']['canonical'] . '#breadcrumb',
+                        'itemListElement' => [
+                            [
+                                '@type' => 'ListItem',
+                                'position' => 1,
+                                'name' => 'Trang chủ',
+                                'item' => route('page.home'),
+                            ],
+                            [
+                                '@type' => 'ListItem',
+                                'position' => 2,
+                                'name' => "Bài viết",
+                                'item' => route('page.cate.index', ['slug' => 'bai-viet']),
+                            ],
+                            [
+                                '@type' => 'ListItem',
+                                'position' => 3,
+                                'name' => $data['detail']['title'],
+                                'item' => route('page.post.show', ['slug' => $data['detail']['slug']]),
+                            ]
+                        ],
+                    ],
+                ],
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+        </script>
+    @endpush
     <div class="article-detail-layout">
         <article class="card article-detail">
             <header class="article-detail-head">
@@ -42,9 +90,9 @@
                 <strong>Tra cứu lịch hôm nay</strong>
                 <p>Xem nhanh ngày âm, giờ tốt và thông tin xuất hành.</p>
                 <a
-                    href="{{ route('page.cope.show.day', ['day' => date('d'), 'month' => date('m'), 'year' => date('Y')]) }}"
-                    aria-label="Ngày {{ date('d') }} tháng {{ date('m') }} năm {{ date('Y') }}"
-                    title="Ngày {{ date('d') }} tháng {{ date('m') }} năm {{ date('Y') }}"
+                    href="{{ route('page.home') }}"
+                    aria-label="Lịch âm hôm nay"
+                    title="Lịch âm hôm nay"
                 >
                     Mở lịch hôm nay →
                 </a>

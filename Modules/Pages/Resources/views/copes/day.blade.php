@@ -88,8 +88,62 @@
             : '';
 
         $hasTabooDay = !empty($tabooText);
-
+        $schemaName = "Lịch âm ngày " . $day . '/' . $month . '/' .$year;
     @endphp
+    @push('schema')
+        <script type="application/ld+json">
+            {!! json_encode([
+                '@context' => 'https://schema.org',
+                '@graph' => [
+                    [
+                        '@type' => 'CollectionPage',
+                        '@id' => $data['seo']['canonical'] . '#webpage',
+                        'url' => $data['seo']['canonical'],
+                        'name' => $schemaName,
+                        'description' => $data['seo']['meta_des'],
+                        'inLanguage' => 'vi-VN',
+                        'breadcrumb' => [
+                            '@id' => $data['seo']['canonical'] . '#breadcrumb',
+                        ],
+                        'about' => [
+                            '@type' => 'Thing',
+                            'name' => $data['seo']['name'],
+                        ],
+                    ],
+                    [
+                        '@type' => 'BreadcrumbList',
+                        '@id' => $data['seo']['canonical'] . '#breadcrumb',
+                        'itemListElement' => [
+                            [
+                                '@type' => 'ListItem',
+                                'position' => 1,
+                                'name' => 'Trang chủ',
+                                'item' => route('page.home'),
+                            ],
+                            [
+                                '@type' => 'ListItem',
+                                'position' => 2,
+                                'name' => "Lịch âm năm {$year}",
+                                'item' => route('page.cope.show.year', ['year' => $year]),
+                            ],
+                            [
+                                '@type' => 'ListItem',
+                                'position' => 3,
+                                'name' => "Lịch âm tháng {$month}/{$year}",
+                                'item' => route('page.cope.show.month', ['month' => $month, 'year' => $year]),
+                            ],
+                            [
+                                '@type' => 'ListItem',
+                                'position' => 4,
+                                'name' => "Lịch âm ngày {$day}/{$month}/{$year}",
+                                'item' => route('page.cope.show.day', ['day' => $day, 'month' => $month, 'year' => $year]),
+                            ]
+                        ],
+                    ],
+                ],
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+        </script>
+    @endpush
     <section
         id="pre_daily-calendar"
         class="reading-summary"
@@ -102,11 +156,10 @@
         </div>
         <div class="summary-grid">
             <p class="summary-line">
-                Ngày <b>Dương Lịch</b>: <strong id="pre_summarySolar">{{ $day }}-{{ $month }}-{{ $year }}</strong>
+                Ngày <b>Dương Lịch</b>: <strong id="pre_summarySolar">{{ $day.'/'.$month.'/'.$year }}</strong>
             </p>
             <p class="summary-line">
-                Ngày <b>Âm Lịch</b>: <strong id="pre_summaryLunar">{{ $lunarDay }}-{{ $lunarMonth }}
-                    -{{ $lunarYear }}</strong>
+                Ngày <b>Âm Lịch</b>: <strong id="pre_summaryLunar">{{ $lunarDay.'/'.$lunarMonth.'/'.$lunarYear }}</strong>
             </p>
             <p class="summary-line">
                 Ngày trong tuần: <strong id="pre_summaryWeekday">{{ $thu }}</strong>
@@ -653,7 +706,7 @@
     <article class="card seo-analysis" aria-labelledby="day-analysis-title">
         <div class="cms-content">
             <span class="section-label">
-                NHẬN ĐỊNH TRONG NGÀY
+                TỔNG HỢP LỊCH PHÁP
             </span>
             <h2 id="day-analysis-title">
                 Nhận định lịch ngày {{ $dateText }}
@@ -661,30 +714,45 @@
             <p>
                 Ngày <strong>{{ $dateText }}</strong>
                 tương ứng <strong>{{ $lunarDateText }}</strong> âm lịch,
-                là ngày <strong>{{ $row['strDay'] }}</strong>,
-                tháng <strong>{{ $row['strMonth'] }}</strong>,
-                năm <strong>{{ $row['strYear'] }}</strong>.
+                là ngày <strong>{{ $row['strDay'] }}</strong>
+                @if(!empty($row['strMonth']))
+                    , tháng <strong>{{ $row['strMonth'] }}</strong>
+                @endif
+                @if(!empty($row['strYear']))
+                    , năm <strong>{{ $row['strYear'] }}</strong>
+                @endif
+                .
                 @if(!empty($dayStatus))
                     Theo phân loại Hoàng đạo – Hắc đạo,
                     đây là <strong>ngày {{ $dayStatus }}</strong>.
                 @endif
             </p>
-            @if(!empty($dayOfficerTitle) || !empty($textNguhanh) || !empty($tietkhi))
+            @if(
+                !empty($dayOfficerTitle)
+                || !empty($textNguhanh)
+                || !empty($tietkhi)
+            )
                 <p>
                     @if(!empty($dayOfficerTitle))
                         Ngày có
-                        <strong>Trực {{ $dayOfficerTitle }}</strong>.
+                        <strong>
+                            Trực {{ $dayOfficerTitle }}
+                        </strong>.
                         @if(!empty($dayOfficerContent))
-                            {{ rtrim($dayOfficerContent, '.') }}.
+                            {{ rtrim($dayOfficerContent, ". \t\n\r\0\x0B") }}.
                         @endif
                     @endif
                     @if(!empty($textNguhanh))
                         Ngũ hành của ngày là
-                        <strong>{{ $textNguhanh }}</strong>.
+                        <strong>
+                            {{ $textNguhanh }}
+                        </strong>.
                     @endif
                     @if(!empty($tietkhi))
                         Thời điểm này thuộc tiết khí
-                        <strong>{{ $tietkhi }}</strong>.
+                        <strong>
+                            {{ $tietkhi }}
+                        </strong>.
                     @endif
                 </p>
             @endif
@@ -695,8 +763,10 @@
                 <p>
                     @if($goodStarCount > 0)
                         Trong ngày có
-                        {{ $goodStarCount }}
-                        sao tốt đáng chú ý
+                        <strong>
+                            {{ $goodStarCount }} sao tốt
+                        </strong>
+                        đáng chú ý gồm
                         <strong>
                             {{ implode(', ', $goodStarNames) }}
                         </strong>.
@@ -706,71 +776,136 @@
                             Bên cạnh đó,
                         @endif
                         có
-                        {{ $badStarCount }}
-                        sao xấu cần lưu ý
+                        <strong>
+                            {{ $badStarCount }} sao xấu
+                        </strong>
+                        cần lưu ý gồm
                         <strong>
                             {{ implode(', ', $badStarNames) }}
                         </strong>.
                     @endif
                 </p>
             @endif
-            @if(!empty($xungNgay) || $hasTabooDay)
+            @if(
+                !empty($xungNgay)
+                || $hasTabooDay
+            )
                 <p>
                     @if(!empty($xungNgay))
                         Các tuổi xung với ngày gồm
-                        <strong>{{ rtrim($xungNgay, '.') }}</strong>.
+                        <strong>
+                            {{ rtrim($xungNgay, ". \t\n\r\0\x0B") }}
+                        </strong>.
                     @endif
                     @if($hasTabooDay)
                         Ngày này cũng có yếu tố cần lưu ý:
-                        {{ rtrim($tabooText, '.') }}.
+                        {{ rtrim($tabooText, ". \t\n\r\0\x0B") }}.
                     @endif
                 </p>
             @endif
-            @if(!empty($dayKhongMinh[0]) || !empty($joyDirection) || !empty($wealthDirection))
+            @if(
+                !empty($dayKhongMinh[0])
+                || !empty($joyDirection)
+                || !empty($wealthDirection)
+            )
                 <p>
-                    @if(!empty($dayKhongMinh[0]) && !empty($dayKhongMinh[1]))
+                    @if(
+                        !empty($dayKhongMinh[0])
+                        && !empty($dayKhongMinh[1])
+                    )
                         Theo Khổng Minh, ngày này thuộc
-                        <strong>{{ $dayKhongMinh[0] }}</strong>:
-                        {{ rtrim($dayKhongMinh[1], '.') }}.
+                        <strong>
+                            {{ $dayKhongMinh[0] }}
+                        </strong>:
+                        {{ rtrim(
+                            $dayKhongMinh[1],
+                            ". \t\n\r\0\x0B"
+                        ) }}.
                     @endif
                     @if(!empty($joyDirection))
                         Hỷ thần ở
-                        <strong>{{ $joyDirection }}</strong>.
+                        <strong>
+                            {{ $joyDirection }}
+                        </strong>.
                     @endif
                     @if(!empty($wealthDirection))
                         Tài thần ở
-                        <strong>{{ $wealthDirection }}</strong>.
+                        <strong>
+                            {{ $wealthDirection }}
+                        </strong>.
                     @endif
                 </p>
             @endif
             <p class="knowledge-note">
-                @if($goodStarCount > 0 && $badStarCount > 0)
-                    Ngày {{ $dateText }} có cả yếu tố thuận lợi
-                    và những điểm cần lưu ý.
-                    Khi chọn ngày cho một công việc cụ thể,
-                    nên đối chiếu Trực ngày, sao tốt – sao xấu,
-                    tuổi xung và giờ thực hiện.
-                @elseif($goodStarCount > 0 && $badStarCount === 0)
+                @if(
+                    $goodStarCount > 0
+                    && $badStarCount > 0
+                )
+                    Ngày {{ $dateText }} có cả những yếu tố thuận lợi
+                    và những điểm cần lưu ý theo lịch pháp truyền thống.
+                    Khi lựa chọn ngày cho một công việc cụ thể,
+                    nên đối chiếu thêm Trực ngày, sao tốt – sao xấu,
+                    tuổi xung, giờ thực hiện và tính chất của công việc.
+                @elseif(
+                    $goodStarCount > 0
+                    && $badStarCount === 0
+                )
                     Ngày {{ $dateText }} có nhiều yếu tố thuận
                     theo dữ liệu lịch pháp trên trang.
-                    Tuy vậy, vẫn nên đối chiếu với mục đích
-                    công việc và tuổi của người thực hiện.
+                    Tuy vậy, việc lựa chọn thời điểm vẫn nên
+                    đối chiếu với mục đích công việc,
+                    tuổi của người thực hiện
+                    và các yếu tố lịch pháp liên quan.
                 @elseif($badStarCount > 0)
                     Ngày {{ $dateText }} có một số yếu tố
-                    cần thận trọng theo lịch pháp truyền thống.
-                    Nên xem kỹ từng công việc cụ thể
-                    trước khi lựa chọn thời điểm thực hiện.
+                    cần lưu ý theo lịch pháp truyền thống.
+                    Nếu dự định thực hiện công việc quan trọng,
+                    nên xem kỹ từng tiêu chí của ngày
+                    trước khi lựa chọn thời điểm phù hợp.
                 @else
                     Khi xem ngày {{ $dateText }},
                     nên đối chiếu nhiều yếu tố lịch pháp
-                    thay vì dựa vào một thông tin riêng lẻ.
+                    thay vì chỉ dựa vào một tiêu chí riêng lẻ
+                    để đánh giá ngày phù hợp với công việc nào.
                 @endif
             </p>
+            <div class="day-related-search">
+                <h3>
+                    Tra cứu lịch âm theo thời gian
+                </h3>
+                <p>
+                    @if(!$isToday)
+                        Ngoài thông tin lịch ngày
+                        <strong>{{ $dateText }}</strong>,
+                        bạn có thể xem
+                        <a href="{{ route('page.home') }}" title="Lịch âm hôm nay">
+                            lịch âm hôm nay
+                        </a>
+                        để tra cứu ngày hiện tại.
+                    @endif
+                    Xem đầy đủ các ngày trong
+                    <a href="{{ route('page.cope.show.month', ['month' => (int) date('m'), 'year'  => (int) date('Y')]) }}" title="Lịch âm tháng {{ (int) date('m') }}/{{ date('Y') }}">
+                        lịch âm tháng {{ (int) date('m') }}/{{ date('Y') }}
+                    </a>
+                    hoặc xem tổng quan
+                    <a href="{{ route('page.cope.show.year', ['year' => (int) date('Y')]) }}" title="Lịch âm năm {{ date('Y') }}">
+                        lịch âm năm {{ date('Y') }}
+                    </a>.
+                </p>
+            </div>
             <p class="cms-links">
-                <b>Tra cứu tiếp: </b>
-                <a href="{{ route('page.cope.show.month', ['month' => (int) date('m'), 'year' => date('Y')]) }}" title="Lịch âm tháng {{ (int) date('m') }}">Lịch âm tháng {{ (int) date('m') }}</a> ·
-                <a href="{{ route('page.cope.show.year', ['year' => date('Y')]) }}" title="Lịch âm năm {{ date('Y') }}">Lịch âm năm {{ date('Y') }}</a> ·
-                <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi ngày âm dương</a>
+                <b>Tra cứu tiếp:</b>
+                <a href="{{ route('page.cope.show.day', $previousDayRoute) }}" title="Lịch âm ngày {{ $previousDayText }}">
+                    Lịch ngày {{ $previousDayText }}
+                </a>
+                ·
+                <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">
+                    Đổi ngày âm dương
+                </a>
+                ·
+                <a href="{{ route('page.cope.show.day', $nextDayRoute) }}" title="Lịch âm ngày {{ $nextDayText }}">
+                    Lịch ngày {{ $nextDayText }}
+                </a>
             </p>
         </div>
     </article>

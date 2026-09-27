@@ -126,68 +126,60 @@ class PostsController extends Controller
         try {
             $page = !empty($request->get('page')) ? $request->get('page') : '1';
 
-            $cacheKey = 'post_list_html_' . md5($slug) . '_' . $page;
-            $ttl = now()->addMinutes(5);
+//            $cacheKey = 'post_list_html_' . md5($slug) . '_' . $page;
+//            $ttl = now()->addMinutes(5);
+//
+//            if (Cache::has($cacheKey)) {
+//                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
+//                    ->header('Content-Type', 'text/html')
+//                    ->header('Cache-Control', 'public, max-age=1800');
+//            }
 
-            if (Cache::has($cacheKey)) {
-                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
-                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
-                    ->header('Cache-Control', \dataKey::CACHE);
+            $hTags = $request->get('hashTags', []);
+            $data['hashTags'] = $hTags;
+            $hashTags = [];
+            foreach ($data['hashTags'] as $row) {
+                if ($row['slug'] == $slug) $hashTags = $row;
             }
+            if (empty($hashTags['id'])) return response()->view('errors.404', [], 404);
 
-            $data['cache'] = 1;
-            $hashTags = RequestHelpers::request($request, \dataApiRoutes::HASHTAGS, \dataApiRoutes::HASHTAGS, ['isPage' => 'lists', 'keySlug' => 'hashtag', 'limit' => 100, 'orderField' => 'created_at', 'orderType' => 'ASC', 'type' => 'CALENDARGOOD'], 'get');
-            $hashTagId = '';
-            $data['hashTag'] = [];
-            if (!empty($hashTags)) {
-                foreach ($hashTags as $row) {
-                    if ($row['slug'] == $slug) {
-                        $hashTagId = $row['id'];
-                        $data['hashTag'] = $row;
-                    }
-                }
-            }
-            if (!$hashTagId) return response()->view('errors.404', [], 404);
-
-            if ($data['hashTag']['typeCategory'] == '12_CUNG') {
-                $data['hashTags'] = RequestHelpers::request($request, \dataApiRoutes::HASHTAGS, \dataApiRoutes::HASHTAGS, ['isPage' => 'lists', 'keySlug' => '12-con-giap', 'limit' => 12, 'orderField' => 'created_at', 'orderType' => 'ASC', 'type' => 'CALENDARGOOD', 'typeCategory' => '12_CUNG'], 'get');
-            }
-
-            if ($data['hashTag']['typeCategory'] == '12_CUNG_HD') {
-                $data['12CungHoangDao'] = RequestHelpers::request($request, \dataApiRoutes::HASHTAGS, \dataApiRoutes::HASHTAGS, ['isPage' => 'lists', 'keySlug' => '12-cung-hoang-dao', 'limit' => 12, 'orderField' => 'created_at', 'orderType' => 'ASC', 'type' => 'CALENDARGOOD', 'typeCategory' => '12_CUNG_HD'], 'get');
-            }
-
-            $config = $request->get('configData');
+            $config = $request->get('configData', []);
             $setting = $config['setting'] ?? [];
             $siteName = !empty($setting['title']) ? $setting['title'] : env('SITE_NAME');
+            $canonical = route('page.post.tags', ['slug' => $slug]);
+            if ((int) $page > 1) $canonical .= '?page=' . (int) $page;
             $SEO = [
                 'name' => $siteName,
-                'slug' => !empty($data['detail']['slug']) ? $data['detail']['slug'] : '',
-                'logo' => !empty($config['setting']['thumbnail']) ? Helpers::renderThumb($config['setting']['thumbnail']) : '',
-                'logo_share' => !empty($config['setting']['thumbnailShare']) ? Helpers::renderThumb($config['setting']['thumbnailShare']) : '',
+                'slug' => $slug,
+                'logo' => !empty($setting['thumbnail']) ? Helpers::renderThumb($setting['thumbnail']) : asset('static/web/images/logo.png'),
+                'logo_share' => !empty($hashTags['thumbnailShare']) ? Helpers::renderThumb($hashTags['thumbnailShare']) : (!empty($setting['thumbnailShare']) ? Helpers::renderThumb($setting['thumbnailShare']) : asset('static/web/images/share.png')),
                 'fav' => asset('static/web/images/favicon/favicon.ico'),
-                'title_seo' => !empty($data['hashTag']['titleSeo']) ? $data['hashTag']['titleSeo'] : '',
-                'meta_des' => !empty($data['hashTag']['metaDes']) ? $data['hashTag']['metaDes'] : '',
-                'meta_key' => !empty($data['hashTag']['metaKey']) ? $data['hashTag']['metaKey'] : '',
+                'title_seo' => !empty($hashTags['titleSeo']) ? $hashTags['titleSeo'] : $hashTags['title'],
+                'meta_des' => !empty($hashTags['metaDes']) ? $hashTags['metaDes'] : '',
+                'meta_key' => !empty($hashTags['metaKey']) ? $hashTags['metaKey'] : '',
+                'canonical' => $canonical,
             ];
 
             $data['seo'] = $SEO;
-            $data['common'] = $SEO;
-            $data['shareMXH'] = Helpers::renderShareMXH('pro_show', $SEO);
+            $data['common'] = Helpers::metaHead($SEO);
+            $data['shareMXH'] = Helpers::renderShareMXH('pro_show', $SEO, $config);
+            $data['show'] = 1;
+            $data['page'] = 'bai-viet-chu-de';
+            $data['category'] = ["title" => 'Bài viết', 'slug' => 'bai-viet', 'isLast' => true];
+            $data['hashTag'] = $hashTags;
+            $data['lists'] = RequestHelpers::request($request, \dataApiRoutes::POST_BY_TAGS, \dataApiRoutes::POST_BY_TAGS, ['isPage' => 'cate', 'keySlug' => $slug, 'paginate' => 5, 'orderField' => 'created_at', 'orderType' => 'DESC', 'DOMAIN_RUN' => env('DOMAIN_RUN'), 'type' => 'CALENDARLUNAR_NEWS', "HASHTAG_IDS" => $hashTags['id'], 'page' => $page], 'post');
 
-            $data['lists'] = RequestHelpers::request($request, \dataApiRoutes::POST_BY_TAGS, \dataApiRoutes::POST_BY_TAGS, ['isPage' => 'cate', 'keySlug' => $slug, 'paginate' => 12, 'orderField' => 'created_at', 'orderType' => 'DESC', 'DOMAIN_RUN' => env('DOMAIN_RUN'), 'type' => 'CALENDARGOOD_HOROSCOPE_TAG_TV_12_CON_GIAP, CALENDARGOOD_HOROSCOPE_TAG_TV_12_CUNG_HOANG_DAO', "HASHTAG_IDS" => $hashTagId, 'page' => $page], 'post');
-
-            // return view('pages::posts.index')->with('data', $data);
-            $html = view('pages::posts.index')->with('data', $data)->render();
-            $html = Helpers::genCsrfToken($html, '1');
-            $response = response($html)
-                ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
-            $response = Helpers::optimize_html($response);
-            Cache::put($cacheKey, $response->getContent(), $ttl);
-
-            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
-                ->header('Cache-Control', \dataKey::CACHE);
-        } catch (\Exception $e) {
+            return view('pages::posts.tags')->with('data', $data);
+//            $html = view('pages::posts.tags')->with('data', $data)->render();
+//            $html = Helpers::genCsrfToken($html, '1');
+//            $response = response($html)
+//                ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
+//            $response = Helpers::optimize_html($response);
+//            Cache::put($cacheKey, $response->getContent(), $ttl);
+//
+//            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+//                ->header('Cache-Control', \dataKey::CACHE);
+        } catch (\Exception $e) {Helpers::pre($e->getMessage());
             return response()->view('errors.500', [], 500);
         }
     }

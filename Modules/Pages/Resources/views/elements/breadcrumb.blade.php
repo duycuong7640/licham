@@ -29,10 +29,10 @@
             <a href="{{ route('page.cate.index', ['slug' => $slug]) }}">{{ $data['category']['title'] }}</a>
         @elseif(!empty($data['isPage']) && $data['isPage'] == 'fixed')
             <span>/</span>
-            <span>{{ $data['category']['title'] }}</span>
+            <span aria-current="page">{{ $data['category']['title'] }}</span>
         @else
             <span>/</span>
-            <span>{{ $data['category']['title'] }}</span>
+            <a href="{{ route('page.cate.index', ['slug' => $data['category']['slug']]) }}">{{ $data['category']['title'] }}</a>
         @endif
     @endif
 
@@ -64,8 +64,16 @@
     @if(!empty($data['isPage']) && $data['isPage'] == 'day' && !empty($data['day']['id']))
         <span>/</span>
         {{--        <span>Ngày {{ \App\Helpers\Helpers::checkNumber($data['day']['d']) }}-{{ \App\Helpers\Helpers::checkNumber($data['day']['m']) }}-{{ \App\Helpers\Helpers::checkNumber($data['day']['y']) }}</span>--}}
-        <a href="{{ route('page.cope.show.day', ['day' => \App\Helpers\Helpers::checkNumber($data['day']['d']), 'month' => \App\Helpers\Helpers::checkNumber($data['day']['m']), 'year' => $data['day']['y']]) }}">
+        <span aria-current="page">
             Ngày {{ \App\Helpers\Helpers::checkNumber($data['day']['d']) }}-{{ \App\Helpers\Helpers::checkNumber($data['day']['m']) }}-{{ \App\Helpers\Helpers::checkNumber($data['day']['y']) }}
-        </a>
+        </span>
+    @endif
+
+    @if(!empty($data['detail']['id']))
+        <span>/</span>
+        {{--        <span>Ngày {{ \App\Helpers\Helpers::checkNumber($data['day']['d']) }}-{{ \App\Helpers\Helpers::checkNumber($data['day']['m']) }}-{{ \App\Helpers\Helpers::checkNumber($data['day']['y']) }}</span>--}}
+        <span aria-current="page">
+            {{ $data['detail']['title'] }}
+        </span>
     @endif
 </nav>

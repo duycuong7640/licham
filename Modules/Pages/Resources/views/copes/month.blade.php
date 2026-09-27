@@ -8,9 +8,59 @@
         $monthButton = $data['mData'];
         $monthButton['month'] = \App\Helpers\Helpers::checkNumber($monthButton['month']);
         $monthButton['year'] = \App\Helpers\Helpers::checkNumber($monthButton['year']);
-        $data['month'] = $monthButton['month'];
-        $data['year'] = $monthButton['year'];
+        $data['month'] = (int) $monthButton['month'];
+        $data['year'] = (int) $monthButton['year'];
+        $schemaName = "Lịch âm tháng {$data['month']} năm {$data['year']}";
     @endphp
+    @push('schema')
+        <script type="application/ld+json">
+            {!! json_encode([
+                '@context' => 'https://schema.org',
+                '@graph' => [
+                    [
+                        '@type' => 'CollectionPage',
+                        '@id' => $data['seo']['canonical'] . '#webpage',
+                        'url' => $data['seo']['canonical'],
+                        'name' => $schemaName,
+                        'description' => $data['seo']['meta_des'],
+                        'inLanguage' => 'vi-VN',
+                        'breadcrumb' => [
+                            '@id' => $data['seo']['canonical'] . '#breadcrumb',
+                        ],
+                        'about' => [
+                            '@type' => 'Thing',
+                            'name' => $data['seo']['name'],
+                        ],
+                    ],
+                    [
+                        '@type' => 'BreadcrumbList',
+                        '@id' => $data['seo']['canonical'] . '#breadcrumb',
+                        'itemListElement' => [
+                            [
+                                '@type' => 'ListItem',
+                                'position' => 1,
+                                'name' => 'Trang chủ',
+                                'item' => route('page.home'),
+                            ],
+                            [
+                                '@type' => 'ListItem',
+                                'position' => 2,
+                                'name' => "Lịch âm năm {$data['year']}",
+                                'item' => route('page.cope.show.year', ['year' => $data['year']]),
+                            ],
+                            [
+                                '@type' => 'ListItem',
+                                'position' => 3,
+                                'name' => $schemaName,
+                                'item' => $data['seo']['canonical'],
+                            ],
+                        ],
+                    ],
+                ],
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+        </script>
+    @endpush
+
     <section class="card month-page-head">
         <div>
             <span class="section-label">LỊCH VẠN NIÊN THEO THÁNG</span>
@@ -92,7 +142,7 @@
                             $month['lunarMonth'] = \App\Helpers\Helpers::checkNumber($month['lunarMonth']);
                         @endphp
                         <a href="{{ route('page.cope.show.day', ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']]) }}"
-                           class="calendar-day {{ $isDay }} {{ $isSaturday }} {{ $isSunday }} {{ $today }} {{ $today }}"
+                           class="calendar-day {{ $isDay }} {{ $isSaturday }} {{ $isSunday }} {{ $today }}"
                            data-date="{{ \Carbon\Carbon::parse($month['date'], 'Asia/Ho_Chi_Minh')->utc()->format('Y-m-d\TH:i:s.v\Z') }}"
                            aria-label="Ngày {{ $month['day'] }} tháng {{ $month['month'] }}, âm lịch {{ $month['lunarDay'] }} tháng {{ $month['lunarMonth'] }}">
                             <strong>{{ $month['day'] }}</strong>
@@ -124,8 +174,8 @@
         </div>
         <div class="legend">
             <span><i class="today-dot"></i> Ngày đang chọn</span>
-            <span><i></i> Ngày tốt</span>
-            <span><i class="bad-dot"></i> Ngày xấu</span>
+            <span><i></i> Ngày Hoàng đạo</span>
+            <span><i class="bad-dot"></i> Ngày Hắc đạo</span>
             <span>Ngày âm ở góc phải</span>
             <span>Di chuột hoặc chạm để xem nhanh</span>
         </div>
@@ -133,7 +183,7 @@
     <section class="section-block month-insights">
         <article class="card month-day-list good-list" id="ngay-hoang-dao">
             <span class="section-label">NGÀY HOÀNG ĐẠO</span>
-            <h2>Ngày tốt trong tháng {{ $monthButton['month'] }} năm {{ $monthButton['year'] }}</h2>
+            <h2>Ngày Hoàng đạo trong tháng {{ $monthButton['month'] }} năm {{ $monthButton['year'] }}</h2>
             <div id="pre_goodDays" class="date-link-grid">
                 @foreach($months as $values)
                     @foreach($values as $month)
@@ -146,7 +196,7 @@
         </article>
         <article class="card month-day-list bad-list">
             <span class="section-label">NGÀY HẮC ĐẠO</span>
-            <h2>Ngày xấu trong tháng {{ $monthButton['month'] }} năm {{ $monthButton['year'] }}</h2>
+            <h2>Ngày Hắc đạo trong tháng {{ $monthButton['month'] }} năm {{ $monthButton['year'] }}</h2>
             <div id="pre_badDays" class="date-link-grid">
                 @foreach($months as $values)
                     @foreach($values as $month)
@@ -349,7 +399,7 @@
 
             <p class="cms-links">
                 <b>Tra cứu tiếp: </b>
-                <a href="{{ route('page.cope.show.day', ['day' => (int) date('d'), 'month' => (int) date('m'), 'year' => date('Y')]) }}" title="Âm lịch hôm nay">Âm lịch hôm nay</a> ·
+                <a href="{{ route('page.home') }}" title="Âm lịch hôm nay">Âm lịch hôm nay</a> ·
                 <a href="{{ route('page.cope.show.year', ['year' => date('Y')]) }}" title="Lịch âm năm {{ date('Y') }}">Lịch âm năm {{ date('Y') }}</a> ·
                 <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi ngày âm dương</a>
             </p>

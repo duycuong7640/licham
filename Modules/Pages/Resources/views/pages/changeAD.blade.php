@@ -5,19 +5,69 @@
         <span class="section-label">CÔNG CỤ LỊCH VIỆT</span>
         <h1>Đổi ngày âm dương</h1>
         <p>
-            Chuyển đổi ngày dương sang âm hoặc ngày âm sang dương, đồng thời xem
-            nhanh Can Chi, tiết khí và giờ tốt của ngày đã chọn.
+            Chuyển đổi ngày dương sang âm hoặc ngày âm sang dương,
+            đồng thời tra cứu Can Chi, tiết khí, giờ hoàng đạo
+            và các thông tin lịch pháp của ngày đã chọn.
         </p>
     </header>
 
     @php
         $row = $data['day'];
-        [$y, $m, $d] = explode('-', $row['day']);
-        [$lunarYear, $lunarMonth, $lunarDay] = explode('-', $row['lunarDay']);
+        $fD = explode('-', $row['day']);
+        $d = (int) $fD[2];
+        $m = (int) $fD[1];
+        $y = (int) $fD[0];
+        $flD = explode('-', $row['lunarDay']);
+        $lunarDay = (int) $flD[2];
+        $lunarMonth = (int) $flD[1];
+        $lunarYear = (int) $flD[0];
         $thu = \App\Helpers\Helpers::formatVietnameseDateNumber($row['day']);
         $tietkhi = !empty($row['options']['LUNAR']) ? \App\Helpers\Helpers::getCopeValueByOption($row['options']['LUNAR'], 'SOLAR_SEASONS') : '';
         $dayKhongMinh = !empty($row['options']['KONG_MING_FORTUNE_DAY'][0]) ? \App\Helpers\Helpers::getKongMingFortune($row['options']['KONG_MING_FORTUNE_DAY'][0]['value']) : [];
+        $schemaName = "Đổi ngày âm dương";
     @endphp
+    @push('schema')
+        <script type="application/ld+json">
+            {!! json_encode([
+                '@context' => 'https://schema.org',
+                '@graph' => [
+                    [
+                        '@type' => 'CollectionPage',
+                        '@id' => $data['seo']['canonical'] . '#webpage',
+                        'url' => $data['seo']['canonical'],
+                        'name' => $schemaName,
+                        'description' => $data['seo']['meta_des'],
+                        'inLanguage' => 'vi-VN',
+                        'breadcrumb' => [
+                            '@id' => $data['seo']['canonical'] . '#breadcrumb',
+                        ],
+                        'about' => [
+                            '@type' => 'Thing',
+                            'name' => $data['seo']['name'],
+                        ],
+                    ],
+                    [
+                        '@type' => 'BreadcrumbList',
+                        '@id' => $data['seo']['canonical'] . '#breadcrumb',
+                        'itemListElement' => [
+                            [
+                                '@type' => 'ListItem',
+                                'position' => 1,
+                                'name' => 'Trang chủ',
+                                'item' => route('page.home'),
+                            ],
+                            [
+                                '@type' => 'ListItem',
+                                'position' => 2,
+                                'name' => "Đổi ngày âm dương",
+                                'item' => route('page.cate.index', ['slug' => 'doi-ngay-am-duong']),
+                            ]
+                        ],
+                    ],
+                ],
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+        </script>
+    @endpush
     <section class="convert-workspace">
         <div class="card convert-form-card">
             <div class="convert-form-head">
@@ -75,7 +125,7 @@
                 </button>
             </form>
             <p class="convert-hint">
-                Dữ liệu demo sẽ được thay bằng kết quả chính xác từ API lịch pháp.
+                Hỗ trợ chuyển đổi lịch âm dương Việt Nam trong khoảng từ năm 1900 đến 2050.
             </p>
         </div>
 
@@ -198,7 +248,7 @@
                             $month['lunarMonth'] = \App\Helpers\Helpers::checkNumber($month['lunarMonth']);
                         @endphp
                         <a href="{{ route('page.cope.show.day', ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']]) }}"
-                           class="calendar-day btn-loading {{ $isDay }} {{ $isSaturday }} {{ $isSunday }} {{ $today }} {{ $today }} {{ $isViewDay }}"
+                           class="calendar-day btn-loading {{ $isDay }} {{ $isSaturday }} {{ $isSunday }} {{ $today }} {{ $isViewDay }}"
                            data-date="{{ \Carbon\Carbon::parse($month['date'], 'Asia/Ho_Chi_Minh')->utc()->format('Y-m-d\TH:i:s.v\Z') }}"
                            aria-label="Ngày {{ $month['day'] }} tháng {{ $month['month'] }}, âm lịch {{ $month['lunarDay'] }} tháng {{ $month['lunarMonth'] }}"
                            title="Ngày {{ $month['day'] }} tháng {{ $month['month'] }}, âm lịch {{ $month['lunarDay'] }} tháng {{ $month['lunarMonth'] }}"
@@ -232,8 +282,8 @@
         </div>
         <div class="legend">
             <span><i class="today-dot"></i> Ngày đang chọn</span>
-            <span><i></i> Ngày tốt</span>
-            <span><i class="bad-dot"></i> Ngày xấu</span>
+            <span><i></i> Ngày Hoàng đạo</span>
+            <span><i class="bad-dot"></i> Ngày Hắc đạo</span>
             <span>Ngày âm ở góc phải</span>
             <span>Di chuột hoặc chạm để xem nhanh</span>
         </div>
@@ -242,7 +292,7 @@
     <section class="section-block convert-guide-grid" id="huong-dan">
         <article class="card convert-guide">
             <span class="section-label">HƯỚNG DẪN TRA CỨU</span>
-            <h2>Cách đổi ngày dương sang âm và ngược lại</h2>
+            <h2>Cách đổi ngày dương sang âm và âm sang dương</h2>
             <p>
                 Chọn hình thức chuyển đổi, nhập ngày cần tìm rồi nhấn
                 <b>Chuyển đổi ngày</b>. Kết quả sẽ cho biết ngày tương ứng theo loại
@@ -301,10 +351,38 @@
         <div class="cms-content">
             <span class="section-label">KIẾN THỨC ÂM DƯƠNG LỊCH</span>
 
+            <h2 id="convert-seo-title">
+                Đổi ngày âm dương dùng để làm gì?
+            </h2>
+
+            <p>
+                Đổi ngày âm dương giúp xác định một ngày dương lịch
+                tương ứng với ngày nào trong âm lịch Việt Nam,
+                hoặc tìm ngày dương từ một ngày âm đã biết.
+                Việc đối chiếu này thường được sử dụng khi tra ngày sinh âm lịch,
+                ngày giỗ, ngày lễ truyền thống, Tết Nguyên đán
+                và các mốc thời gian được ghi theo âm lịch.
+            </p>
+
+            <p>
+                Khi chuyển đổi từ ngày âm sang ngày dương,
+                cần xác định đúng ngày, tháng, năm âm lịch
+                và kiểm tra tháng đó có phải tháng nhuận hay không.
+                Hai ngày có cùng ngày và tháng âm nhưng khác trạng thái
+                tháng thường – tháng nhuận có thể tương ứng
+                với những ngày dương lịch khác nhau.
+            </p>
+
+            <p>
+                Sau khi chuyển đổi, bạn có thể tiếp tục xem
+                thông tin chi tiết của ngày tương ứng,
+                đối chiếu toàn bộ tháng hoặc tra cứu lịch của cả năm.
+            </p>
+
             <p class="cms-links">
                 <b>Tra cứu tiếp: </b>
-                <a href="{{ route('page.cope.show.day', ['day' => date('d'), 'month' => date('m'), 'year' => date('Y')]) }}" title="Âm lịch hôm nay">Âm lịch hôm nay</a> ·
-                <a href="{{ route('page.cope.show.month', ['month' => date('m'), 'year' => date('Y')]) }}" title="Lịch âm tháng {{ date('m') }}">Lịch âm tháng {{ date('m') }}</a> ·
+                <a href="{{ route('page.home') }}" title="Âm lịch hôm nay">Âm lịch hôm nay</a> ·
+                <a href="{{ route('page.cope.show.month', ['month' => (int) date('m'), 'year' => date('Y')]) }}" title="Lịch âm tháng {{ (int) date('m') }}">Lịch âm tháng {{ (int) date('m') }}</a> ·
                 <a href="{{ route('page.cope.show.year', ['year' => date('Y')]) }}" title="Lịch âm năm {{ date('Y') }}">Lịch âm năm {{ date('Y') }}</a>
             </p>
         </div>

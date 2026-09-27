@@ -73,6 +73,7 @@
                     && (int) $day['lunar_year'] === (int) $year
                 ) {
                     $tetDay = $day;
+                    $tetSolarDate = (int) $day['lunar_day'].'/'.(int) $day['lunar_month'].'/'.$day['lunar_year'];
                 }
             }
         }
@@ -128,7 +129,51 @@
         $bestGoodMonthsText = collect($bestGoodMonths)
             ->map(fn($month) => 'tháng ' . $month)
             ->implode(', ');
+
+        $schemaName = "Lịch âm năm {$year}";
     @endphp
+    @push('schema')
+        <script type="application/ld+json">
+            {!! json_encode([
+                '@context' => 'https://schema.org',
+                '@graph' => [
+                    [
+                        '@type' => 'CollectionPage',
+                        '@id' => $data['seo']['canonical'] . '#webpage',
+                        'url' => $data['seo']['canonical'],
+                        'name' => $schemaName,
+                        'description' => $data['seo']['meta_des'],
+                        'inLanguage' => 'vi-VN',
+                        'breadcrumb' => [
+                            '@id' => $data['seo']['canonical'] . '#breadcrumb',
+                        ],
+                        'about' => [
+                            '@type' => 'Thing',
+                            'name' => $data['seo']['name'],
+                        ],
+                    ],
+                    [
+                        '@type' => 'BreadcrumbList',
+                        '@id' => $data['seo']['canonical'] . '#breadcrumb',
+                        'itemListElement' => [
+                            [
+                                '@type' => 'ListItem',
+                                'position' => 1,
+                                'name' => 'Trang chủ',
+                                'item' => route('page.home'),
+                            ],
+                            [
+                                '@type' => 'ListItem',
+                                'position' => 2,
+                                'name' => "Lịch âm năm {$year}",
+                                'item' => route('page.cope.show.year', ['year' => $year]),
+                            ]
+                        ],
+                    ],
+                ],
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+        </script>
+    @endpush
     <section class="card year-page-head">
         <div>
             <span class="section-label">LỊCH VẠN NIÊN</span>
@@ -444,7 +489,7 @@
 
             <p class="cms-links">
                 <b>Tra cứu tiếp: </b>
-                <a href="{{ route('page.cope.show.day', ['day' => (int) date('d'), 'month' => (int) date('m'), 'year' => date('Y')]) }}" title="Âm lịch hôm nay">Âm lịch hôm nay</a> ·
+                <a href="{{ route('page.home') }}" title="Âm lịch hôm nay">Âm lịch hôm nay</a> ·
                 <a href="{{ route('page.cope.show.month', ['month' => (int) date('m'), 'year' => date('Y')]) }}" title="Lịch âm tháng {{ (int) date('m') }}">Lịch âm tháng {{ (int) date('m') }}</a> ·
                 @if(($year + 1) <= 2050)
                     <a href="{{ route('page.cope.show.year', ['year' => (int) date('m'), 'year' => date('Y')]) }}" title="Lịch âm năm {{ $year + 1 }}">Lịch âm năm {{ $year + 1 }}</a> ·

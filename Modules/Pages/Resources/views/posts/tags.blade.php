@@ -1,9 +1,6 @@
 @extends('pages::layouts.news')
 
 @section('content')
-    @php
-      $schemaName = "Kiến thức lịch âm, tử vi, phong thủy và văn hóa Việt";
-    @endphp
     @push('schema')
         <script type="application/ld+json">
             {!! json_encode([
@@ -13,7 +10,7 @@
                         '@type' => 'CollectionPage',
                         '@id' => $data['seo']['canonical'] . '#webpage',
                         'url' => $data['seo']['canonical'],
-                        'name' => $schemaName,
+                        'name' => $data['hashTag']['title'],
                         'description' => $data['seo']['meta_des'],
                         'inLanguage' => 'vi-VN',
                         'breadcrumb' => [
@@ -37,8 +34,14 @@
                             [
                                 '@type' => 'ListItem',
                                 'position' => 2,
-                                'name' => $data['category']['title'],
-                                'item' => route('page.cate.index', ['slug' => $data['category']['slug']]),
+                                'name' => "Bài viết",
+                                'item' => route('page.cate.index', ['slug' => 'bai-viet']),
+                            ],
+                            [
+                                '@type' => 'ListItem',
+                                'position' => 3,
+                                'name' => $data['hashTag']['title'],
+                                'item' => route('page.post.tags', ['slug' => $data['hashTag']['slug']]),
                             ]
                         ],
                     ],
@@ -48,30 +51,21 @@
     @endpush
     <header class="card editorial-hero">
         <span class="section-label">THƯ VIỆN KIẾN THỨC</span>
-        <h1>Kiến thức lịch âm, tử vi, phong thủy và văn hóa Việt</h1>
+        <h1>{{ $data['hashTag']['title'] }}</h1>
         <p>
-            Tìm hiểu lịch âm, Can Chi, 12 con giáp,
-            phong thủy và những phong tục quen thuộc
-            trong đời sống người Việt qua các bài viết
-            được trình bày rõ ràng, dễ tra cứu.
+            {{ \App\Helpers\Helpers::shortDesc(strip_tags($data['hashTag']['description']), 150) }}
         </p>
     </header>
 
     <nav class="topic-filter" aria-label="Lọc bài viết theo chủ đề">
-        <a class="active" href="{{ route('page.cate.index', ['slug' => 'bai-viet']) }}" data-topic="all">Tất cả</a>
+        <a href="{{ route('page.cate.index', ['slug' => 'bai-viet']) }}" data-topic="all">Tất cả</a>
         @foreach($hashTags as $row)
-            <a href="{{ route('page.post.tags', ['slug' => $row['slug']]) }}"
+            <a @if($row['id'] == $data['hashTag']['id']) class="active" @endif href="{{ route('page.post.tags', ['slug' => $row['slug']]) }}"
                data-topic="{{ $row['slug'] }}" title="{{ $row['title'] }}"># {{ $row['title'] }}</a>
         @endforeach
     </nav>
 
     <section class="article-index" aria-labelledby="article-list-title">
-        <div class="article-index-head">
-            <div>
-                <span class="section-label">BÀI VIẾT MỚI</span>
-                <h2 id="article-list-title">Kiến thức chọn lọc</h2>
-            </div>
-        </div>
         <div class="article-grid">
             @php
                 $hashtags = [];

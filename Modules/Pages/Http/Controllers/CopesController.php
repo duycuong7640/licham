@@ -30,7 +30,7 @@ class CopesController extends Controller
 //                    ->header('Cache-Control', \dataKey::CACHE);
 //            }
 
-            $ttl = now()->addMinutes(2);
+            $ttl = now()->addMinutes(30);
             $htmlCache = Cache::store('html');
             if ($request->has('reset')) {
                 $htmlCache->forget($cacheKey);
@@ -127,7 +127,7 @@ class CopesController extends Controller
 //                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
 //                    ->header('Cache-Control', \dataKey::CACHE);
 //            }
-            $ttl = now()->addMinutes(10);
+            $ttl = now()->addMinutes(30);
             $htmlCache = Cache::store('html');
             if ($request->has('reset')) {
                 $htmlCache->forget($cacheKey);
@@ -223,7 +223,7 @@ class CopesController extends Controller
 //                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
 //                    ->header('Cache-Control', \dataKey::CACHE);
 //            }
-            $ttl = now()->addMinutes(2);
+            $ttl = now()->addMinutes(30);
             $htmlCache = Cache::store('html');
             if ($request->has('reset')) {
                 $htmlCache->forget($cacheKey);
