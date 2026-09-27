@@ -19,7 +19,7 @@ Route::get('/sitemap.xml', function () {
 
 Route::group(['middleware' => 'defaultDeviceId'], function () {
     Route::group(['middleware' => 'configData'], function () {
-        Route::get('/tool/generate-sitemap', [\Modules\Pages\Http\Controllers\SitemapController::class, 'generate']);
+//        Route::get('/tool/generate-sitemap', [\Modules\Pages\Http\Controllers\SitemapController::class, 'generate']);
         Route::get('/', [\Modules\Pages\Http\Controllers\HomeController::class, 'index'])->name('page.home')->middleware('html.cache');
 
         Route::get('{slug}.html', [\Modules\Pages\Http\Controllers\PostsController::class, 'show'])->name('page.post.show')->middleware('html.cache');
