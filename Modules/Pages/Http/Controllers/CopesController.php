@@ -63,7 +63,7 @@ class CopesController extends Controller
                 break;
             }
             $currentYear = (int)now('Asia/Ho_Chi_Minh')->year;
-            $isIndexable = $yearNumber >= $currentYear - 1 && $yearNumber <= $currentYear + 2;
+            $isIndexable = $yearNumber >= $currentYear - 10 && $yearNumber <= $currentYear + 20;
 
             // seo
             $config = $request->get('configData');
