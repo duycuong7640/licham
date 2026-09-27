@@ -11,12 +11,6 @@
 |
 */
 
-Route::get('/sitemap.xml', function () {
-    return response()->file(public_path('xml/sitemap.xml'), [
-        'Content-Type' => 'application/xml'
-    ]);
-});
-
 Route::group(['middleware' => 'defaultDeviceId'], function () {
     Route::group(['middleware' => 'configData'], function () {
 //        Route::get('/tool/generate-sitemap', [\Modules\Pages\Http\Controllers\SitemapController::class, 'generate']);
