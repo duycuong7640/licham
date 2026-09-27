@@ -12,7 +12,7 @@ class SitemapController extends Controller
 {
     public function generate(Request $request)
     {
-        $xmlPath = public_path('xml');
+        $xmlPath = public_path('/');
         File::ensureDirectoryExists($xmlPath, 0755, true);
 
         // Mảng lưu trữ tất cả các file sitemap thành phần được tạo ra thực tế
@@ -20,7 +20,7 @@ class SitemapController extends Controller
 
         // 1. Tạo sitemap menu
         $this->generateMenu();
-        $generatedFiles[] = public_path('xml/sitemap-menu.xml');
+        $generatedFiles[] = public_path('sitemap-menu.xml');
 
         // 2. Tạo sitemap posts và lấy danh sách file post đã tạo
 //        $postFiles = $this->generatePosts($request);
@@ -36,42 +36,48 @@ class SitemapController extends Controller
 
     private function generateMenu()
     {
-        $menu = \dataMenu::menus();
         $urls = [];
 
-        foreach ($menu as $k => $row) {
-            if ($row['level'] != 1) {
-                continue;
-            }
+        $urls[] = [
+            'loc' => route('page.home'),
+            'lastmod' => now()->toAtomString(),
+        ];
 
-            if (empty($row['slug'])) {
-                $urls[] = [
-                    'loc' => route('page.home'),
-                    'lastmod' => now()->toAtomString(),
-                ];
-            } else {
-                $slug = $row['slug'];
+        $urls[] = [
+            'loc' => route('page.cate.index', ['slug' => 'doi-ngay-am-duong']),
+            'lastmod' => now()->toAtomString(),
+        ];
 
-                $urls[] = [
-                    'loc' => route('page.cate.index', ['slug' => $slug]),
-                    'lastmod' => now()->toAtomString(),
-                ];
-            }
+        $urls[] = [
+            'loc' => route('page.cate.index', ['slug' => 'bai-viet']),
+            'lastmod' => now()->toAtomString(),
+        ];
 
-            foreach ($menu as $child) {
-                if ($child['level'] == 2 && $child['parent'] == $k) {
-                    $urls[] = [
-                        'loc' => route('page.cate.index', [
-                            'slug' => $child['slug'],
-                        ]),
-                        'lastmod' => now()->toAtomString(),
-                    ];
-                }
-            }
+        for ($i = 1; $i <= 12; $i++) {
+            $urls[] = [
+                'loc' => route('page.cope.show.month', ['month' => $i, 'year' => date('Y')]),
+                'lastmod' => now()->toAtomString(),
+            ];
+        }
+
+        for ($i = 1; $i <= 12; $i++) {
+            $urls[] = [
+                'loc' => route('page.cope.show.month', ['month' => $i, 'year' => date('Y')]),
+                'lastmod' => now()->toAtomString(),
+            ];
+        }
+
+        $year = date('Y');
+        $start = $year - 15;
+        for ($i = $start; $i <= 2050; $i++) {
+            $urls[] = [
+                'loc' => route('page.cope.show.year', ['year' => $i]),
+                'lastmod' => now()->toAtomString(),
+            ];
         }
 
         File::put(
-            public_path('xml/sitemap-menu.xml'),
+            public_path('sitemap-menu.xml'),
             $this->renderUrlSet($urls)
         );
     }
@@ -97,7 +103,7 @@ class SitemapController extends Controller
             }
         }
 
-        $latestFile = public_path('xml/sitemap-post-latest.v1.xml');
+        $latestFile = public_path('sitemap-post-latest.v1.xml');
         File::put($latestFile, $this->renderPostUrlSet($latestUrls));
         $postFiles[] = $latestFile;
 
@@ -107,7 +113,7 @@ class SitemapController extends Controller
          |--------------------------------------------------------------------------
          */
         for ($page = 2; $page <= $lastPage; $page++) {
-            $file = public_path("xml/sitemap-post-{$page}.xml");
+            $file = public_path("sitemap-post-{$page}.xml");
             $postFiles[] = $file;
 
             if (file_exists($file)) {
@@ -146,14 +152,14 @@ class SitemapController extends Controller
             $fileMtime = filemtime($filePath);
 
             $xml .= '    <sitemap>' . PHP_EOL;
-            $xml .= '        <loc>' . htmlspecialchars(url('xml/' . $name), ENT_XML1, 'UTF-8') . '</loc>' . PHP_EOL;
+            $xml .= '        <loc>' . htmlspecialchars(url($name), ENT_XML1, 'UTF-8') . '</loc>' . PHP_EOL;
             $xml .= '        <lastmod>' . date('c', $fileMtime) . '</lastmod>' . PHP_EOL;
             $xml .= '    </sitemap>' . PHP_EOL;
         }
 
         $xml .= '</sitemapindex>';
 
-        File::put(public_path('xml/sitemap.xml'), $xml);
+        File::put(public_path('sitemap.xml'), $xml);
     }
 
     private function renderUrlSet(array $urls)
