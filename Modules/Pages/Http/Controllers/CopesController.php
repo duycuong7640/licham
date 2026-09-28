@@ -250,7 +250,7 @@ class CopesController extends Controller
             $now = now('Asia/Ho_Chi_Minh');
             $indexFrom = $now->subYear()->startOfYear();
             $indexTo = $now->addYears(2)->endOfYear();
-            $isIndexable = $pageDate->betweenIncluded($indexFrom, $indexTo);
+            $isIndexable = true;//$pageDate->betweenIncluded($indexFrom, $indexTo);
             $lunarTimestamp = strtotime($data['day']['lunarDay']);
             $lunarDate = date('d/m', $lunarTimestamp);
             $dayType = !empty($data['day']['isDay']) ? 'Hoàng đạo' : 'Hắc đạo';
