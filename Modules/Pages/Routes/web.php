@@ -11,6 +11,16 @@
 |
 */
 
+Route::get('llms.txt', function () {
+    return response(
+        file_get_contents(public_path('static/llms.txt')),
+        200,
+        [
+            'Content-Type' => 'text/plain; charset=UTF-8',
+        ]
+    );
+});
+
 Route::group(['middleware' => 'defaultDeviceId'], function () {
     Route::group(['middleware' => 'configData'], function () {
 //        Route::get('/tool/generate-sitemap', [\Modules\Pages\Http\Controllers\SitemapController::class, 'generate']);
