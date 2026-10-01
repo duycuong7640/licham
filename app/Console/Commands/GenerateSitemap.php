@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Helpers\Helpers;
 use App\Helpers\RequestHelpers;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -43,6 +44,17 @@ class GenerateSitemap extends Command
         $generatedFiles[] = public_path('sitemap-menu.xml');
 
         $this->info('✓ sitemap-menu.xml');
+
+        /*
+        |--------------------------------------------------------------------------
+        | 1. Sitemap day
+        |--------------------------------------------------------------------------
+        */
+        $dayFiles = $this->generateDay();
+        $generatedFiles = array_merge($generatedFiles, $dayFiles);
+        foreach ($dayFiles as $file) {
+            $this->info('✓ ' . basename($file));
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -93,21 +105,21 @@ class GenerateSitemap extends Command
 
         $urls[] = [
             'loc' => route('page.home'),
-            'lastmod' => $now,
+//            'lastmod' => $now,
         ];
 
         $urls[] = [
             'loc' => route('page.cate.index', [
                 'slug' => 'doi-ngay-am-duong',
             ]),
-            'lastmod' => $now,
+//            'lastmod' => $now,
         ];
 
         $urls[] = [
             'loc' => route('page.cate.index', [
                 'slug' => 'bai-viet',
             ]),
-            'lastmod' => $now,
+//            'lastmod' => $now,
         ];
 
         /*
@@ -117,15 +129,17 @@ class GenerateSitemap extends Command
         */
 
         $currentYear = (int) date('Y');
-
-        for ($month = 1; $month <= 12; $month++) {
-            $urls[] = [
-                'loc' => route('page.cope.show.month', [
-                    'month' => $month,
-                    'year' => $currentYear,
-                ]),
-                'lastmod' => $now,
-            ];
+        $startYear = $currentYear - 10;
+        for ($year = $startYear; $year <= 2050; $year++) {
+            for ($month = 1; $month <= 12; $month++) {
+                $urls[] = [
+                    'loc' => route('page.cope.show.month', [
+                        'month' => $month,
+                        'year' => $currentYear,
+                    ]),
+//                    'lastmod' => $now,
+                ];
+            }
         }
 
         /*
@@ -136,14 +150,14 @@ class GenerateSitemap extends Command
         |--------------------------------------------------------------------------
         */
 
-        $startYear = $currentYear - 15;
+        $startYear = $currentYear - 10;
 
         for ($year = $startYear; $year <= 2050; $year++) {
             $urls[] = [
                 'loc' => route('page.cope.show.year', [
                     'year' => $year,
                 ]),
-                'lastmod' => $now,
+//                'lastmod' => $now,
             ];
         }
 
@@ -157,6 +171,89 @@ class GenerateSitemap extends Command
             public_path('sitemap-menu.xml'),
             $this->renderUrlSet($urls)
         );
+    }
+
+    /**
+     * Sitemap day
+     *
+     * Từ 01/01/2020 đến 31/12/2050
+     * Mỗi file tối đa 2.000 URL
+     */
+    private function generateDay(): array
+    {
+        $generatedFiles = [];
+
+        $startDate = Carbon::create(2026, 1, 1)->startOfDay();
+        $endDate = Carbon::create(2050, 12, 31)->startOfDay();
+
+        $limitPerFile = 2000;
+
+        $urls = [];
+        $fileIndex = 1;
+
+        $now = now()->toAtomString();
+
+        $date = $startDate->copy();
+
+        while ($date->lte($endDate)) {
+
+            $urls[] = [
+                'loc' => route('page.cope.show.day', [
+                    'day' => $date->day,
+                    'month' => $date->month,
+                    'year' => $date->year,
+                ]),
+//                'lastmod' => $now,
+            ];
+
+            /*
+            |--------------------------------------------------------------------------
+            | Đủ 2.000 URL → ghi file
+            |--------------------------------------------------------------------------
+            */
+
+            if (count($urls) >= $limitPerFile) {
+
+                $fileName = "sitemap-day-{$fileIndex}.xml";
+
+                $filePath = public_path($fileName);
+
+                File::put(
+                    $filePath,
+                    $this->renderUrlSet($urls)
+                );
+
+                $generatedFiles[] = $filePath;
+
+                // Reset
+                $urls = [];
+                $fileIndex++;
+            }
+
+            $date->addDay();
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Ghi phần URL còn lại
+        |--------------------------------------------------------------------------
+        */
+
+        if (!empty($urls)) {
+
+            $fileName = "sitemap-day-{$fileIndex}.xml";
+
+            $filePath = public_path($fileName);
+
+            File::put(
+                $filePath,
+                $this->renderUrlSet($urls)
+            );
+
+            $generatedFiles[] = $filePath;
+        }
+
+        return $generatedFiles;
     }
 
     /**
@@ -277,10 +374,10 @@ class GenerateSitemap extends Command
                 . '</loc>'
                 . PHP_EOL;
 
-            $xml .= '        <lastmod>'
-                . date('c', $fileMtime)
-                . '</lastmod>'
-                . PHP_EOL;
+//            $xml .= '        <lastmod>'
+//                . date('c', $fileMtime)
+//                . '</lastmod>'
+//                . PHP_EOL;
 
             $xml .= '    </sitemap>' . PHP_EOL;
         }
@@ -319,16 +416,16 @@ class GenerateSitemap extends Command
                 . '</loc>'
                 . PHP_EOL;
 
-            if (!empty($row['lastmod'])) {
-                $timestamp = strtotime($row['lastmod']);
-
-                if ($timestamp) {
-                    $xml .= '        <lastmod>'
-                        . date('c', $timestamp)
-                        . '</lastmod>'
-                        . PHP_EOL;
-                }
-            }
+//            if (!empty($row['lastmod'])) {
+//                $timestamp = strtotime($row['lastmod']);
+//
+//                if ($timestamp) {
+//                    $xml .= '        <lastmod>'
+//                        . date('c', $timestamp)
+//                        . '</lastmod>'
+//                        . PHP_EOL;
+//                }
+//            }
 
             $xml .= '    </url>' . PHP_EOL;
         }

@@ -63,7 +63,7 @@ class CopesController extends Controller
                 break;
             }
             $currentYear = (int)now('Asia/Ho_Chi_Minh')->year;
-            $isIndexable = $yearNumber >= $currentYear - 10 && $yearNumber <= $currentYear + 20;
+            $isIndexable = $yearNumber >= $currentYear - 10 && $yearNumber <= 2050;
 
             // seo
             $config = $request->get('configData');
@@ -156,8 +156,10 @@ class CopesController extends Controller
             $yearNumber = (int)$month['year'];
             $monthDate = Carbon::create($yearNumber, $monthNumber, 1, 0, 0, 0, 'Asia/Ho_Chi_Minh')->startOfDay();
             $now = now('Asia/Ho_Chi_Minh');
-            $indexFrom = $now->copy()->subYear()->startOfYear();
-            $indexTo = $now->copy()->addYears(2)->endOfYear();
+//            $indexFrom = $now->copy()->subYear()->startOfYear();
+//            $indexTo = $now->copy()->addYears(5)->endOfYear();
+            $indexFrom = $now->copy()->subYears(10)->startOfYear();
+            $indexTo = $now->copy()->setYear(2050)->endOfYear();
             $isIndexable = $monthDate->betweenIncluded($indexFrom, $indexTo);
 
             // seo
@@ -248,9 +250,11 @@ class CopesController extends Controller
             $pageDate = Carbon::createFromFormat('d-m-Y', $day, 'Asia/Ho_Chi_Minh')->startOfDay();
             $displayDate = $pageDate->format('d/m/Y');
             $now = now('Asia/Ho_Chi_Minh');
-            $indexFrom = $now->subYear()->startOfYear();
-            $indexTo = $now->addYears(2)->endOfYear();
-            $isIndexable = true;//$pageDate->betweenIncluded($indexFrom, $indexTo);
+//            $indexFrom = $now->subYear()->startOfYear();
+//            $indexTo = $now->addYears(2)->endOfYear();
+            $indexFrom = $now->copy()->subYears(10)->startOfYear();
+            $indexTo = $now->copy()->setYear(2050)->endOfYear();
+            $isIndexable = $pageDate->betweenIncluded($indexFrom, $indexTo);
             $lunarTimestamp = strtotime($data['day']['lunarDay']);
             $lunarDate = date('d/m', $lunarTimestamp);
             $dayType = !empty($data['day']['isDay']) ? 'Hoàng đạo' : 'Hắc đạo';
