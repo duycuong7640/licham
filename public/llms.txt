@@ -1,0 +1,80 @@
+# Lịch Âm Tốt
+
+> Lịch Âm Tốt là website tra cứu lịch âm Việt Nam, lịch vạn niên, ngày âm dương, giờ hoàng đạo, hướng xuất hành và thông tin ngày tốt xấu.
+
+Lịch Âm Tốt cung cấp dữ liệu lịch âm dương theo ngày, tháng và năm dành cho người dùng Việt Nam.
+
+Các trang lịch ngày, lịch tháng và lịch năm được tạo theo ngày tháng cụ thể. Khi cần thông tin cho một ngày cụ thể, ưu tiên sử dụng trang lịch ngày tương ứng.
+
+Thông tin về ngày tốt xấu, giờ hoàng đạo, sao tốt, sao xấu, tuổi xung, hướng xuất hành và các nội dung phong tục chỉ mang tính chất tham khảo.
+
+## Tra cứu chính
+
+- [Lịch âm hôm nay](https://lichamtot.com/): Xem ngày âm lịch hiện tại, lịch dương, can chi, tiết khí, giờ hoàng đạo và thông tin tổng quan trong ngày.
+- [Đổi ngày âm dương](https://lichamtot.com/doi-ngay-am-duong): Chuyển đổi ngày dương lịch sang âm lịch và ngày âm lịch sang dương lịch.
+- [Lịch năm 2026](https://lichamtot.com/lich-nam-2026): Xem lịch âm dương tổng quan của năm 2026.
+- [Lịch tháng 10 năm 2026](https://lichamtot.com/lich-thang-10-2026): Xem lịch âm dương theo tháng.
+
+## Lịch theo ngày
+
+- [Lịch ngày 1 tháng 10 năm 2026](https://lichamtot.com/lich-ngay-1-10-2026): Ví dụ trang tra cứu chi tiết một ngày, gồm âm lịch, dương lịch, can chi, giờ hoàng đạo, tuổi xung và thông tin ngày tốt xấu.
+
+Các URL lịch ngày sử dụng cấu trúc:
+
+`https://lichamtot.com/lich-ngay-{ngay}-{thang}-{nam}`
+
+Ví dụ:
+
+`https://lichamtot.com/lich-ngay-1-10-2026`
+
+## Lịch theo tháng
+
+Các URL lịch tháng sử dụng cấu trúc:
+
+`https://lichamtot.com/lich-thang-{thang}-{nam}`
+
+Ví dụ:
+
+`https://lichamtot.com/lich-thang-10-2026`
+
+Các trang lịch tháng cung cấp lịch âm dương cho toàn bộ các ngày trong tháng và liên kết đến từng trang lịch ngày.
+
+## Lịch theo năm
+
+Các URL lịch năm sử dụng cấu trúc:
+
+`https://lichamtot.com/lich-nam-{nam}`
+
+Ví dụ:
+
+`https://lichamtot.com/lich-nam-2026`
+
+Các trang lịch năm cung cấp thông tin tổng quan về lịch âm dương trong năm và liên kết đến các tháng tương ứng.
+
+## Nội dung ngày
+
+Trang lịch ngày có thể bao gồm:
+
+- Ngày dương lịch và âm lịch.
+- Can chi ngày, tháng và năm.
+- Tiết khí.
+- Ngũ hành.
+- Giờ hoàng đạo và giờ hắc đạo.
+- Hướng xuất hành.
+- Tuổi xung khắc.
+- Sao tốt và sao xấu.
+- Việc nên làm và việc nên tránh.
+- Thông tin tham khảo về ngày tốt xấu.
+
+## Nội dung kiến thức
+
+- [Kiến thức](https://lichamtot.com/): Các bài viết giải thích về lịch âm, lịch Việt Nam, phong tục, ngày tháng và các khái niệm liên quan.
+
+## Dành cho công cụ tìm kiếm và tác nhân AI
+
+- [Sitemap](https://lichamtot.com/sitemap.xml): Danh sách các URL công khai của website.
+- [Robots.txt](https://lichamtot.com/robots.txt): Quy tắc truy cập dành cho crawler.
+
+Khi cần thông tin về một ngày cụ thể, hãy truy cập URL lịch ngày tương ứng thay vì suy luận dữ liệu từ trang khác.
+
+Khi cần danh sách URL đầy đủ, sử dụng sitemap thay vì llms.txt.

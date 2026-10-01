@@ -36,7 +36,8 @@
                 Ngày <b>Dương Lịch</b>: <strong id="pre_summarySolar">{{ $day.'/'.$month.'/'.$year }}</strong>
             </p>
             <p class="summary-line">
-                Ngày <b>Âm Lịch</b>: <strong id="pre_summaryLunar">{{ $lunarDay.'/'.$lunarMonth.'/'.$lunarYear }}</strong>
+                Ngày <b>Âm Lịch</b>: <strong
+                    id="pre_summaryLunar">{{ $lunarDay.'/'.$lunarMonth.'/'.$lunarYear }}</strong>
             </p>
             <p class="summary-line">
                 Ngày trong tuần: <strong id="pre_summaryWeekday">{{ $thu }}</strong>
@@ -282,7 +283,9 @@
     @endphp
     <section class="section-block card home-calendar-content" aria-labelledby="today-lunar-title">
         <div class="calendar-content-topline">
-            <a class="calendar-month-link" href="{{ route('page.cope.show.month', ['month' => $month, 'year' => $year]) }}" title="Xem chi tiết lịch tháng {{ $month }}/{{ $year }}">
+            <a class="calendar-month-link"
+               href="{{ route('page.cope.show.month', ['month' => $month, 'year' => $year]) }}"
+               title="Xem chi tiết lịch tháng {{ $month }}/{{ $year }}">
                 Xem chi tiết lịch tháng {{ $month }}/{{ $year }}
                 <span aria-hidden="true">→</span>
             </a>
@@ -304,7 +307,7 @@
                     việc nên hoặc không nên thực hiện trong ngày.
                 </p>
                 <a class="calendar-detail-cta"
-                    href="{{ route('page.cope.show.day', ['day' => $day, 'month' => $month, 'year' => $year]) }}"
+                   href="{{ route('page.cope.show.day', ['day' => $day, 'month' => $month, 'year' => $year]) }}"
                    title="Xem ngày {{ $day }}/{{ $month }}/{{ $year }} tốt hay xấu">
                     Xem ngày {{ $day }}/{{ $month }}/{{ $year }} tốt hay xấu
                     <span aria-hidden="true">→</span>
@@ -313,12 +316,17 @@
             <aside class="calendar-lookup" aria-labelledby="calendar-lookup-title">
                 <h3 id="calendar-lookup-title">Tra cứu lịch âm – lịch vạn niên</h3>
                 <nav class="calendar-lookup-links" aria-label="Tra cứu lịch nhanh">
-                    <a href="{{ route('page.cope.show.day', ['day' => $preNextData['yesterday']['d'], 'month' => $preNextData['yesterday']['m'], 'year' => $preNextData['yesterday']['y']]) }}" title="Lịch âm hôm qua">Lịch âm hôm qua</a>
+                    <a href="{{ route('page.cope.show.day', ['day' => $preNextData['yesterday']['d'], 'month' => $preNextData['yesterday']['m'], 'year' => $preNextData['yesterday']['y']]) }}"
+                       title="Lịch âm hôm qua">Lịch âm hôm qua</a>
                     <a class="is-current" href="{{ route('page.home') }}" title="Lịch âm hôm nay">Lịch âm hôm nay</a>
-                    <a href="{{ route('page.cope.show.day', ['day' => $preNextData['tomorrow']['d'], 'month' => $preNextData['tomorrow']['m'], 'year' => $preNextData['tomorrow']['y']]) }}" title="Lịch âm ngày mai">Lịch âm ngày mai</a>
-                    <a href="{{ route('page.cope.show.month', ['month' => $month, 'year' => $year]) }}" title="Lịch tháng {{ $month }}/{{ $year }}">Lịch tháng {{ $month }}/{{ $year }}</a>
-                    <a href="{{ route('page.cope.show.year', ['year' => $year]) }}" title="Lịch năm {{ $year }}">Lịch năm {{ $year }}</a>
-                    <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi ngày âm dương</a>
+                    <a href="{{ route('page.cope.show.day', ['day' => $preNextData['tomorrow']['d'], 'month' => $preNextData['tomorrow']['m'], 'year' => $preNextData['tomorrow']['y']]) }}"
+                       title="Lịch âm ngày mai">Lịch âm ngày mai</a>
+                    <a href="{{ route('page.cope.show.month', ['month' => $month, 'year' => $year]) }}"
+                       title="Lịch tháng {{ $month }}/{{ $year }}">Lịch tháng {{ $month }}/{{ $year }}</a>
+                    <a href="{{ route('page.cope.show.year', ['year' => $year]) }}" title="Lịch năm {{ $year }}">Lịch
+                        năm {{ $year }}</a>
+                    <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi
+                        ngày âm dương</a>
                 </nav>
             </aside>
         </div>
@@ -1004,5 +1012,140 @@
 @endsection
 
 @section('scripts')
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendar = document.querySelector('#pre_calendar');
+
+            if (!calendar) return;
+
+            const cells = Array.from(calendar.querySelectorAll('.calendar-day'));
+
+            const linkIndexes = [];
+
+            cells.forEach((cell, index) => {
+                if (cell.tagName === 'A') {
+                    linkIndexes.push(index);
+                }
+            });
+
+            if (!linkIndexes.length) return;
+
+            const firstIndex = linkIndexes[0];
+            const lastIndex = linkIndexes[linkIndexes.length - 1];
+
+            const firstLink = cells[firstIndex];
+            const lastLink = cells[lastIndex];
+
+            const firstMatch = firstLink
+                .getAttribute('href')
+                .match(/lich-ngay-(\d+)-(\d+)-(\d+)/);
+
+            if (!firstMatch) return;
+
+            const firstDay = Number(firstMatch[1]);
+            const firstMonth = Number(firstMatch[2]);
+            const firstYear = Number(firstMatch[3]);
+
+            const firstDate = new Date(
+                firstYear,
+                firstMonth - 1,
+                firstDay,
+                12,
+                0,
+                0
+            );
+
+            const firstLunarDay = Number(
+                firstLink.querySelector('small')?.textContent.trim()
+            );
+
+            for (let i = firstIndex - 1; i >= 0; i--) {
+                const cell = cells[i];
+
+                if (
+                    cell.tagName !== 'BUTTON' ||
+                    !cell.classList.contains('muted')
+                ) {
+                    continue;
+                }
+
+                const distance = firstIndex - i;
+
+                const date = new Date(firstDate);
+                date.setDate(date.getDate() - distance);
+
+                const strong = cell.querySelector('strong');
+                const small = cell.querySelector('small');
+
+                if (strong) {
+                    strong.textContent = date.getDate();
+                }
+
+                if (small && firstLunarDay) {
+                    small.textContent = firstLunarDay - distance;
+                }
+
+                cell.dataset.date =
+                    `${date.getFullYear()}-` +
+                    `${String(date.getMonth() + 1).padStart(2, '0')}-` +
+                    `${String(date.getDate()).padStart(2, '0')}`;
+            }
+
+            const lastMatch = lastLink
+                .getAttribute('href')
+                .match(/lich-ngay-(\d+)-(\d+)-(\d+)/);
+
+            if (!lastMatch) return;
+
+            const lastDay = Number(lastMatch[1]);
+            const lastMonth = Number(lastMatch[2]);
+            const lastYear = Number(lastMatch[3]);
+
+            const lastDate = new Date(
+                lastYear,
+                lastMonth - 1,
+                lastDay,
+                12,
+                0,
+                0
+            );
+
+            const lastLunarDay = Number(
+                lastLink.querySelector('small')?.textContent.trim()
+            );
+
+            for (let i = lastIndex + 1; i < cells.length; i++) {
+                const cell = cells[i];
+
+                if (
+                    cell.tagName !== 'BUTTON' ||
+                    !cell.classList.contains('muted')
+                ) {
+                    continue;
+                }
+
+                const distance = i - lastIndex;
+
+                const date = new Date(lastDate);
+                date.setDate(date.getDate() + distance);
+
+                const strong = cell.querySelector('strong');
+                const small = cell.querySelector('small');
+
+                if (strong) {
+                    strong.textContent = date.getDate();
+                }
+
+                if (small && lastLunarDay) {
+                    small.textContent = lastLunarDay + distance;
+                }
+
+                cell.dataset.date =
+                    `${date.getFullYear()}-` +
+                    `${String(date.getMonth() + 1).padStart(2, '0')}-` +
+                    `${String(date.getDate()).padStart(2, '0')}`;
+            }
+        });
+    </script>
 @endsection
 

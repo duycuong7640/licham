@@ -432,5 +432,139 @@
             monthSelect.addEventListener('change', changeMonth);
             yearSelect.addEventListener('change', changeMonth);
         });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendar = document.querySelector('#pre_calendar');
+
+            if (!calendar) return;
+
+            const cells = Array.from(calendar.querySelectorAll('.calendar-day'));
+
+            const linkIndexes = [];
+
+            cells.forEach((cell, index) => {
+                if (cell.tagName === 'A') {
+                    linkIndexes.push(index);
+                }
+            });
+
+            if (!linkIndexes.length) return;
+
+            const firstIndex = linkIndexes[0];
+            const lastIndex = linkIndexes[linkIndexes.length - 1];
+
+            const firstLink = cells[firstIndex];
+            const lastLink = cells[lastIndex];
+
+            const firstMatch = firstLink
+                .getAttribute('href')
+                .match(/lich-ngay-(\d+)-(\d+)-(\d+)/);
+
+            if (!firstMatch) return;
+
+            const firstDay = Number(firstMatch[1]);
+            const firstMonth = Number(firstMatch[2]);
+            const firstYear = Number(firstMatch[3]);
+
+            const firstDate = new Date(
+                firstYear,
+                firstMonth - 1,
+                firstDay,
+                12,
+                0,
+                0
+            );
+
+            const firstLunarDay = Number(
+                firstLink.querySelector('small')?.textContent.trim()
+            );
+
+            for (let i = firstIndex - 1; i >= 0; i--) {
+                const cell = cells[i];
+
+                if (
+                    cell.tagName !== 'BUTTON' ||
+                    !cell.classList.contains('muted')
+                ) {
+                    continue;
+                }
+
+                const distance = firstIndex - i;
+
+                const date = new Date(firstDate);
+                date.setDate(date.getDate() - distance);
+
+                const strong = cell.querySelector('strong');
+                const small = cell.querySelector('small');
+
+                if (strong) {
+                    strong.textContent = date.getDate();
+                }
+
+                if (small && firstLunarDay) {
+                    small.textContent = firstLunarDay - distance;
+                }
+
+                cell.dataset.date =
+                    `${date.getFullYear()}-` +
+                    `${String(date.getMonth() + 1).padStart(2, '0')}-` +
+                    `${String(date.getDate()).padStart(2, '0')}`;
+            }
+
+            const lastMatch = lastLink
+                .getAttribute('href')
+                .match(/lich-ngay-(\d+)-(\d+)-(\d+)/);
+
+            if (!lastMatch) return;
+
+            const lastDay = Number(lastMatch[1]);
+            const lastMonth = Number(lastMatch[2]);
+            const lastYear = Number(lastMatch[3]);
+
+            const lastDate = new Date(
+                lastYear,
+                lastMonth - 1,
+                lastDay,
+                12,
+                0,
+                0
+            );
+
+            const lastLunarDay = Number(
+                lastLink.querySelector('small')?.textContent.trim()
+            );
+
+            for (let i = lastIndex + 1; i < cells.length; i++) {
+                const cell = cells[i];
+
+                if (
+                    cell.tagName !== 'BUTTON' ||
+                    !cell.classList.contains('muted')
+                ) {
+                    continue;
+                }
+
+                const distance = i - lastIndex;
+
+                const date = new Date(lastDate);
+                date.setDate(date.getDate() + distance);
+
+                const strong = cell.querySelector('strong');
+                const small = cell.querySelector('small');
+
+                if (strong) {
+                    strong.textContent = date.getDate();
+                }
+
+                if (small && lastLunarDay) {
+                    small.textContent = lastLunarDay + distance;
+                }
+
+                cell.dataset.date =
+                    `${date.getFullYear()}-` +
+                    `${String(date.getMonth() + 1).padStart(2, '0')}-` +
+                    `${String(date.getDate()).padStart(2, '0')}`;
+            }
+        });
     </script>
 @endsection
