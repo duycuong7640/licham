@@ -234,30 +234,10 @@
                             $month['month'] = \App\Helpers\Helpers::checkNumber($month['month']);
                             $month['lunarDay'] = \App\Helpers\Helpers::checkNumber($month['lunarDay']);
                             $month['lunarMonth'] = \App\Helpers\Helpers::checkNumber($month['lunarMonth']);
-
-                            $goodHours = [];
-                            if (!empty($month['options']['AUSPICIOUS_HOUR'])) {
-                                foreach ($month['options']['AUSPICIOUS_HOUR'] as $value) {
-                                    $time = \App\Helpers\Helpers::matchHour($value['value']);
-
-                                    if (!empty($time['title'])) {
-                                        $goodHours[] =
-                                            $time['title']
-                                            . (!empty($time['hour']) ? ' (' . $time['hour'] . ')' : '');
-                                    }
-                                }
-                            }
-                            $goodHoursText = implode(', ', $goodHours);
                         @endphp
                         <a href="{{ route('page.cope.show.day', ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']]) }}"
                            class="calendar-day btn-loading {{ $isDay }} {{ $isSaturday }} {{ $isSunday }} {{ $today }} {{ $today }}"
                            data-date="{{ \Carbon\Carbon::parse($month['date'], 'Asia/Ho_Chi_Minh')->utc()->format('Y-m-d\TH:i:s.v\Z') }}"
-                           data-solar="{{ $month['day'] }}/{{ $month['month'] }}/{{ $month['year'] }}"
-                           data-lunar="{{ $month['lunarDay'] }}/{{ $month['lunarMonth'] }}"
-                           data-canchi="{{ $month['strDay'] }}"
-                           data-rating="Ngày {{ $month['isDay'] ? 'Hoàng đạo' : 'Hắc đạo' }}"
-                           data-hours="{{ $goodHoursText }}"
-                           data-suitable="{{ $montViecnenlam[0] ?? '' }}"
                            aria-label="Ngày {{ $month['day'] }} tháng {{ $month['month'] }}, âm lịch {{ $month['lunarDay'] }} tháng {{ $month['lunarMonth'] }}"
                            title="Ngày {{ $month['day'] }} tháng {{ $month['month'] }}, âm lịch {{ $month['lunarDay'] }} tháng {{ $month['lunarMonth'] }}"
                         >
@@ -1016,73 +996,6 @@
 
 @section('scripts')
     <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            const days = document.querySelectorAll('#pre_calendar .calendar-day');
-
-            if (!days.length) return;
-
-            days.forEach(function (day) {
-                day.addEventListener('mouseenter', function () {
-                    if (day.querySelector('.day-tooltip')) {
-                        return;
-                    }
-
-                    const tooltip = document.createElement('span');
-
-                    tooltip.className = 'day-tooltip';
-                    tooltip.setAttribute('role', 'tooltip');
-
-                    tooltip.innerHTML = `
-                <b>
-                    Dương: ${escapeHtml(day.dataset.solar)}
-                    · Âm ${escapeHtml(day.dataset.lunar)}
-                </b>
-
-                <span>
-                    <strong>Can Chi:</strong>
-                    ${escapeHtml(day.dataset.canchi)}
-                </span>
-
-                <span>
-                    <strong>Đánh giá:</strong>
-                    ${escapeHtml(day.dataset.rating)}
-                </span>
-
-                <span>
-                    <strong>Giờ tốt:</strong>
-                    ${escapeHtml(day.dataset.hours)}
-                </span>
-
-                <span>
-                    <strong>Phù hợp:</strong>
-                    ${escapeHtml(day.dataset.suitable)}
-                </span>
-            `;
-
-                    day.appendChild(tooltip);
-                });
-
-                day.addEventListener('mouseleave', function () {
-                    const tooltip = day.querySelector('.day-tooltip');
-
-                    if (tooltip) {
-                        tooltip.remove();
-                    }
-                });
-            });
-
-            function escapeHtml(value) {
-                if (!value) return '';
-
-                return String(value)
-                    .replaceAll('&', '&amp;')
-                    .replaceAll('<', '&lt;')
-                    .replaceAll('>', '&gt;')
-                    .replaceAll('"', '&quot;')
-                    .replaceAll("'", '&#039;');
-            }
-        });
-
         document.addEventListener('DOMContentLoaded', function () {
             const calendar = document.querySelector('#pre_calendar');
 
