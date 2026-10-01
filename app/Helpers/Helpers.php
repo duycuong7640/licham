@@ -2881,6 +2881,169 @@ class Helpers
             return [];
         }
 
+        usort($data, function ($a, $b) {
+            return strcmp($a['day'], $b['day']);
+        });
+
+        // Tạo map toàn bộ data theo Y-m-d
+        $dataMap = [];
+
+        foreach ($data as $item) {
+            $date = Carbon::parse($item['day']);
+            $dataMap[$date->format('Y-m-d')] = $item;
+        }
+
+        /*
+         * Xác định tháng chính.
+         * Ở đây lấy tháng có nhiều bản ghi nhất trong $data.
+         */
+        $monthCount = [];
+
+        foreach ($data as $item) {
+            $date = Carbon::parse($item['day']);
+
+            $key = $date->format('Y-m');
+
+            $monthCount[$key] = ($monthCount[$key] ?? 0) + 1;
+        }
+
+        arsort($monthCount);
+
+        $mainMonthKey = array_key_first($monthCount);
+
+        [$mainYear, $mainMonth] = array_map(
+            'intval',
+            explode('-', $mainMonthKey)
+        );
+
+        /*
+         * Chỉ lấy data của tháng chính
+         */
+        $currentMonthData = array_values(
+            array_filter($data, function ($item) use ($mainMonth, $mainYear) {
+                $date = Carbon::parse($item['day']);
+
+                return $date->month === $mainMonth
+                    && $date->year === $mainYear;
+            })
+        );
+
+        usort($currentMonthData, function ($a, $b) {
+            return strcmp($a['day'], $b['day']);
+        });
+
+        if (empty($currentMonthData)) {
+            return [];
+        }
+
+        $makeCell = function ($item, bool $isOtherMonth = false) {
+            $solar = Carbon::parse($item['day']);
+            $lunar = Carbon::parse($item['lunarDay']);
+
+            return [
+                'id' => $item['id'] ?? null,
+
+                'date' => $item['day'],
+                'day' => (int) $solar->day,
+                'month' => (int) $solar->month,
+                'year' => (int) $solar->year,
+
+                'lunarDate' => $item['lunarDay'],
+                'lunarDay' => (int) $lunar->day,
+                'lunarMonth' => (int) $lunar->month,
+
+                'lunarLabel' => $lunar->day === 1
+                    ? $lunar->day . '/' . $lunar->month
+                    : (string) $lunar->day,
+
+                'isDay' => (bool) ($item['isDay'] ?? false),
+
+                'dayOfWeek' => $solar->dayOfWeekIso,
+
+                'isSaturday' => $solar->dayOfWeekIso === 6,
+                'isSunday' => $solar->dayOfWeekIso === 7,
+                'isWeekend' => in_array(
+                    $solar->dayOfWeekIso,
+                    [6, 7]
+                ),
+
+                'strDay' => $item['strDay'] ?? null,
+                'strMonth' => $item['strMonth'] ?? null,
+                'strYear' => $item['strYear'] ?? null,
+
+                'options' => $item['options'] ?? [],
+
+                'isOtherMonth' => $isOtherMonth,
+            ];
+        };
+
+        $firstDate = Carbon::parse($currentMonthData[0]['day']);
+        $lastDate = Carbon::parse(
+            $currentMonthData[count($currentMonthData) - 1]['day']
+        );
+
+        $firstDayOfWeek = $firstDate->dayOfWeekIso;
+
+        $cells = [];
+
+        /*
+         * Các ô trước ngày đầu tháng
+         */
+        for ($i = 1; $i < $firstDayOfWeek; $i++) {
+            $distance = $firstDayOfWeek - $i;
+
+            $date = $firstDate
+                ->copy()
+                ->subDays($distance);
+
+            $key = $date->format('Y-m-d');
+
+            if (isset($dataMap[$key])) {
+                $cells[] = $makeCell(
+                    $dataMap[$key],
+                    true
+                );
+            } else {
+                $cells[] = null;
+            }
+        }
+
+        /*
+         * Các ngày trong tháng hiện tại
+         */
+        foreach ($currentMonthData as $item) {
+            $cells[] = $makeCell($item, false);
+        }
+
+        /*
+         * Các ô sau ngày cuối tháng
+         */
+        $nextDate = $lastDate->copy()->addDay();
+
+        while (count($cells) % 7 !== 0) {
+            $key = $nextDate->format('Y-m-d');
+
+            if (isset($dataMap[$key])) {
+                $cells[] = $makeCell(
+                    $dataMap[$key],
+                    true
+                );
+            } else {
+                $cells[] = null;
+            }
+
+            $nextDate->addDay();
+        }
+
+        return array_chunk($cells, 7);
+    }
+
+    public static function buildCalendarBK(array $data): array
+    {
+        if (empty($data)) {
+            return [];
+        }
+
         // Đảm bảo đúng thứ tự ngày
         usort($data, function ($a, $b) {
             return strcmp($a['day'], $b['day']);

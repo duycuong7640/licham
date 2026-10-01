@@ -901,9 +901,9 @@ button {
 .calendar-day.muted small {
     color: #bbc0c3;
 }
-.calendar-day.muted::after {
-    display: none;
-}
+/*.calendar-day.muted::after {*/
+/*    display: none;*/
+/*}*/
 .calendar-day.muted:hover,
 .calendar-day.muted:focus-visible {
     background: #f2f3f4;

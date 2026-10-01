@@ -123,10 +123,13 @@
         <div id="pre_calendar" class="calendar-grid">
             @foreach($months as $values)
                 @foreach($values as $month)
-                    @if(empty($month['id']))
-                        <button class="calendar-day muted" disabled="" aria-disabled="true" aria-label="">
-                            <strong></strong>
-                            <small></small>
+                    @if(empty($month['id']) || (!empty($month['id']) && $month['month'] != $monthButton['month']))
+                        @php
+                            $isDay = $month['isDay'] ? 'good-day' : 'bad-day';
+                        @endphp
+                        <button class="calendar-day muted {{ $isDay }}" disabled="" aria-disabled="true" aria-label="">
+                            <strong>{{ $month['day'] }}</strong>
+                            <small>{{ $month['lunarDay'] }}</small>
                         </button>
                     @else
                         @php
@@ -140,30 +143,10 @@
                             $month['month'] = \App\Helpers\Helpers::checkNumber($month['month']);
                             $month['lunarDay'] = \App\Helpers\Helpers::checkNumber($month['lunarDay']);
                             $month['lunarMonth'] = \App\Helpers\Helpers::checkNumber($month['lunarMonth']);
-
-                            $goodHours = [];
-                            if (!empty($month['options']['AUSPICIOUS_HOUR'])) {
-                                foreach ($month['options']['AUSPICIOUS_HOUR'] as $value) {
-                                    $time = \App\Helpers\Helpers::matchHour($value['value']);
-
-                                    if (!empty($time['title'])) {
-                                        $goodHours[] =
-                                            $time['title']
-                                            . (!empty($time['hour']) ? ' (' . $time['hour'] . ')' : '');
-                                    }
-                                }
-                            }
-                            $goodHoursText = implode(', ', $goodHours);
                         @endphp
                         <a href="{{ route('page.cope.show.day', ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']]) }}"
                            class="calendar-day {{ $isDay }} {{ $isSaturday }} {{ $isSunday }} {{ $today }}"
                            data-date="{{ \Carbon\Carbon::parse($month['date'], 'Asia/Ho_Chi_Minh')->utc()->format('Y-m-d\TH:i:s.v\Z') }}"
-                           data-solar="{{ $month['day'] }}/{{ $month['month'] }}/{{ $month['year'] }}"
-                           data-lunar="{{ $month['lunarDay'] }}/{{ $month['lunarMonth'] }}"
-                           data-canchi="{{ $month['strDay'] }}"
-                           data-rating="Ngày {{ $month['isDay'] ? 'Hoàng đạo' : 'Hắc đạo' }}"
-                           data-hours="{{ $goodHoursText }}"
-                           data-suitable="{{ $montViecnenlam[0] ?? '' }}"
                            aria-label="Ngày {{ $month['day'] }} tháng {{ $month['month'] }}, âm lịch {{ $month['lunarDay'] }} tháng {{ $month['lunarMonth'] }}">
                             <strong>{{ $month['day'] }}</strong>
                             <small>{{ $month['lunarDay'] }}</small>
@@ -434,207 +417,6 @@
 
             monthSelect.addEventListener('change', changeMonth);
             yearSelect.addEventListener('change', changeMonth);
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const days = document.querySelectorAll('#pre_calendar .calendar-day');
-
-            if (!days.length) return;
-
-            days.forEach(function (day) {
-                day.addEventListener('mouseenter', function () {
-                    if (day.querySelector('.day-tooltip')) {
-                        return;
-                    }
-
-                    const tooltip = document.createElement('span');
-
-                    tooltip.className = 'day-tooltip';
-                    tooltip.setAttribute('role', 'tooltip');
-
-                    tooltip.innerHTML = `
-                <b>
-                    Dương: ${escapeHtml(day.dataset.solar)}
-                    · Âm ${escapeHtml(day.dataset.lunar)}
-                </b>
-
-                <span>
-                    <strong>Can Chi:</strong>
-                    ${escapeHtml(day.dataset.canchi)}
-                </span>
-
-                <span>
-                    <strong>Đánh giá:</strong>
-                    ${escapeHtml(day.dataset.rating)}
-                </span>
-
-                <span>
-                    <strong>Giờ tốt:</strong>
-                    ${escapeHtml(day.dataset.hours)}
-                </span>
-
-                <span>
-                    <strong>Phù hợp:</strong>
-                    ${escapeHtml(day.dataset.suitable)}
-                </span>
-            `;
-
-                    day.appendChild(tooltip);
-                });
-
-                day.addEventListener('mouseleave', function () {
-                    const tooltip = day.querySelector('.day-tooltip');
-
-                    if (tooltip) {
-                        tooltip.remove();
-                    }
-                });
-            });
-
-            function escapeHtml(value) {
-                if (!value) return '';
-
-                return String(value)
-                    .replaceAll('&', '&amp;')
-                    .replaceAll('<', '&lt;')
-                    .replaceAll('>', '&gt;')
-                    .replaceAll('"', '&quot;')
-                    .replaceAll("'", '&#039;');
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const calendar = document.querySelector('#pre_calendar');
-
-            if (!calendar) return;
-
-            const cells = Array.from(calendar.querySelectorAll('.calendar-day'));
-
-            const linkIndexes = [];
-
-            cells.forEach((cell, index) => {
-                if (cell.tagName === 'A') {
-                    linkIndexes.push(index);
-                }
-            });
-
-            if (!linkIndexes.length) return;
-
-            const firstIndex = linkIndexes[0];
-            const lastIndex = linkIndexes[linkIndexes.length - 1];
-
-            const firstLink = cells[firstIndex];
-            const lastLink = cells[lastIndex];
-
-            const firstMatch = firstLink
-                .getAttribute('href')
-                .match(/lich-ngay-(\d+)-(\d+)-(\d+)/);
-
-            if (!firstMatch) return;
-
-            const firstDay = Number(firstMatch[1]);
-            const firstMonth = Number(firstMatch[2]);
-            const firstYear = Number(firstMatch[3]);
-
-            const firstDate = new Date(
-                firstYear,
-                firstMonth - 1,
-                firstDay,
-                12,
-                0,
-                0
-            );
-
-            const firstLunarDay = Number(
-                firstLink.querySelector('small')?.textContent.trim()
-            );
-
-            for (let i = firstIndex - 1; i >= 0; i--) {
-                const cell = cells[i];
-
-                if (
-                    cell.tagName !== 'BUTTON' ||
-                    !cell.classList.contains('muted')
-                ) {
-                    continue;
-                }
-
-                const distance = firstIndex - i;
-
-                const date = new Date(firstDate);
-                date.setDate(date.getDate() - distance);
-
-                const strong = cell.querySelector('strong');
-                const small = cell.querySelector('small');
-
-                if (strong) {
-                    strong.textContent = date.getDate();
-                }
-
-                if (small && firstLunarDay) {
-                    small.textContent = firstLunarDay - distance;
-                }
-
-                cell.dataset.date =
-                    `${date.getFullYear()}-` +
-                    `${String(date.getMonth() + 1).padStart(2, '0')}-` +
-                    `${String(date.getDate()).padStart(2, '0')}`;
-            }
-
-            const lastMatch = lastLink
-                .getAttribute('href')
-                .match(/lich-ngay-(\d+)-(\d+)-(\d+)/);
-
-            if (!lastMatch) return;
-
-            const lastDay = Number(lastMatch[1]);
-            const lastMonth = Number(lastMatch[2]);
-            const lastYear = Number(lastMatch[3]);
-
-            const lastDate = new Date(
-                lastYear,
-                lastMonth - 1,
-                lastDay,
-                12,
-                0,
-                0
-            );
-
-            const lastLunarDay = Number(
-                lastLink.querySelector('small')?.textContent.trim()
-            );
-
-            for (let i = lastIndex + 1; i < cells.length; i++) {
-                const cell = cells[i];
-
-                if (
-                    cell.tagName !== 'BUTTON' ||
-                    !cell.classList.contains('muted')
-                ) {
-                    continue;
-                }
-
-                const distance = i - lastIndex;
-
-                const date = new Date(lastDate);
-                date.setDate(date.getDate() + distance);
-
-                const strong = cell.querySelector('strong');
-                const small = cell.querySelector('small');
-
-                if (strong) {
-                    strong.textContent = date.getDate();
-                }
-
-                if (small && lastLunarDay) {
-                    small.textContent = lastLunarDay + distance;
-                }
-
-                cell.dataset.date =
-                    `${date.getFullYear()}-` +
-                    `${String(date.getMonth() + 1).padStart(2, '0')}-` +
-                    `${String(date.getDate()).padStart(2, '0')}`;
-            }
         });
     </script>
 @endsection

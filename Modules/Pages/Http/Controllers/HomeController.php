@@ -72,6 +72,7 @@ class HomeController extends Controller
             /**
              * Render HTML
              */
+            // return view('pages::index')->with('data', $data);
             $html = view('pages::index')->with('data', $data)->render();
             $html = Helpers::genCsrfToken($html, '1');
             $response = response($html)->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
