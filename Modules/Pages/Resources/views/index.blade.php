@@ -250,17 +250,6 @@
                                 <b>Dương: {{ $month['day'] }}/{{ $month['month'] }}/{{ $month['year'] }} · Âm {{ $month['lunarDay'] }}/{{ $month['lunarMonth'] }}</b>
                                 <span><strong>Can Chi:</strong> {{ $month['strDay'] }}</span>
                                 <span><strong>Đánh giá:</strong> Ngày {{ $month['isDay'] ? 'Hoàng đạo' : 'Hắc đạo' }}</span>
-                                <span>
-                                    <strong>Giờ tốt:</strong>
-                                    @if(!empty($month['options']['AUSPICIOUS_HOUR']))
-                                        @foreach($month['options']['AUSPICIOUS_HOUR'] as $k=>$value)
-                                            @php $time = \App\Helpers\Helpers::matchHour($value['value']); @endphp
-                                            @if($k), @endif
-                                            {{ !empty($time['title']) ? $time['title'] : '' }}
-                                            ({{ !empty($time['hour']) ? $time['hour'] : '' }})
-                                        @endforeach
-                                    @endif
-                                </span>
                                 <span><strong>Phù hợp:</strong> {{ !empty($montViecnenlam[0]) ? $montViecnenlam[0] : '' }}</span>
                             </span>
                         </a>
