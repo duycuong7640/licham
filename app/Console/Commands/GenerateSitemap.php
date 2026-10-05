@@ -135,7 +135,7 @@ class GenerateSitemap extends Command
                 $urls[] = [
                     'loc' => route('page.cope.show.month', [
                         'month' => $month,
-                        'year' => $currentYear,
+                        'year' => $year,
                     ]),
 //                    'lastmod' => $now,
                 ];
