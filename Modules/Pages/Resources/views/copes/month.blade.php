@@ -11,6 +11,10 @@
         $data['month'] = (int) $monthButton['month'];
         $data['year'] = (int) $monthButton['year'];
         $schemaName = "Lịch âm tháng {$data['month']} năm {$data['year']}";
+
+        $currentDate = \Carbon\Carbon::createFromFormat('Y-m-d', $data['year'].'-'.$data['month'].'-01', 'Asia/Ho_Chi_Minh');
+        $nextMonth1 = $currentDate->copy()->addMonth();
+        $nextMonth2 = $currentDate->copy()->addMonth(2);
     @endphp
     @push('schema')
         <script type="application/ld+json">
@@ -387,7 +391,15 @@
                 <b>Tra cứu tiếp: </b>
                 <a href="{{ route('page.home') }}" title="Âm lịch hôm nay">Âm lịch hôm nay</a> ·
                 <a href="{{ route('page.cope.show.year', ['year' => date('Y')]) }}" title="Lịch âm năm {{ date('Y') }}">Lịch âm năm {{ date('Y') }}</a> ·
-                <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi ngày âm dương</a>
+                <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">Đổi ngày âm dương</a> ·
+                ·
+                <a href="{{ route('page.cope.show.month', ['month' => $nextMonth1->format('m'), 'year' => $nextMonth1->format('Y')]) }}" title="Lịch âm tháng {{ $nextMonth1->format('m').'/'.$nextMonth1->format('Y') }}">
+                    Lịch âm tháng {{ $nextMonth1->format('m').'/'.$nextMonth1->format('Y') }}
+                </a>
+                ·
+                <a href="{{ route('page.cope.show.month', ['month' => $nextMonth2->format('m'), 'year' => $nextMonth2->format('Y')]) }}" title="Lịch âm tháng {{ $nextMonth2->format('m').'/'.$nextMonth2->format('Y') }}">
+                    Lịch âm tháng {{ $nextMonth2->format('m').'/'.$nextMonth2->format('Y') }}
+                </a>
             </p>
         </div>
     </article>

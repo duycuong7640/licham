@@ -21,6 +21,8 @@
 
         $previousDate = $currentDate->copy()->subDay();
         $nextDate = $currentDate->copy()->addDay();
+        $nextMonth1 = $currentDate->copy()->addMonth();
+        $nextMonth2 = $currentDate->copy()->addMonth(2);
         $previousDayRoute = [
             'day'   => (int) $previousDate->format('d'),
             'month' => (int) $previousDate->format('m'),
@@ -906,16 +908,24 @@
             </div>
             <p class="cms-links">
                 <b>Tra cứu tiếp:</b>
-                <a href="{{ route('page.cope.show.day', $previousDayRoute) }}" title="Ngày hôm qua">
-                    Ngày hôm qua
+                <a href="{{ route('page.cope.show.day', $previousDayRoute) }}" title="Lịch âm hôm qua">
+                    Lịch âm hôm qua
+                </a>
+                ·
+                <a href="{{ route('page.cope.show.day', $nextDayRoute) }}" title="Lịch âm ngày mai">
+                    Lịch âm ngày mai
                 </a>
                 ·
                 <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">
                     Đổi ngày âm dương
                 </a>
                 ·
-                <a href="{{ route('page.cope.show.day', $nextDayRoute) }}" title="Ngày mai">
-                    Ngày mai
+                <a href="{{ route('page.cope.show.month', ['month' => $nextMonth1->format('m'), 'year' => $nextMonth1->format('Y')]) }}" title="Lịch âm tháng {{ $nextMonth1->format('m').'/'.$nextMonth1->format('Y') }}">
+                    Lịch âm tháng {{ $nextMonth1->format('m').'/'.$nextMonth1->format('Y') }}
+                </a>
+                ·
+                <a href="{{ route('page.cope.show.month', ['month' => $nextMonth2->format('m'), 'year' => $nextMonth2->format('Y')]) }}" title="Lịch âm tháng {{ $nextMonth2->format('m').'/'.$nextMonth2->format('Y') }}">
+                    Lịch âm tháng {{ $nextMonth2->format('m').'/'.$nextMonth2->format('Y') }}
                 </a>
 
                 @if(!empty($m1))
