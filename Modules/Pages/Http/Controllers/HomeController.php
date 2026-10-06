@@ -68,7 +68,7 @@ class HomeController extends Controller
             $data['months'] = RequestHelpers::request($request, \dataApiRoutes::COPE_MONTH, str_replace(':month', $month, str_replace(':year', $year, \dataApiRoutes::COPE_MONTH)), [], 'get');
             $data['day'] = RequestHelpers::request($request, \dataApiRoutes::COPE_DETAIL, str_replace(':day', $day, \dataApiRoutes::COPE_DETAIL), [], 'get');
             $data['dayGB'] = RequestApiHelpers::request($request, \dataApiRoutes::FORTUNE_NGAY_TOT_XAU, \dataApiRoutes::FORTUNE_NGAY_TOT_XAU, [], 'get');
-            $data['hyperlinks'] = ['Lịch âm hôm nay', 'Giờ hoàng đạo', 'Xuất hành', 'Kiến thức',];
+            $data['hyperlinks'] = ['Lịch âm hôm nay', 'Giờ hoàng đạo', 'Nên làm', 'Kiến thức',];
 
             /**
              * Render HTML

@@ -280,7 +280,7 @@ class CopesController extends Controller
             $data['shareMXH'] = Helpers::renderShareMXH('pro_show', $SEO);
             $data['show'] = 1;
             $data['isPage'] = 'day';
-            $data['hyperlinks'] = ['Lịch âm hôm nay', 'Giờ hoàng đạo', 'Xuất hành', 'Kiến thức'];
+            $data['hyperlinks'] = ['Lịch âm', 'Giờ hoàng đạo', 'Xuất hành', 'Nhận định'];
 
             // return view('pages::copes.day')->with('data', $data);
             $html = view('pages::copes.day')->with('data', $data)->render();

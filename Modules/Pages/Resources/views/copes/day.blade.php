@@ -151,7 +151,7 @@
         class="reading-summary"
         aria-label="Tóm tắt lịch âm hôm nay"
     >
-        <div class="summary-kicker" id="lich-am-hom-nay">
+        <div class="summary-kicker" id="lich-am">
             <h1>Lịch âm ngày {{ $day . '/' . $month . '/' .$year }}</h1>
             <span>
                 {{ $isToday ? 'Lịch âm hôm nay' : 'Lịch âm theo ngày' }}</span>
@@ -716,7 +716,7 @@
             @endif
         </div>
     </section>
-    <article class="card seo-analysis" aria-labelledby="day-analysis-title">
+    <article class="card seo-analysis" id="nhan-dinh" aria-labelledby="day-analysis-title">
         <div class="cms-content">
             <span class="section-label">
                 TỔNG HỢP LỊCH PHÁP

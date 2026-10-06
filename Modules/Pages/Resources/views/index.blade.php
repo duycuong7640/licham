@@ -441,7 +441,7 @@
             ['An táng']
         );
     @endphp
-    <section class="section-block daily-work-guide" aria-labelledby="daily-work-title">
+    <section class="section-block daily-work-guide" id="nen-lam" aria-labelledby="daily-work-title">
         <div class="daily-work-heading">
             <span class="section-label">GỢI Ý TRONG NGÀY</span>
             <h2 id="daily-work-title">Hôm nay có nên làm việc này không?</h2>
