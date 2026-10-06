@@ -3,6 +3,7 @@
 @section('content')
     @php
         $row = $data['day'];
+        $dayGB = !empty($data['dayGB']['display']) ? $data['dayGB']['display'] : [];
         $dE = explode('-', $row['day']);
         $day = (int) $dE[2];
         $month = (int) $dE[1];
@@ -47,6 +48,14 @@
                 tháng <strong>{{ $row['strMonth'] }}</strong>
                 năm <strong>{{ $row['strYear'] }}</strong>
             </p>
+            @if(!empty($dayGB['focus']['text']))
+                <p class="summary-line">
+                    Nên: <strong id="pre_summaryWeekday">{{ $dayGB['focus']['text'] }}</strong>
+                </p>
+                <p class="summary-line">
+                    Tránh: <strong id="pre_summaryWeekday">{{ $dayGB['reminder']['text'] }}</strong>
+                </p>
+            @endif
             <p class="summary-line summary-wide">
                 Ngày <strong>{{ !empty($dayKhongMinh[0]) ? $dayKhongMinh[0] : '' }}</strong>:
                 <span id="pre_summaryTravel">{{ !empty($dayKhongMinh[1]) ? $dayKhongMinh[1] : '' }}</span>
@@ -317,6 +326,201 @@
             </aside>
         </div>
     </section>
+
+    @php
+        $focusText = $dayGB['focus']['text'] ?? '';
+        $reminderText = $dayGB['reminder']['text'] ?? '';
+
+        $focusItems = array_values(array_filter(
+            array_map('trim', explode(',', $focusText))
+        ));
+
+        $reminderItems = array_values(array_filter(
+            array_map('trim', explode(',', $reminderText))
+        ));
+
+        $getWorkStatus = function (
+            array $focusItems,
+            array $reminderItems,
+            array $goodKeys = [],
+            array $avoidKeys = []
+        ) {
+            // Reminder ưu tiên cao nhất: có từ khóa kỵ => Nên tránh
+            foreach ($avoidKeys as $key) {
+                foreach ($reminderItems as $reminder) {
+                    if (mb_stripos($reminder, $key) !== false) {
+                        return [
+                            'class' => 'is-avoid',
+                            'icon' => '×',
+                            'text' => 'Nên tránh',
+                        ];
+                    }
+                }
+            }
+
+            // Có trong focus => Nên
+            foreach ($goodKeys as $key) {
+                foreach ($focusItems as $focus) {
+                    if (mb_stripos($focus, $key) !== false) {
+                        return [
+                            'class' => 'is-good',
+                            'icon' => '✓',
+                            'text' => 'Nên',
+                        ];
+                    }
+                }
+            }
+
+            return [
+                'class' => 'is-consider',
+                'icon' => '−',
+                'text' => 'Cân nhắc',
+            ];
+        };
+
+        $studyStatus = $getWorkStatus(
+            $focusItems,
+            $reminderItems,
+            ['Cầu phúc', 'Nhập học', 'Cầu học', 'Khai bút', 'Thi cử'],
+            ['Học tập', 'Nhập học', 'Cầu học', 'Khai bút', 'Thi cử']
+        );
+
+        $openingStatus = $getWorkStatus(
+            $focusItems,
+            $reminderItems,
+            ['Khai trương'],
+            ['Khai trương']
+        );
+
+        $transactionStatus = $getWorkStatus(
+            $focusItems,
+            $reminderItems,
+            ['Giao dịch', 'Nạp tài'],
+            ['Giao dịch', 'Nạp tài', 'Cầu tài', 'Mua bán']
+        );
+
+        $travelStatus = $getWorkStatus(
+            $focusItems,
+            $reminderItems,
+            ['Xuất hành'],
+            ['Xuất hành', 'Đi xa']
+        );
+
+        $weddingStatus = $getWorkStatus(
+            $focusItems,
+            $reminderItems,
+            ['Cưới gả', 'Đính ước'],
+            ['Cưới gả', 'Cưới hỏi', 'Đính ước']
+        );
+
+        $constructionStatus = $getWorkStatus(
+            $focusItems,
+            $reminderItems,
+            ['Động thổ', 'Tu tạo', 'Nhập trạch'],
+            ['Động thổ', 'Tu tạo', 'Xây dựng', 'Xây nhà', 'Nhập trạch']
+        );
+
+        $lawsuitStatus = $getWorkStatus(
+            $focusItems,
+            $reminderItems,
+            ['Kiện tụng'],
+            ['Kiện tụng']
+        );
+
+        $medicalStatus = $getWorkStatus(
+            $focusItems,
+            $reminderItems,
+            ['Chữa bệnh'],
+            ['Chữa bệnh']
+        );
+
+        $burialStatus = $getWorkStatus(
+            $focusItems,
+            $reminderItems,
+            ['An táng'],
+            ['An táng']
+        );
+    @endphp
+    <section class="section-block daily-work-guide" aria-labelledby="daily-work-title">
+        <div class="daily-work-heading">
+            <span class="section-label">GỢI Ý TRONG NGÀY</span>
+            <h2 id="daily-work-title">Hôm nay có nên làm việc này không?</h2>
+            <p>Đánh giá nhanh theo các sao và dữ liệu lịch pháp của ngày đang xem.</p>
+        </div>
+
+        <div class="daily-work-grid">
+            <article class="daily-work-item {{ $studyStatus['class'] }}">
+                <div class="daily-work-item-head">
+                    <h3>Học tập, nhập học</h3>
+                    <span class="work-status">
+                        <i aria-hidden="true">{{ $studyStatus['icon'] }}</i>
+                        {{ $studyStatus['text'] }}
+                    </span>
+                </div>
+                <p>Sao Tất là sao tốt, thuận lợi cho việc học hành và bắt đầu khóa học mới.</p>
+            </article>
+
+            <article class="daily-work-item {{ $openingStatus['class'] }}">
+                <div class="daily-work-item-head">
+                    <h3>Khai trương</h3>
+                    <span class="work-status">
+                        <i aria-hidden="true">{{ $openingStatus['icon'] }}</i>
+                        {{ $openingStatus['text'] }}
+                    </span>
+                </div>
+                <p>Sao Tất tốt cho khai trương, nhưng sao Tiểu Hao bất lợi cho mua bán. Nên chọn giờ hoàng đạo.</p>
+            </article>
+
+            <article class="daily-work-item {{ $transactionStatus['class'] }}">
+                <div class="daily-work-item-head">
+                    <h3>Ký hợp đồng, giao dịch</h3>
+                    <span class="work-status">
+                        <i aria-hidden="true">{{ $transactionStatus['icon'] }}</i>
+                        {{ $transactionStatus['text'] }}
+                    </span>
+                </div>
+                <p>Sao Tiểu Hao không thuận cho giao dịch và cầu tài. Việc nhỏ có thể làm, việc lớn nên thận trọng.</p>
+            </article>
+
+            <article class="daily-work-item {{ $travelStatus['class'] }}">
+                <div class="daily-work-item-head">
+                    <h3>Xuất hành, đi xa</h3>
+                    <span class="work-status">
+                        <i aria-hidden="true">{{ $travelStatus['icon'] }}</i>
+                        {{ $travelStatus['text'] }}
+                    </span>
+                </div>
+                <p>Ngày Thiên Đạo và Vãng Vong kỵ xuất hành. Nếu phải đi, nên ưu tiên giờ hoàng đạo.</p>
+            </article>
+
+            <article class="daily-work-item {{ $weddingStatus['class'] }}">
+                <div class="daily-work-item-head">
+                    <h3>Cưới hỏi</h3>
+                    <span class="work-status">
+                        <i aria-hidden="true">{{ $weddingStatus['icon'] }}</i>
+                        {{ $weddingStatus['text'] }}
+                    </span>
+                </div>
+                <p>Ngày Vãng Vong không thuận cho cưới hỏi và các nghi lễ quan trọng. Nên cân nhắc ngày khác.</p>
+            </article>
+
+            <article class="daily-work-item {{ $constructionStatus['class'] }}">
+                <div class="daily-work-item-head">
+                    <h3>Động thổ, xây nhà</h3>
+                    <span class="work-status">
+                        <i aria-hidden="true">{{ $constructionStatus['icon'] }}</i>
+                        {{ $constructionStatus['text'] }}
+                    </span>
+                </div>
+                <p>Gặp Cẩu Giảo, Hà Khôi và Lục Bất Thành, đều là những chỉ dấu bất lợi cho việc xây dựng.</p>
+            </article>
+        </div>
+
+        <p class="daily-work-note">
+            Gợi ý mang tính tham khảo. Với việc quan trọng, nên xem thêm tuổi người chủ sự, giờ thực hiện và điều kiện thực tế.
+        </p>
+    </section>
+
     <section class="section-block" id="pre_detail">
         <div class="section-head">
             <div>

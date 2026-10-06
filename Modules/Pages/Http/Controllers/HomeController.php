@@ -67,6 +67,7 @@ class HomeController extends Controller
             $data['mData'] = Helpers::getMonthDates($year, $month);
             $data['months'] = RequestHelpers::request($request, \dataApiRoutes::COPE_MONTH, str_replace(':month', $month, str_replace(':year', $year, \dataApiRoutes::COPE_MONTH)), [], 'get');
             $data['day'] = RequestHelpers::request($request, \dataApiRoutes::COPE_DETAIL, str_replace(':day', $day, \dataApiRoutes::COPE_DETAIL), [], 'get');
+            $data['dayGB'] = RequestApiHelpers::request($request, \dataApiRoutes::FORTUNE_NGAY_TOT_XAU, \dataApiRoutes::FORTUNE_NGAY_TOT_XAU, [], 'get');
             $data['hyperlinks'] = ['Lịch âm hôm nay', 'Giờ hoàng đạo', 'Xuất hành', 'Kiến thức',];
 
             /**
@@ -81,7 +82,7 @@ class HomeController extends Controller
             $htmlCache->put($cacheKey, $html, $ttl);
 
             return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)->header('Cache-Control', \dataKey::CACHE);
-        } catch (\Exception $e) {
+        } catch (\Exception $e) {Helpers::pre($e->getMessage());
             return response()->view('errors.500', [], 500);
         }
     }
