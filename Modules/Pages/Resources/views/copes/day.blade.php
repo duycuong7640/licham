@@ -341,6 +341,10 @@
             <div>CN</div>
         </div>
         <div id="pre_calendar" class="calendar-grid">
+            @php
+                $m1 = [];
+                $ram = [];
+            @endphp
             @foreach($months as $values)
                 @foreach($values as $month)
                     @if(empty($month['id']))
@@ -361,6 +365,13 @@
                             $month['month'] = \App\Helpers\Helpers::checkNumber($month['month']);
                             $month['lunarDay'] = \App\Helpers\Helpers::checkNumber($month['lunarDay']);
                             $month['lunarMonth'] = \App\Helpers\Helpers::checkNumber($month['lunarMonth']);
+
+                            if($month['lunarDay'] == 1 && $lunarDay != 1){
+                                $m1 = ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']];
+                            }
+                            if($month['lunarDay'] == 15 && $lunarDay != 15){
+                                $ram = ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']];
+                            }
                         @endphp
                         <a href="{{ route('page.cope.show.day', ['day' => $month['day'], 'month' => $month['month'], 'year' => $month['year']]) }}"
                            class="calendar-day btn-loading {{ $isDay }} {{ $isSaturday }} {{ $isSunday }} {{ $today }} {{ $today }} {{ $isViewDay }}"
@@ -895,17 +906,31 @@
             </div>
             <p class="cms-links">
                 <b>Tra cứu tiếp:</b>
-                <a href="{{ route('page.cope.show.day', $previousDayRoute) }}" title="Lịch âm ngày {{ $previousDayText }}">
-                    Lịch ngày {{ $previousDayText }}
+                <a href="{{ route('page.cope.show.day', $previousDayRoute) }}" title="Ngày hôm qua">
+                    Ngày hôm qua
                 </a>
                 ·
                 <a href="{{ route('page.cate.index', ['slug' => 'doi-ngay-am-duong']) }}" title="Đổi ngày âm dương">
                     Đổi ngày âm dương
                 </a>
                 ·
-                <a href="{{ route('page.cope.show.day', $nextDayRoute) }}" title="Lịch âm ngày {{ $nextDayText }}">
-                    Lịch ngày {{ $nextDayText }}
+                <a href="{{ route('page.cope.show.day', $nextDayRoute) }}" title="Ngày mai">
+                    Ngày mai
                 </a>
+
+                @if(!empty($m1))
+                    ·
+                    <a href="{{ route('page.cope.show.day', ['day' => $m1['day'], 'month' => $m1['month'], 'year' => $m1['year']]) }}" title="Ngày mùng 1">
+                        Ngày mùng 1
+                    </a>
+                @endif
+
+                @if(!empty($ram))
+                    ·
+                    <a href="{{ route('page.cope.show.day', ['day' => $ram['day'], 'month' => $ram['month'], 'year' => $ram['year']]) }}" title="Ngày rằm tháng này">
+                        Ngày rằm tháng này
+                    </a>
+                @endif
             </p>
         </div>
     </article>
