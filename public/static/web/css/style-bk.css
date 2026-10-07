@@ -2629,6 +2629,7 @@ button {
 .article-body table strong {
     color: #263c2f;
 }
+.article-body table p, .article-body table span{font-size: 17px !important;}
 .article-tags {
     display: flex;
     flex-wrap: wrap;
