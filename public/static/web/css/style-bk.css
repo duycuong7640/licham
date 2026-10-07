@@ -2513,11 +2513,10 @@ button {
     line-height: 1.65;
 }
 .article-body table {
-    display: block !important;
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
-    margin: 24px 0 28px !important;
+    margin: 18px 0 22px !important;
     overflow-x: auto !important;
     border: 1px solid #d8e2db !important;
     border-radius: 7px !important;
@@ -2527,7 +2526,7 @@ button {
     color: #39443d !important;
     font-family: inherit !important;
     font-size: 16px !important;
-    line-height: 1.55 !important;
+    line-height: 1.45 !important;
     box-shadow: 0 3px 12px rgb(25 52 36 / 6%) !important;
     -webkit-overflow-scrolling: touch;
 }
@@ -2541,6 +2540,14 @@ button {
     line-height: 1.45;
     text-align: left;
 }
+.article-body table colgroup {
+    width: auto !important;
+}
+.article-body table col {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+}
 .article-body table thead,
 .article-body table tbody,
 .article-body table tfoot {
@@ -2551,7 +2558,7 @@ button {
     box-sizing: border-box !important;
     min-width: 130px !important;
     height: auto !important;
-    padding: 13px 15px !important;
+    padding: 10px 12px !important;
     border-top: 0 !important;
     border-left: 0 !important;
     border-right: 1px solid #dfe6e1 !important;
@@ -2562,6 +2569,24 @@ button {
     line-height: inherit !important;
     text-align: left !important;
     vertical-align: top !important;
+}
+.article-body table th > :first-child,
+.article-body table td > :first-child {
+    margin-top: 0 !important;
+}
+.article-body table th > :last-child,
+.article-body table td > :last-child {
+    margin-bottom: 0 !important;
+}
+.article-body table th p,
+.article-body table td p,
+.article-body table th div,
+.article-body table td div {
+    margin: 0 !important;
+    padding: 0 !important;
+    color: inherit !important;
+    font: inherit !important;
+    line-height: inherit !important;
 }
 .article-body table tr {
     height: auto !important;
@@ -3363,7 +3388,7 @@ button {
         font-size: 17px;
     }
     .article-body table {
-        margin: 20px 0 24px !important;
+        margin: 16px 0 20px !important;
         border-radius: 6px !important;
         font-size: 16px !important;
     }
@@ -3373,8 +3398,8 @@ button {
     }
     .article-body table th,
     .article-body table td {
-        min-width: 120px !important;
-        padding: 11px 12px !important;
+        min-width: 110px !important;
+        padding: 8px 10px !important;
     }
     .article-body table thead th {
         font-size: 16px !important;
