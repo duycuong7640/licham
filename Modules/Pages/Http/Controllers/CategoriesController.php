@@ -109,14 +109,14 @@ class CategoriesController extends Controller
         try {
             $page = !empty($request->get('page')) ? $request->get('page') : '1';
 
-//            $cacheKey = 'post_list_hashtag_html_' . md5($slug) . '_' . $page;
-//            $ttl = now()->addMinutes(5);
-//
-//            if (Cache::has($cacheKey)) {
-//                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
-//                    ->header('Content-Type', 'text/html')
-//                    ->header('Cache-Control', 'public, max-age=1800');
-//            }
+            $cacheKey = 'post_list_hashtag_html_' . md5($slug) . '_' . $page;
+            $ttl = now()->addMinutes(10);
+
+            if (Cache::has($cacheKey)) {
+                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
+                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+                    ->header('Cache-Control', \dataKey::CACHE);
+            }
 
             $config = $request->get('configData', []);
             $setting = $config['setting'] ?? [];
@@ -149,18 +149,18 @@ class CategoriesController extends Controller
             foreach ($data['hashTags'] as $k => $row) {
                 $hastag_ids[] = $row['id'];
             }
-            $data['lists'] = RequestHelpers::request($request, \dataApiRoutes::POST_BY_TAGS, \dataApiRoutes::POST_BY_TAGS, ['isPage' => 'cate', 'keySlug' => $slug, 'paginate' => 5, 'orderField' => 'created_at', 'orderType' => 'DESC', 'DOMAIN_RUN' => env('DOMAIN_RUN'), 'type' => 'CALENDARLUNAR_NEWS', "HASHTAG_IDS" => implode(',', $hastag_ids), 'page' => $page], 'post');
+            $data['lists'] = RequestHelpers::request($request, \dataApiRoutes::POST_BY_TAGS, \dataApiRoutes::POST_BY_TAGS, ['isPage' => 'cate', 'keySlug' => $slug, 'paginate' => 9, 'orderField' => 'created_at', 'orderType' => 'DESC', 'DOMAIN_RUN' => env('DOMAIN_RUN'), 'type' => 'CALENDARLUNAR_NEWS', "HASHTAG_IDS" => implode(',', $hastag_ids), 'page' => $page], 'post');
 
-            return view('pages::posts.index')->with('data', $data);
-//            $html = view('pages::pages.baiviet')->with('data', $data)->render();
-//            $html = Helpers::genCsrfToken($html, '1');
-//            $response = response($html)
-//                ->header('Content-Type', 'text/html; charset=UTF-8');
-//            $response = Helpers::optimize_html($response);
-//            Cache::put($cacheKey, $response->getContent(), $ttl);
-//
-//            return $response->header('Content-Type', 'text/html')
-//                ->header('Cache-Control', 'public, max-age=1800');
+//            return view('pages::posts.index')->with('data', $data);
+            $html = view('pages::posts.index')->with('data', $data)->render();
+            $html = Helpers::genCsrfToken($html, '1');
+            $response = response($html)
+                ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
+            $response = Helpers::optimize_html($response);
+            Cache::put($cacheKey, $response->getContent(), $ttl);
+
+            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+                ->header('Cache-Control', \dataKey::CACHE);
         } catch (\Exception $e) {
             return response()->view('errors.500', [], 500);
         }
@@ -211,7 +211,7 @@ class CategoriesController extends Controller
             $data['page'] = 'bai-viet-chu-de';
             $data['category'] = ["title" => 'Bài viết', 'slug' => 'bai-viet', 'isLast' => true];
             $data['hashtag'] = $hashTags;
-            $data['lists'] = RequestHelpers::request($request, \dataApiRoutes::POST_BY_TAGS, \dataApiRoutes::POST_BY_TAGS, ['isPage' => 'cate', 'keySlug' => $slug, 'paginate' => 5, 'orderField' => 'created_at', 'orderType' => 'DESC', 'DOMAIN_RUN' => env('DOMAIN_RUN'), 'type' => 'CALENDARLUNAR_NEWS', "HASHTAG_IDS" => $hashTags['id'], 'page' => $page], 'post');
+            $data['lists'] = RequestHelpers::request($request, \dataApiRoutes::POST_BY_TAGS, \dataApiRoutes::POST_BY_TAGS, ['isPage' => 'cate', 'keySlug' => $slug, 'paginate' => 2, 'orderField' => 'created_at', 'orderType' => 'DESC', 'DOMAIN_RUN' => env('DOMAIN_RUN'), 'type' => 'CALENDARLUNAR_NEWS', "HASHTAG_IDS" => $hashTags['id'], 'page' => $page], 'post');
 
              return view('pages::posts.index')->with('data', $data);
 //            $html = view('pages::posts.index')->with('data', $data)->render();
@@ -224,7 +224,6 @@ class CategoriesController extends Controller
 //            return $response->header('Content-Type', 'text/html')
 //                ->header('Cache-Control', 'public, max-age=1800');
         } catch (\Exception $e) {
-            Helpers::pre($e->getMessage());
             return response()->view('errors.500', [], 500);
         }
     }

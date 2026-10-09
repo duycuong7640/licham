@@ -64,14 +64,13 @@ class PostsController extends Controller
     public function show($slug, Request $request)
     {
         try {
-//            $cacheKey = 'post_detail_html_' . md5($slug);
-//            $ttl = now()->addMinutes(5);
-//
-//            if (Cache::has($cacheKey)) {
-//                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
-//                    ->header('Content-Type', 'text/html')
-//                    ->header('Cache-Control', 'public, max-age=1800');
-//            }
+            $cacheKey = 'post_detail_html_' . md5($slug);
+            $ttl = now()->addMinutes(20);
+            if (Cache::has($cacheKey)) {
+                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
+                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+                    ->header('Cache-Control', \dataKey::CACHE);
+            }
 
             $data['detail'] = RequestHelpers::request($request, \dataApiRoutes::POST_DETAIL, str_replace(':slug', $slug, \dataApiRoutes::POST_DETAIL), ['DOMAIN_RUN' => env('DOMAIN_RUN')], 'get');
             if (empty($data['detail']['id'])) {
@@ -105,18 +104,18 @@ class PostsController extends Controller
             $data['isPage'] = 'posts';
             $data['show'] = 1;
 
-            return view('pages::posts.show')->with('data', $data);
+//            return view('pages::posts.show')->with('data', $data);
 
-//            $html = view('pages::posts.show')->with('data', $data)->render();
-//            $html = Helpers::genCsrfToken($html, '1');
-//            $response = response($html)
-//                ->header('Content-Type', 'text/html; charset=UTF-8');
-//            $response = Helpers::optimize_html($response);
-//            Cache::put($cacheKey, $response->getContent(), $ttl);
-//
-//            return $response->header('Content-Type', 'text/html')
-//                ->header('Cache-Control', 'public, max-age=1800');
-        } catch (\Exception $e) {Helpers::pre($e->getMessage());
+            $html = view('pages::posts.show')->with('data', $data)->render();
+            $html = Helpers::genCsrfToken($html, '1');
+            $response = response($html)
+                ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
+            $response = Helpers::optimize_html($response);
+            Cache::put($cacheKey, $response->getContent(), $ttl);
+
+            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+                ->header('Cache-Control', \dataKey::CACHE);
+        } catch (\Exception $e) {
             return response()->view('errors.500', [], 500);
         }
     }
@@ -126,14 +125,13 @@ class PostsController extends Controller
         try {
             $page = !empty($request->get('page')) ? $request->get('page') : '1';
 
-//            $cacheKey = 'post_list_html_' . md5($slug) . '_' . $page;
-//            $ttl = now()->addMinutes(5);
-//
-//            if (Cache::has($cacheKey)) {
-//                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
-//                    ->header('Content-Type', 'text/html')
-//                    ->header('Cache-Control', 'public, max-age=1800');
-//            }
+            $cacheKey = 'post_tags_html_' . md5($slug) . '_' . $page;
+            $ttl = now()->addMinutes(10);
+            if (Cache::has($cacheKey)) {
+                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
+                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+                    ->header('Cache-Control', \dataKey::CACHE);
+            }
 
             $hTags = $request->get('hashTags', []);
             $data['hashTags'] = $hTags;
@@ -167,19 +165,19 @@ class PostsController extends Controller
             $data['page'] = 'bai-viet-chu-de';
             $data['category'] = ["title" => 'Bài viết', 'slug' => 'bai-viet', 'isLast' => true];
             $data['hashTag'] = $hashTags;
-            $data['lists'] = RequestHelpers::request($request, \dataApiRoutes::POST_BY_TAGS, \dataApiRoutes::POST_BY_TAGS, ['isPage' => 'cate', 'keySlug' => $slug, 'paginate' => 5, 'orderField' => 'created_at', 'orderType' => 'DESC', 'DOMAIN_RUN' => env('DOMAIN_RUN'), 'type' => 'CALENDARLUNAR_NEWS', "HASHTAG_IDS" => $hashTags['id'], 'page' => $page], 'post');
+            $data['lists'] = RequestHelpers::request($request, \dataApiRoutes::POST_BY_TAGS, \dataApiRoutes::POST_BY_TAGS, ['isPage' => 'cate', 'keySlug' => $slug, 'paginate' => 9, 'orderField' => 'created_at', 'orderType' => 'DESC', 'DOMAIN_RUN' => env('DOMAIN_RUN'), 'type' => 'CALENDARLUNAR_NEWS', "HASHTAG_IDS" => $hashTags['id'], 'page' => $page], 'post');
 
-            return view('pages::posts.tags')->with('data', $data);
-//            $html = view('pages::posts.tags')->with('data', $data)->render();
-//            $html = Helpers::genCsrfToken($html, '1');
-//            $response = response($html)
-//                ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
-//            $response = Helpers::optimize_html($response);
-//            Cache::put($cacheKey, $response->getContent(), $ttl);
-//
-//            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
-//                ->header('Cache-Control', \dataKey::CACHE);
-        } catch (\Exception $e) {Helpers::pre($e->getMessage());
+            // return view('pages::posts.tags')->with('data', $data);
+            $html = view('pages::posts.tags')->with('data', $data)->render();
+            $html = Helpers::genCsrfToken($html, '1');
+            $response = response($html)
+                ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
+            $response = Helpers::optimize_html($response);
+            Cache::put($cacheKey, $response->getContent(), $ttl);
+
+            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+                ->header('Cache-Control', \dataKey::CACHE);
+        } catch (\Exception $e) {
             return response()->view('errors.500', [], 500);
         }
     }

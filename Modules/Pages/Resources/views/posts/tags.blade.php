@@ -109,15 +109,8 @@
                 </article>
             @endforeach
         </div>
-        <p class="article-empty" id="articleEmpty" hidden>
-            Chưa có bài viết trong chủ đề này.
-        </p>
-        <nav
-            class="article-pagination"
-            id="articlePagination"
-            aria-label="Phân trang bài viết"
-            hidden
-        ></nav>
+
+        @include('pages::elements.extend.paginate', ['data' => $data])
     </section>
 @endsection
 

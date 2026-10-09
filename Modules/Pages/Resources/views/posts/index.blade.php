@@ -78,8 +78,9 @@
                 foreach ($hashTags as $row) {
                     $hashtags[$row['id']] = $row;
                 }
+                $lists = !empty($data['lists']['data']) ? $data['lists']['data'] : $data['lists'];
             @endphp
-            @foreach($data['lists']['data'] as $row)
+            @foreach($lists as $row)
                 @php
                     $hashtagId = !empty($row['post_hashtags'][0]['hashtag_id']) ? $row['post_hashtags'][0]['hashtag_id'] : '';
                     $hashtag = !empty($hashtags[$hashtagId]) ? $hashtags[$hashtagId] : [];
@@ -115,15 +116,8 @@
                 </article>
             @endforeach
         </div>
-        <p class="article-empty" id="articleEmpty" hidden>
-            Chưa có bài viết trong chủ đề này.
-        </p>
-        <nav
-            class="article-pagination"
-            id="articlePagination"
-            aria-label="Phân trang bài viết"
-            hidden
-        ></nav>
+
+        @include('pages::elements.extend.paginate', ['data' => $data])
     </section>
 @endsection
 

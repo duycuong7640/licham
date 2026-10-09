@@ -563,9 +563,37 @@ class Helpers
 
         $tocHtml .= '</nav>';
 
-        $fragment = $dom->createDocumentFragment();
-        $fragment->appendXML($tocHtml);
-        $body->insertBefore($fragment, $body->firstChild);
+//        $fragment = $dom->createDocumentFragment();
+//        $fragment->appendXML($tocHtml);
+//        $body->insertBefore($fragment, $body->firstChild);
+        if (!empty(trim($tocHtml))) {
+            $tmpDom = new \DOMDocument('1.0', 'UTF-8');
+
+            libxml_use_internal_errors(true);
+
+            $tmpDom->loadHTML(
+                '<?xml encoding="UTF-8"><div id="toc-wrapper">' . $tocHtml . '</div>',
+                LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+            );
+
+            libxml_clear_errors();
+
+            $wrapper = $tmpDom->getElementById('toc-wrapper');
+
+            if ($wrapper) {
+                $fragment = $dom->createDocumentFragment();
+
+                foreach (iterator_to_array($wrapper->childNodes) as $node) {
+                    $fragment->appendChild(
+                        $dom->importNode($node, true)
+                    );
+                }
+
+                if ($fragment->hasChildNodes()) {
+                    $body->insertBefore($fragment, $body->firstChild);
+                }
+            }
+        }
 
         $newHtml = '';
         foreach ($body->childNodes as $child) {
