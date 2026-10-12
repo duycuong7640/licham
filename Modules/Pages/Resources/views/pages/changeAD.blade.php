@@ -112,7 +112,7 @@
                 <div id="pre_solarFields" class="convert-fields">
                     <div class="field convert-field-wide">
                         <label for="pre_convertDate">Chọn ngày dương lịch</label>
-                        <input type="text" name="convertedDate" id="pre_convertedDate">
+                        <input type="hidden" name="convertedDate" id="pre_convertedDate">
                         <input
                             id="pre_convertDate"
                             class="vietnamese-date-input"
