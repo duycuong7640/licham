@@ -3,7 +3,7 @@
 @section('content')
     <header class="card convert-heading">
         <span class="section-label">CÔNG CỤ LỊCH VIỆT</span>
-        <h1>Đổi ngày âm dương</h1>
+        <h1>Đổi Ngày Dương Sang Âm, Âm Sang Dương</h1>
         <p>
             Chuyển đổi ngày dương sang âm hoặc ngày âm sang dương,
             đồng thời tra cứu Can Chi, tiết khí, giờ hoàng đạo
