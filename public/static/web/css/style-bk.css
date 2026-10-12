@@ -1631,7 +1631,7 @@ button {
     display: flex;
     min-width: 0;
     min-height: 48px;
-    padding: 10px 12px;
+    padding: 13px 8px 8px 8px;
     align-items: center;
     gap: 9px;
     border: 1px solid #d4dfd7;
@@ -1663,7 +1663,8 @@ button {
     width: 18px;
     height: 18px;
     flex: 0 0 auto;
-    margin: 0;
+    margin: 0 5px 0 0;
+    float: left;
     accent-color: var(--green);
 }
 .convert-type-option span {
