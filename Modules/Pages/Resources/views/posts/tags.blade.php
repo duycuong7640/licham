@@ -78,35 +78,37 @@
                     $hashtagId = !empty($row['post_hashtags'][0]['hashtag_id']) ? $row['post_hashtags'][0]['hashtag_id'] : '';
                     $hashtag = !empty($hashtags[$hashtagId]) ? $hashtags[$hashtagId] : [];
                 @endphp
-                <article class="article-item" data-article-card data-category="tu-vi">
-                    <a class="article-thumb" href="{{ route('page.post.show', ['slug' => $row['slug']]) }}"
-                       title="{{ $row['title'] }}"
-                       aria-label="{{ $row['title'] }}">
-                        <img
-                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 335 189'%3E%3C/svg%3E"
-                            loading="lazy"
-                            class="lazy"
-                            data-src="{{ Helpers::renderThumb($row['thumbnail']) }}"
-                            title="{{ $row['title'] }}"
-                            alt="{{ $row['title'] }}"
-                            width="335"
-                            height="189"
-                            fetchpriority="high"
-                            style="aspect-ratio: 1.77;"
-                        >
-                    </a>
-                    <span class="article-category">{{ !empty($hashtag['title']) ? $hashtag['title'] : 'Bài viết' }}</span>
-                    <h3>
-                        <a href="{{ route('page.post.show', ['slug' => $row['slug']]) }}" title="{{ $row['title'] }}">{{ $row['title'] }}</a>
-                    </h3>
-                    <p>{!! \App\Helpers\Helpers::shortDesc(mb_trim(strip_tags($row['description'])), 245) !!}</p>
-                    <div class="article-meta">
-                        <span>{{ date('d/m/Y', strtotime($row['created_at'])) }} · {{ \App\Helpers\Helpers::timeAgo($row['created_at']) }}</span>
-                        <a href="{{ route('page.post.show', ['slug' => $row['slug']]) }}" title="Xem chi tiết">
-                            Xem chi tiết →
+                @if(!empty($row['id']))
+                    <article class="article-item" data-article-card data-category="tu-vi">
+                        <a class="article-thumb" href="{{ route('page.post.show', ['slug' => $row['slug']]) }}"
+                           title="{{ $row['title'] }}"
+                           aria-label="{{ $row['title'] }}">
+                            <img
+                                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 335 189'%3E%3C/svg%3E"
+                                loading="lazy"
+                                class="lazy"
+                                data-src="{{ Helpers::renderThumb($row['thumbnail']) }}"
+                                title="{{ $row['title'] }}"
+                                alt="{{ $row['title'] }}"
+                                width="335"
+                                height="189"
+                                fetchpriority="high"
+                                style="aspect-ratio: 1.77;"
+                            >
                         </a>
-                    </div>
-                </article>
+                        <span class="article-category">{{ !empty($hashtag['title']) ? $hashtag['title'] : 'Bài viết' }}</span>
+                        <h3>
+                            <a href="{{ route('page.post.show', ['slug' => $row['slug']]) }}" title="{{ $row['title'] }}">{{ $row['title'] }}</a>
+                        </h3>
+                        <p>{!! \App\Helpers\Helpers::shortDesc(mb_trim(strip_tags($row['description'])), 245) !!}</p>
+                        <div class="article-meta">
+                            <span>{{ date('d/m/Y', strtotime($row['created_at'])) }} · {{ \App\Helpers\Helpers::timeAgo($row['created_at']) }}</span>
+                            <a href="{{ route('page.post.show', ['slug' => $row['slug']]) }}" title="Xem chi tiết">
+                                Xem chi tiết →
+                            </a>
+                        </div>
+                    </article>
+                @endif
             @endforeach
         </div>
 

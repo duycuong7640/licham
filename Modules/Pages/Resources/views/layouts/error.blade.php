@@ -6,14 +6,8 @@
 </head>
 <body>
 @include('pages::elements.header')
-<main>
-    <section class="hero">
-        <div class="container">
-            <div class="article-layout page-layout">
-                @yield('content')
-            </div>
-        </div>
-    </section>
+<main class="error-main">
+    @yield('content')
 </main>
 @include('pages::elements.footer')
 @include('pages::elements.extend.script')

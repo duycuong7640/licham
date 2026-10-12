@@ -1,10 +1,14 @@
 @extends('pages::layouts.error')
 
 @section('content')
-    <div class="error-page text-center">
-        <img src="{{ asset('static/web/images/overload.png') }}" title="overload" alt="overload">
-        <div class="mt-4">
-            <a href="{{ route('page.home') }}" class="btn btn-submit" style="color: #fff; background: #9d111d; font-size: 15px; padding: 8px 15px; border-radius: 5px;">Trang chủ</a>
+    <section class="error-card" aria-labelledby="error-title">
+        <p class="error-code" aria-hidden="true">500</p>
+        <span class="error-label">Lỗi hệ thống</span>
+        <h1 id="error-title">Hệ thống tạm thời chưa thể xử lý</h1>
+        <p>Đã có sự cố trong quá trình tải dữ liệu. Vui lòng thử lại sau ít phút.</p>
+        <div class="error-actions">
+            <a class="error-home-link" href="{{ route('page.home') }}">Về trang chủ</a>
+            <button class="error-back-link" type="button" onclick="location.reload()">Thử tải lại</button>
         </div>
-    </div>
+    </section>
 @endsection

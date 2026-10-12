@@ -216,7 +216,7 @@ class CopesController extends Controller
     {
         try {
             if (empty((int)$d) && empty((int)$m) && empty((int)$y)) return response()->view('errors.404', [], 404);
-            $day = $d . '-' . $m . '-' . $y;
+            $day = (int) $d . '-' . (int) $m . '-' . $y;
 
             $cacheKey = 'cope_day_html_' . $day;
 //            $ttl = now()->addMinutes(10);

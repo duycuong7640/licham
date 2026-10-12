@@ -1,10 +1,14 @@
 @extends('pages::layouts.error')
 
 @section('content')
-    <div class="error-page text-center">
-        <img src="{{ asset('static/web/images/overload.png') }}" title="overload" alt="overload">
-        <div class="mt-4">
-            <a href="{{ route('page.home') }}" class="btn btn-submit" style="color: #fff; background: #9d111d; font-size: 15px; padding: 8px 15px; border-radius: 5px;">Trang chủ</a>
+    <section class="error-card" aria-labelledby="error-title">
+        <p class="error-code" aria-hidden="true">404</p>
+        <span class="error-label">Không tìm thấy trang</span>
+        <h1 id="error-title">Trang cần tìm không tồn tại</h1>
+        <p>Đường dẫn có thể đã thay đổi, bị nhập sai hoặc nội dung không còn được cung cấp.</p>
+        <div class="error-actions">
+            <a class="error-home-link" href="{{ route('page.home') }}">Về trang chủ</a>
+            <button class="error-back-link" type="button" onclick="history.back()">Quay lại trang trước</button>
         </div>
-    </div>
+    </section>
 @endsection

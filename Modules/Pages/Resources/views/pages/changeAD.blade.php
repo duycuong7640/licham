@@ -79,19 +79,46 @@
             </div>
             <form method="post" action="" id="pre_convertForm">
                 @csrf()
-                <div class="field" id="chuyen-doi">
+                <fieldset class="field convert-type-field">
                     <label>Hình thức chuyển đổi</label>
-                    <div class="text-changeAd">Dương lịch sang âm lịch</div>
-                </div>
+                    <div class="convert-type-options">
+                        <label class="convert-type-option">
+                            <input
+                                type="radio"
+                                name="convertType"
+                                value="solar"
+                                @if(!empty($data['params']['convertType']) && $data['params']['convertType'] == 'solar')
+                                    checked
+                                @endif
+                                @if(empty($data['params']['convertType']))
+                                    checked
+                                @endif
+                            />
+                            <span>Dương sang Âm</span>
+                        </label>
+                        <label class="convert-type-option">
+                            <input
+                                type="radio"
+                                name="convertType"
+                                value="lunar"
+                                @if(!empty($data['params']['convertType']) && $data['params']['convertType'] == 'lunar')
+                                    checked
+                                @endif
+                            />
+                            <span>Âm sang Dương</span>
+                        </label>
+                    </div>
+                </fieldset>
                 <div id="pre_solarFields" class="convert-fields">
                     <div class="field convert-field-wide">
                         <label for="pre_convertDate">Chọn ngày dương lịch</label>
+                        <input type="text" name="convertedDate" id="pre_convertedDate">
                         <input
                             id="pre_convertDate"
                             class="vietnamese-date-input"
                             type="text"
                             name="date"
-                            value="{{ $d }}/{{ $m }}/{{ $y }}"
+                            value="{{ !empty($data['params']['date']) ? $data['params']['date'] : $d.'/'.$m.'/'.$y }}"
                             placeholder="dd/mm/YYYY"
                             inputmode="numeric"
                             maxlength="10"
@@ -116,9 +143,6 @@
                         <label for="pre_lunarInputYear">Năm</label>
                         <select id="pre_lunarInputYear"></select>
                     </div>
-                    <label class="pre_leap-check">
-                        <input id="pre_lunarLeap" type="checkbox"/> Tháng nhuận
-                    </label>
                 </div>
                 <button class="btn convert-submit" type="submit">
                     Chuyển đổi ngày
@@ -387,4 +411,260 @@
             </p>
         </div>
     </article>
+@endsection
+
+@section('scripts')
+    <script type="text/javascript">
+        const INT = Math.floor;
+
+        function jdFromDate(dd, mm, yy) {
+            const a = INT((14 - mm) / 12);
+            const y = yy + 4800 - a;
+            const m = mm + 12 * a - 3;
+
+            return dd + INT((153 * m + 2) / 5)
+                + 365 * y + INT(y / 4)
+                - INT(y / 100) + INT(y / 400) - 32045;
+        }
+
+        function jdToDate(jd) {
+            const a = jd + 32044;
+            const b = INT((4 * a + 3) / 146097);
+            const c = a - INT(b * 146097 / 4);
+            const d = INT((4 * c + 3) / 1461);
+            const e = c - INT(1461 * d / 4);
+            const m = INT((5 * e + 2) / 153);
+
+            return [
+                e - INT((153 * m + 2) / 5) + 1,
+                m + 3 - 12 * INT(m / 10),
+                b * 100 + d - 4800 + INT(m / 10)
+            ];
+        }
+
+        function getNewMoonDay(k, tz = 7) {
+            const T = k / 1236.85;
+            const T2 = T * T;
+            const T3 = T2 * T;
+            const dr = Math.PI / 180;
+
+            let jd = 2415020.75933 + 29.53058868 * k
+                + 0.0001178 * T2 - 0.000000155 * T3;
+
+            jd += 0.00033 * Math.sin(
+                (166.56 + 132.87 * T - 0.009173 * T2) * dr
+            );
+
+            const M = 359.2242 + 29.10535608 * k
+                - 0.0000333 * T2 - 0.00000347 * T3;
+
+            const Mp = 306.0253 + 385.81691806 * k
+                + 0.0107306 * T2 + 0.00001236 * T3;
+
+            const F = 21.2964 + 390.67050646 * k
+                - 0.0016528 * T2 - 0.00000239 * T3;
+
+            let C = (0.1734 - 0.000393 * T) * Math.sin(M * dr)
+                + 0.0021 * Math.sin(2 * M * dr);
+
+            C -= 0.4068 * Math.sin(Mp * dr);
+            C += 0.0161 * Math.sin(2 * Mp * dr);
+            C -= 0.0004 * Math.sin(3 * Mp * dr);
+            C += 0.0104 * Math.sin(2 * F * dr);
+            C -= 0.0051 * Math.sin((M + Mp) * dr);
+            C -= 0.0074 * Math.sin((M - Mp) * dr);
+            C += 0.0004 * Math.sin((2 * F + M) * dr);
+            C -= 0.0004 * Math.sin((2 * F - M) * dr);
+            C -= 0.0006 * Math.sin((2 * F + Mp) * dr);
+            C += 0.0010 * Math.sin((2 * F - Mp) * dr);
+            C += 0.0005 * Math.sin((2 * Mp + M) * dr);
+
+            const delta = T < -11
+                ? 0.001 + 0.000839 * T + 0.0002261 * T2
+                - 0.00000845 * T3 - 0.000000081 * T * T3
+                : -0.000278 + 0.000265 * T + 0.000262 * T2;
+
+            return INT(jd + C - delta + 0.5 + tz / 24);
+        }
+
+        function getSunLongitude(jdn, tz = 7) {
+            const T = (jdn - 2451545.5 - tz / 24) / 36525;
+            const T2 = T * T;
+            const dr = Math.PI / 180;
+
+            const M = 357.52910 + 35999.05030 * T
+                - 0.0001559 * T2 - 0.00000048 * T * T2;
+
+            const L0 = 280.46645 + 36000.76983 * T
+                + 0.0003032 * T2;
+
+            const DL = (1.914600 - 0.004817 * T - 0.000014 * T2)
+                * Math.sin(dr * M)
+                + (0.019993 - 0.000101 * T) * Math.sin(2 * dr * M)
+                + 0.000290 * Math.sin(3 * dr * M);
+
+            const L = (L0 + DL) * dr;
+            const normalized = L - 2 * Math.PI * INT(L / (2 * Math.PI));
+
+            return INT(normalized / Math.PI * 6);
+        }
+
+        function getLunarMonth11(year, tz = 7) {
+            const off = jdFromDate(31, 12, year) - 2415021;
+            const k = INT(off / 29.530588853);
+
+            let nm = getNewMoonDay(k, tz);
+
+            if (getSunLongitude(nm, tz) >= 9) {
+                nm = getNewMoonDay(k - 1, tz);
+            }
+
+            return nm;
+        }
+
+        function getLeapMonthOffset(a11, tz = 7) {
+            const k = INT(
+                0.5 + (a11 - 2415021.076998695) / 29.530588853
+            );
+
+            let i = 1;
+            let last;
+            let arc = getSunLongitude(getNewMoonDay(k + i, tz), tz);
+
+            do {
+                last = arc;
+                i++;
+                arc = getSunLongitude(getNewMoonDay(k + i, tz), tz);
+            } while (arc !== last && i < 14);
+
+            return i - 1;
+        }
+
+        function lunarToSolar(day, month, year, leap) {
+            const tz = 7;
+
+            if (
+                !Number.isInteger(day) ||
+                !Number.isInteger(month) ||
+                !Number.isInteger(year) ||
+                day < 1 || day > 30 ||
+                month < 1 || month > 12 ||
+                year < 1900 || year > 2050
+            ) {
+                return null;
+            }
+
+            const a11 = month < 11
+                ? getLunarMonth11(year - 1, tz)
+                : getLunarMonth11(year, tz);
+
+            const b11 = month < 11
+                ? getLunarMonth11(year, tz)
+                : getLunarMonth11(year + 1, tz);
+
+            let off = month - 11;
+            if (off < 0) off += 12;
+
+            if (b11 - a11 > 365) {
+                const leapOff = getLeapMonthOffset(a11, tz);
+                let leapMonth = leapOff - 2;
+
+                if (leapMonth < 0) leapMonth += 12;
+
+                if (leap && month !== leapMonth) return null;
+
+                if (leap || off >= leapOff) off++;
+            } else if (leap) {
+                return null;
+            }
+
+            const k = INT(
+                0.5 + (a11 - 2415021.076998695) / 29.530588853
+            );
+
+            const monthStart = getNewMoonDay(k + off, tz);
+            const nextMonthStart = getNewMoonDay(k + off + 1, tz);
+
+            if (day > nextMonthStart - monthStart) {
+                return null;
+            }
+
+            return jdToDate(monthStart + day - 1);
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('pre_convertForm');
+            if (!form) return;
+
+            const dateInput = form.querySelector('input[name="date"]');
+            const convertedDate = form.querySelector('input[name="convertedDate"]');
+
+            function updateConvertedDate() {
+                const type = form.querySelector(
+                    'input[name="convertType"]:checked'
+                )?.value;
+
+                const date = dateInput.value.trim();
+
+                if (!date) {
+                    convertedDate.value = '';
+                    return false;
+                }
+
+                if (type === 'solar') {
+                    convertedDate.value = date;
+                    return true;
+                }
+
+                const match = date.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+
+                if (!match) {
+                    convertedDate.value = '';
+                    return false;
+                }
+
+                const day = Number(match[1]);
+                const month = Number(match[2]);
+                const year = Number(match[3]);
+
+                const result = lunarToSolar(day, month, year, 0);
+
+                if (
+                    !Array.isArray(result) ||
+                    result.length !== 3 ||
+                    !result[0] ||
+                    !result[1] ||
+                    !result[2]
+                ) {
+                    convertedDate.value = '';
+                    return false;
+                }
+
+                convertedDate.value = [
+                    String(result[0]).padStart(2, '0'),
+                    String(result[1]).padStart(2, '0'),
+                    result[2]
+                ].join('/');
+
+                return true;
+            }
+
+            dateInput.addEventListener('input', updateConvertedDate);
+            dateInput.addEventListener('change', updateConvertedDate);
+
+            form.querySelectorAll('input[name="convertType"]').forEach(radio => {
+                radio.addEventListener('change', updateConvertedDate);
+            });
+
+            form.addEventListener('submit', function (e) {
+                if (!updateConvertedDate()) {
+                    e.preventDefault();
+                    alert('Ngày được chọn không hợp lệ!');
+                }
+            });
+
+            updateConvertedDate();
+        });
+    </script>
 @endsection

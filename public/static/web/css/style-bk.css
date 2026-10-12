@@ -97,6 +97,9 @@ select {
 button {
     cursor: pointer;
 }
+.error-page{max-width: 500px; margin: 0 auto;}
+.error-page img{width: 100%; height: auto !important;}
+.error-page .mt-4{text-align: center;}
 .site-header {
     background: #006e33;
     color: #fff;
@@ -1604,6 +1607,67 @@ button {
 .convert-form-card form {
     display: grid;
     gap: 15px;
+}
+.convert-type-field {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.convert-type-field legend {
+    margin-bottom: 8px;
+    padding: 0;
+    color: #34463a;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+.convert-type-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+}
+.convert-type-option {
+    display: flex;
+    min-width: 0;
+    min-height: 48px;
+    padding: 10px 12px;
+    align-items: center;
+    gap: 9px;
+    border: 1px solid #d4dfd7;
+    border-radius: 6px;
+    background: #fff;
+    color: #435048;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+    transition: border-color 0.18s ease, background-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.convert-type-option:hover {
+    border-color: #8ebaa0;
+    background: #f5faf7;
+}
+.convert-type-option:has(input:checked) {
+    border-color: var(--green);
+    background: #edf7f1;
+    color: var(--green-dark);
+    box-shadow: 0 0 0 1px rgb(0 110 51 / 8%);
+}
+.convert-type-option:has(input:focus-visible) {
+    outline: 3px solid rgb(0 110 51 / 16%);
+    outline-offset: 2px;
+}
+.convert-type-option input {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    margin: 0;
+    accent-color: var(--green);
+}
+.convert-type-option span {
+    min-width: 0;
 }
 .convert-fields {
     display: grid;
@@ -3383,6 +3447,15 @@ button {
     .convert-faq {
         padding: 17px;
     }
+    .convert-type-options {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    .convert-type-option {
+        min-height: 46px;
+        padding: 9px 11px;
+        font-size: 16px;
+    }
     .convert-result-head {
         display: block;
     }
@@ -3894,5 +3967,191 @@ button {
     .status-pill::before,
     .priority-item:first-child .priority-icon {
         animation: none;
+    }
+}
+.error-page {
+    display: grid;
+    min-height: 100vh;
+    grid-template-rows: auto 1fr auto;
+    margin: 0;
+    background:
+        radial-gradient(circle at 50% 35%, rgb(0 110 51 / 8%), transparent 34rem),
+        #f4f7f5;
+    color: var(--text);
+}
+.error-header {
+    width: min(1120px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 24px 0;
+}
+.error-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    color: #163c27;
+    text-decoration: none;
+}
+.error-brand-mark {
+    display: inline-flex;
+    width: 42px;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    background: var(--green);
+    color: #fff;
+    font-size: 21px;
+    font-weight: 800;
+}
+.error-brand strong,
+.error-brand small {
+    display: block;
+}
+.error-brand strong {
+    font-size: 19px;
+    line-height: 1.2;
+}
+.error-brand small {
+    margin-top: 2px;
+    color: #68766d;
+    font-size: 13px;
+}
+.error-main {
+    display: flex;
+    width: min(760px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 48px 0 80px;
+    align-items: center;
+    justify-content: center;
+}
+.error-card {
+    width: 100%;
+    padding: 48px 52px;
+    border: 1px solid #d5e2d9;
+    border-radius: 12px;
+    background: rgb(255 255 255 / 94%);
+    box-shadow: 0 18px 50px rgb(27 54 37 / 9%);
+    text-align: center;
+}
+.error-code {
+    margin: 0 0 4px;
+    color: var(--green);
+    font-size: clamp(72px, 13vw, 118px);
+    font-weight: 800;
+    letter-spacing: -0.07em;
+    line-height: 0.95;
+}
+.error-label {
+    display: inline-flex;
+    margin-top: 15px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #eaf5ee;
+    color: #126a38;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+.error-card h1 {
+    margin: 17px 0 10px;
+    color: #21392a;
+    font-size: clamp(25px, 4vw, 34px);
+    line-height: 1.3;
+}
+.error-card > p:not(.error-code) {
+    max-width: 570px;
+    margin: 0 auto;
+    color: #5a6860;
+    font-size: 17px;
+    line-height: 1.65;
+}
+.error-actions {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 27px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.error-home-link,
+.error-back-link {
+    display: inline-flex;
+    min-height: 46px;
+    padding: 10px 18px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+}
+.error-home-link {
+    border: 1px solid var(--green);
+    background: var(--green);
+    color: #fff;
+}
+.error-home-link:hover {
+    background: var(--green-dark);
+    border-color: var(--green-dark);
+}
+.error-back-link {
+    border: 1px solid #ccd8d0;
+    background: #fff;
+    color: #34483b;
+}
+.error-back-link:hover {
+    border-color: #8eb59b;
+    background: #f2f8f4;
+}
+.error-home-link:focus-visible,
+.error-back-link:focus-visible,
+.error-brand:focus-visible {
+    outline: 3px solid rgb(0 110 51 / 18%);
+    outline-offset: 3px;
+}
+.error-footer {
+    padding: 19px 20px;
+    border-top: 1px solid #dfe7e2;
+    color: #718078;
+    font-size: 14px;
+    text-align: center;
+}
+@media (max-width: 560px) {
+    .error-header,
+    .error-main {
+        width: min(100% - 28px, 760px);
+    }
+    .error-header {
+        padding: 16px 0;
+    }
+    .error-main {
+        padding: 24px 0 48px;
+    }
+    .error-card {
+        padding: 34px 18px;
+        border-radius: 9px;
+    }
+    .error-code {
+        font-size: 78px;
+    }
+    .error-card h1 {
+        font-size: 26px;
+    }
+    .error-card > p:not(.error-code) {
+        font-size: 17px;
+    }
+    .error-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+    .error-home-link,
+    .error-back-link {
+        width: 100%;
+        font-size: 16px;
     }
 }

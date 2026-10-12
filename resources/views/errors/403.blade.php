@@ -1,10 +1,14 @@
 @extends('pages::layouts.error')
 
 @section('content')
-    <div class="error-page text-center">
-        <img src="{{ asset('static/web/images/overload.png') }}" title="overload" alt="overload">
-        <div class="mt-4">
-            <a href="{{ route('page.home') }}" class="btn btn-submit" style="color: #fff; background: #9d111d; font-size: 15px; padding: 8px 15px; border-radius: 5px;">Trang chủ</a>
+    <section class="error-card" aria-labelledby="error-title">
+        <p class="error-code" aria-hidden="true">403</p>
+        <span class="error-label">Truy cập bị từ chối</span>
+        <h1 id="error-title">Không có quyền xem nội dung này</h1>
+        <p>Trang đang được giới hạn quyền truy cập hoặc liên kết này không dành cho tài khoản hiện tại.</p>
+        <div class="error-actions">
+            <a class="error-home-link" href="{{ route('page.home') }}">Về trang chủ</a>
+            <button class="error-back-link" type="button" onclick="history.back()">Quay lại trang trước</button>
         </div>
-    </div>
+    </section>
 @endsection

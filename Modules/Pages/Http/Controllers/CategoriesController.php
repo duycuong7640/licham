@@ -30,17 +30,21 @@ class CategoriesController extends Controller
             return $this->changeDuongAm($slug, $request);
         } elseif ($slug == 'bai-viet') {
             return $this->listPosts($slug, $request);
+        } else {
+            return response()->view('errors.404', [], 404);
         }
     }
 
     public function changeDuongAm($slug, $request)
     {
         try {
-            $params = $request->only('date');
+            $params = $request->only('date', 'convertedDate', 'convertType');
             $d = date('d');
             $m = date('m');
             $y = date('Y');
+            $data['params'] = $params;
             if (!empty($params['date'])) {
+                if (!empty($params['convertedDate'])) $params['date'] = $params['convertedDate'];
                 $date = \Carbon\Carbon::createFromFormat('d/m/Y', $params['date']);
                 $d = $date->day;
                 $m = $date->month;
@@ -165,6 +169,7 @@ class CategoriesController extends Controller
             return response()->view('errors.500', [], 500);
         }
     }
+
     public function tags($slug, Request $request)
     {
         try {
@@ -191,7 +196,7 @@ class CategoriesController extends Controller
             $setting = $config['setting'] ?? [];
             $siteName = !empty($setting['title']) ? $setting['title'] : env('SITE_NAME');
             $canonical = route('page.post.tags', ['slug' => $slug]);
-            if ((int) $page > 1) $canonical .= '?page=' . (int) $page;
+            if ((int)$page > 1) $canonical .= '?page=' . (int)$page;
             $SEO = [
                 'name' => $siteName,
                 'slug' => $slug,
@@ -213,7 +218,7 @@ class CategoriesController extends Controller
             $data['hashtag'] = $hashTags;
             $data['lists'] = RequestHelpers::request($request, \dataApiRoutes::POST_BY_TAGS, \dataApiRoutes::POST_BY_TAGS, ['isPage' => 'cate', 'keySlug' => $slug, 'paginate' => 2, 'orderField' => 'created_at', 'orderType' => 'DESC', 'DOMAIN_RUN' => env('DOMAIN_RUN'), 'type' => 'CALENDARLUNAR_NEWS', "HASHTAG_IDS" => $hashTags['id'], 'page' => $page], 'post');
 
-             return view('pages::posts.index')->with('data', $data);
+            return view('pages::posts.index')->with('data', $data);
 //            $html = view('pages::posts.index')->with('data', $data)->render();
 //            $html = Helpers::genCsrfToken($html, '1');
 //            $response = response($html)
