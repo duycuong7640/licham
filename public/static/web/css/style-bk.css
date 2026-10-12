@@ -2626,6 +2626,29 @@ button {
     font-size: 17px;
     line-height: 1.75;
 }
+.article-body a {
+    color: #1769aa;
+    text-decoration: underline;
+    text-decoration-color: rgba(23, 105, 170, 0.35);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.article-body a:hover {
+    color: #0d4778;
+    text-decoration-color: currentColor;
+}
+
+.article-body a:focus-visible {
+    outline: 2px solid #1769aa;
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+.article-body a:visited {
+    color: #6551a4;
+}
 .article-body h2 {
     margin: 30px 0 10px;
     color: #24352b;
