@@ -70,7 +70,7 @@
     @endpush
     <section class="convert-workspace">
         <div class="card convert-form-card">
-            <div class="convert-form-head">
+            <div class="convert-form-head" id="chuyen-doi">
                 <span>BƯỚC 1</span>
                 <div>
                     <h2>Chọn loại lịch và ngày</h2>
