@@ -23,14 +23,17 @@ class DataConfigMiddleware
             // Load api
             $config = RequestHelpers::request($request, \dataApiRoutes::CONFIG, \dataApiRoutes::CONFIG, ['domain' => env('DOMAIN_RUN')], 'get');
             $hashTags = RequestHelpers::request($request, \dataApiRoutes::HASHTAGS, \dataApiRoutes::HASHTAGS, ['isPage' => 'lists', 'keySlug' => 'lich-am', 'limit' => 12, 'orderField' => 'created_at', 'orderType' => 'ASC', 'type' => 'CALENDARLUNAR', 'typeCategory' => 'LICH_AM', 'page' => 1], 'get');
+            $authors = RequestHelpers::request($request, \dataApiRoutes::AUTHORS, \dataApiRoutes::AUTHORS, ['isPage' => 'lists', 'keySlug' => 'lich-am', 'limit' => 20, 'orderField' => 'created_at', 'orderType' => 'ASC', 'type' => 'CALENDARLUNAR', 'page' => 1], 'get');
 
             // Set View
             View::share('configData', $config);
             View::share('hashTags', $hashTags);
+            View::share('authors', $authors);
             View::share('menu', \dataMenu::menus());
 
             $request->attributes->add(['configData' => $config]);
             $request->attributes->add(['hashTags' => $hashTags]);
+            $request->attributes->add(['authors' => $authors]);
         } catch (\Exception $e) {
         }
         return $next($request);

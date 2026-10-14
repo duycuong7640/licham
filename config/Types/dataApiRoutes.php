@@ -44,5 +44,6 @@ if (!class_exists('dataApiRoutes')) {
         public const FORTUNE_TUOI_LAM_NHA = 'fortune/tuoi-lam-nha';
 
         public const HASHTAGS = 'hashtags';
+        public const AUTHORS = 'authors';
     }
 }

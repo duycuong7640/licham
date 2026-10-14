@@ -29,6 +29,7 @@ Route::group(['middleware' => 'defaultDeviceId'], function () {
         Route::get('{slug}.html', [\Modules\Pages\Http\Controllers\PostsController::class, 'show'])->name('page.post.show')->middleware('html.cache');
         Route::get('tim-kiem', [\Modules\Pages\Http\Controllers\PostsController::class, 'search'])->name('page.cate.search');
         Route::get('tag/{slug}', [\Modules\Pages\Http\Controllers\PostsController::class, 'tags'])->name('page.post.tags')->middleware('html.cache');
+        Route::get('author/{id}/{slug}', [\Modules\Pages\Http\Controllers\PostsController::class, 'authors'])->name('page.post.author')->middleware('html.cache');
 
         Route::get('page/{slug}', [\Modules\Pages\Http\Controllers\PostsController::class, 'policy'])->name('page.policy.index')->middleware('html.cache');
 

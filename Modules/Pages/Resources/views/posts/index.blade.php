@@ -57,6 +57,46 @@
         </p>
     </header>
 
+    @if(!empty($data['author']['id']))
+        <section
+        id="authorProfile"
+        class="card author-profile"
+        aria-labelledby="author-profile-name"
+    >
+        <div class="author-profile-main">
+            <span class="author-profile-avatar" aria-hidden="true">BBT</span>
+            <div class="author-profile-heading">
+                <span class="author-profile-label">Hồ sơ tác giả</span>
+                <h2 id="author-profile-name">
+                    Biên tập viên: {{ $data['author']['title'] }}
+                    <span title="Tác giả đã xác thực" aria-label="Đã xác thực">✓</span>
+                </h2>
+                <p>
+                    {{ $data['author']['description'] }}
+                </p>
+            </div>
+        </div>
+        <dl class="author-profile-stats">
+            <div>
+                <dt>Vai trò</dt>
+                <dd>Biên tập nội dung</dd>
+            </div>
+            <div>
+                <dt>Bài viết</dt>
+                <dd>{{ $data['author']['post_count'] }} bài</dd>
+            </div>
+            <div>
+                <dt>Đánh giá</dt>
+                <dd><span aria-hidden="true">★</span> {{ $data['author']['rank'] }}.0/5</dd>
+            </div>
+            <div>
+                <dt>Chuyên mục</dt>
+                <dd>Lịch Việt · Văn hóa</dd>
+            </div>
+        </dl>
+    </section>
+    @endif
+
     <nav class="topic-filter" aria-label="Lọc bài viết theo chủ đề">
         <a class="active" href="{{ route('page.cate.index', ['slug' => 'bai-viet']) }}" data-topic="all">Tất cả</a>
         @foreach($hashTags as $row)

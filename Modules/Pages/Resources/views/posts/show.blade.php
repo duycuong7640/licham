@@ -65,6 +65,28 @@
             <div class="article-body mt-5">
                 {!! $data['detail']['tableOfContent'] !!}
             </div>
+            @if(!empty($data['detail']['author']))
+            <a class="article-author-card"
+                href="{{ route('page.post.author', ['slug' => $data['detail']['author']['slug'], 'id' => $data['detail']['author']['id']]) }}"
+                title="Xem các bài viết của tác giả: {{ $data['detail']['author']['title'] }}"
+                aria-label="Xem các bài viết của tác giả: {{ $data['detail']['author']['title'] }}">
+                <span class="article-author-avatar" aria-hidden="true">BBT</span>
+                <span class="article-author-card-info">
+              <small class="article-author-role">Tác giả bài viết</small>
+              <strong>
+                Biên tập viên: {{ $data['detail']['author']['title'] }}
+                <span class="article-author-verified" title="Tác giả đã xác thực" aria-label="Đã xác thực">✓</span>
+              </strong>
+              <span class="article-author-stats">
+                <span class="article-author-rating" aria-label="Đánh giá {{ $data['detail']['author']['rank'] }} trên 5 sao">
+                    <b aria-hidden="true">★</b> {{ $data['detail']['author']['rank'] }}.0
+                </span>
+                <span aria-hidden="true">•</span>
+                <span>{{ $data['detail']['author']['post_count'] }} bài viết</span>
+              </span>
+            </span>
+            </a>
+            @endif
             <footer class="article-tags">
                 <strong>Chủ đề:</strong>
                 @foreach($hashTags as $row)

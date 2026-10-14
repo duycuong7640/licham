@@ -82,7 +82,7 @@ class HomeController extends Controller
             $htmlCache->put($cacheKey, $html, $ttl);
 
             return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)->header('Cache-Control', \dataKey::CACHE);
-        } catch (\Exception $e) {Helpers::pre($e->getMessage());
+        } catch (\Exception $e) {
             return response()->view('errors.500', [], 500);
         }
     }

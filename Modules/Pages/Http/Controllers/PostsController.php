@@ -150,9 +150,9 @@ class PostsController extends Controller
                 'name' => $siteName,
                 'slug' => $slug,
                 'logo' => !empty($setting['thumbnail']) ? Helpers::renderThumb($setting['thumbnail']) : asset('static/web/images/logo.png'),
-                'logo_share' => !empty($hashTags['thumbnailShare']) ? Helpers::renderThumb($hashTags['thumbnailShare']) : (!empty($setting['thumbnailShare']) ? Helpers::renderThumb($setting['thumbnailShare']) : asset('static/web/images/share.png')),
+                'logo_share' => !empty($setting['thumbnailShare']) ? Helpers::renderThumb($setting['thumbnailShare']) : (!empty($setting['thumbnailShare']) ? Helpers::renderThumb($setting['thumbnailShare']) : asset('static/web/images/share.png')),
                 'fav' => asset('static/web/images/favicon/favicon.ico'),
-                'title_seo' => !empty($hashTags['titleSeo']) ? $hashTags['titleSeo'] : $hashTags['title'],
+                'title_seo' => !empty($hashTags['titleSeo']) ? $hashTags['titleSeo'] : $setting['title'],
                 'meta_des' => !empty($hashTags['metaDes']) ? $hashTags['metaDes'] : '',
                 'meta_key' => !empty($hashTags['metaKey']) ? $hashTags['metaKey'] : '',
                 'canonical' => $canonical,
@@ -169,6 +169,69 @@ class PostsController extends Controller
 
             // return view('pages::posts.tags')->with('data', $data);
             $html = view('pages::posts.tags')->with('data', $data)->render();
+            $html = Helpers::genCsrfToken($html, '1');
+            $response = response($html)
+                ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);
+            $response = Helpers::optimize_html($response);
+            Cache::put($cacheKey, $response->getContent(), $ttl);
+
+            return $response->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+                ->header('Cache-Control', \dataKey::CACHE);
+        } catch (\Exception $e) {
+            return response()->view('errors.500', [], 500);
+        }
+    }
+
+    public function authors($id, $slug, Request $request)
+    {
+        try {
+            $page = !empty($request->get('page')) ? $request->get('page') : '1';
+
+            $cacheKey = 'post_authors_html_' . md5($slug) . '_' . $page;
+            $ttl = now()->addMinutes(10);
+            if (Cache::has($cacheKey)) {
+                return response(Helpers::genCsrfToken(Cache::get($cacheKey), ''), 200)
+                    ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE)
+                    ->header('Cache-Control', \dataKey::CACHE);
+            }
+
+            $authors = $request->get('authors', []);
+            $hTags = $request->get('hashTags', []);
+            $data['hashTags'] = $hTags;
+            $author = [];
+            foreach ($authors as $row) {
+                if ($row['id'] == $id) $author = $row;
+            }
+            if (empty($author['id'])) return response()->view('errors.404', [], 404);
+
+            $config = $request->get('configData', []);
+            $setting = $config['setting'] ?? [];
+            $siteName = !empty($setting['title']) ? $setting['title'] : env('SITE_NAME');
+            $canonical = route('page.post.author', ['id' => $id, 'slug' => $slug]);
+            if ((int) $page > 1) $canonical .= '?page=' . (int) $page;
+            $SEO = [
+                'name' => $siteName,
+                'slug' => $slug,
+                'logo' => !empty($setting['thumbnail']) ? Helpers::renderThumb($setting['thumbnail']) : asset('static/web/images/logo.png'),
+                'logo_share' => !empty($setting['thumbnailShare']) ? Helpers::renderThumb($setting['thumbnailShare']) : (!empty($setting['thumbnailShare']) ? Helpers::renderThumb($setting['thumbnailShare']) : asset('static/web/images/share.png')),
+                'fav' => asset('static/web/images/favicon/favicon.ico'),
+                'title_seo' => !empty($author['titleSeo']) ? $author['titleSeo'] : $setting['title'],
+                'meta_des' => !empty($author['metaDes']) ? $author['metaDes'] : '',
+                'meta_key' => !empty($author['metaKey']) ? $author['metaKey'] : '',
+                'canonical' => $canonical,
+            ];
+
+            $data['seo'] = $SEO;
+            $data['common'] = Helpers::metaHead($SEO);
+            $data['shareMXH'] = Helpers::renderShareMXH('pro_show', $SEO, $config);
+            $data['show'] = 1;
+            $data['author'] = $author;
+            $data['page'] = 'bai-viet-chu-de';
+            $data['category'] = ["title" => 'Bài viết', 'slug' => 'bai-viet', 'isLast' => true];
+            $data['lists'] = RequestHelpers::request($request, \dataApiRoutes::POSTS, \dataApiRoutes::POSTS, ['isPage' => 'cate', 'keySlug' => $slug, 'paginate' => 9, 'orderField' => 'created_at', 'orderType' => 'DESC', 'DOMAIN_RUN' => env('DOMAIN_RUN'), 'type' => 'CALENDARLUNAR_NEWS', "authorId" => (string) $author['id'], 'page' => $page], 'post');
+
+            // return view('pages::posts.tags')->with('data', $data);
+            $html = view('pages::posts.index')->with('data', $data)->render();
             $html = Helpers::genCsrfToken($html, '1');
             $response = response($html)
                 ->header('Content-Type', \dataKey::CACHE_CONTENT_TYPE);

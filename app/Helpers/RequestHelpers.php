@@ -100,6 +100,11 @@ class RequestHelpers
                         $cacheData = self::getRedis(\dataApiRoutes::POSTS . '_' . $data['isPage'] . '_' . $data['keySlug'] . '_' . md5(@json_encode($data)));
                     }
                     break;
+                case \dataApiRoutes::AUTHORS:
+                    if ($data['isPage'] == 'lists') {
+                        $cacheData = self::getRedis(\dataApiRoutes::AUTHORS . '_' . $data['isPage'] . '_' . $data['keySlug'] . '_' . md5(@json_encode($data)));
+                    }
+                    break;
                 case \dataApiRoutes::POSTS_SEARCH:
                     $cacheData = self::getRedis(\dataApiRoutes::POSTS_SEARCH . '_' . md5($data['title']));
                     break;
@@ -249,7 +254,12 @@ class RequestHelpers
                 break;
             case \dataApiRoutes::HASHTAGS:
                 if ($params['isPage'] == 'lists') {
-                    self::setRedis(\dataApiRoutes::POSTS . '_' . $params['isPage'] . '_' . $params['keySlug'] . '_' . md5(@json_encode($params)), $data, $REDIS_EXPIRE_10M);
+                    self::setRedis(\dataApiRoutes::POSTS . '_' . $params['isPage'] . '_' . $params['keySlug'] . '_' . md5(@json_encode($params)), $data, $REDIS_EXPIRE_2H);
+                }
+                break;
+            case \dataApiRoutes::AUTHORS:
+                if ($params['isPage'] == 'lists') {
+                    self::setRedis(\dataApiRoutes::AUTHORS . '_' . $params['isPage'] . '_' . $params['keySlug'] . '_' . md5(@json_encode($params)), $data, $REDIS_EXPIRE_1D);
                 }
                 break;
             case \dataApiRoutes::POSTS_SEARCH:
