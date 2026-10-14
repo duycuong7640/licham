@@ -63,11 +63,10 @@ class GenerateSitemap extends Command
         */
 
         // Nếu muốn bật sitemap post thì bỏ comment đoạn này.
-        //
-        // $request = Request::create('/', 'GET');
-        //
-        // $postFiles = $this->generatePosts($request);
-        // $generatedFiles = array_merge($generatedFiles, $postFiles);
+
+        $request = Request::create('/', 'GET');
+        $postFiles = $this->generatePosts($request);
+        $generatedFiles = array_merge($generatedFiles, $postFiles);
 
         /*
         |--------------------------------------------------------------------------
@@ -128,7 +127,7 @@ class GenerateSitemap extends Command
         |--------------------------------------------------------------------------
         */
 
-        $currentYear = (int) date('Y');
+        $currentYear = (int)date('Y');
         $startYear = $currentYear - 10;
         for ($year = $startYear; $year <= 2050; $year++) {
             for ($month = 1; $month <= 12; $month++) {
