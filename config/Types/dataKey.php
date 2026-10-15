@@ -5,7 +5,7 @@ if (!class_exists('dataKey')) {
     {
         public const SESSION_LOGIN_TOKEN = 'SESSION_LOGIN_TOKEN';
         public const CACHE_CONTENT_TYPE = 'text/html; charset=UTF-8';
-        public const CACHE = 'private, no-store';
+        public const CACHE = 'public, max-age=300, s-maxage=600';
 
         public const COPE = 'COPE';
         public const COPE_DAY = 'COPE_DAY';
